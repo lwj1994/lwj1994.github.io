@@ -1,0 +1,797 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Handler," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Android 最基础的最核心的组件 - Handler，了解它的原理，我们才能更好的使用它。">
+<meta name="keywords" content="Handler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Handler 总结">
+<meta property="og:url" content="https://luwenjie.me/2017/01/10/Handler 总结/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="Android 最基础的最核心的组件 - Handler，了解它的原理，我们才能更好的使用它。">
+<meta property="og:updated_time" content="2017-01-21T09:51:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Handler 总结">
+<meta name="twitter:description" content="Android 最基础的最核心的组件 - Handler，了解它的原理，我们才能更好的使用它。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/01/10/Handler 总结/"/>
+
+
+
+
+
+  <title>Handler 总结 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/01/10/Handler 总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Handler 总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-10T19:44:00+08:00">
+                2017-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/01/10/Handler 总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android 最基础的最核心的组件 - Handler，了解它的原理，我们才能更好的使用它。<br><a id="more"></a></p>
+<h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li>ThreadLocal</li>
+<li>Looper 和线程以及消息队列的关系</li>
+<li>Message 的发送和处理过程</li>
+<li>Handler 异步原理小结</li>
+<li>使用 Handler 的错误姿势及其优化</li>
+</ul>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h2><p>从 jdk 1.2 开始引进。<br>实现不同线程的数据副本</p>
+<p>保持线程相互独立</p>
+<h2 id="Looper"><a href="#Looper" class="headerlink" title="Looper"></a>Looper</h2><ol>
+<li><p><code>Looper.prepare()</code></p>
+<p>初始化当前的线程 作为一个 looper<br>ThreadLocal 里面放入了 looper<br>1 个 looper 对应 1 个 messageQueue 对应 1 个 thread<br>1 个线程只有一个 looper</p>
+</li>
+</ol>
+<ol>
+<li><p><code>looper.prepareMainLopper()</code><br>  专门为 Ui 线程准备的</p>
+</li>
+<li><p><code>looper.loop()</code><br>从 threadLocal 取出 Looper，再取出 looper 中的消息队列<br>进入循环，没有像消息就阻塞。<br>有消息就   <code>msg.target.dispatchMessage(msg)</code><br>这里的 <code>msg.target</code> 正是 Handler</p>
+</li>
+<li><p><code>looper.quit()</code></p>
+</li>
+</ol>
+<h2 id="消息的发送和处理"><a href="#消息的发送和处理" class="headerlink" title="消息的发送和处理"></a>消息的发送和处理</h2><h3 id="消息入队"><a href="#消息入队" class="headerlink" title="消息入队"></a>消息入队</h3><p>发送消息最终都会走  <code>Handler</code>的<code>sendMessageAtTime(Message msg, long uptimeMillis)</code>   这个方法</p>
+<pre><code class="java">    //Handler
+    /**
+     ** queue:
+     ** msg:
+     ** uptimeMills: 根据这个时间判断消息执行顺序, 如果是 0 就是第一个执行。
+     **/
+    boolean enqueueMessage(MessageQueue queue，Message msg，long uptimeMillis){
+        //  这个 target 赋值为 this， 就是 Handler。
+        msg.target = this;
+    }
+</code></pre>
+<h3 id="消息出队"><a href="#消息出队" class="headerlink" title="消息出队"></a>消息出队</h3><p>Looper.prepare() 之后，需要调用loop() 方法轮询消息 ,<br>首先从threadLocal 取出 Looper，再取出 looper 中的消息队列<br>进入循环，没有消息就阻塞。<br>有消息就   <code>msg.target.dispatchMessage(msg)</code><br>这里的 <code>msg.target</code> 正是 Handler</p>
+<h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><ol>
+<li>判断消息的回调，这里的回调就是 <code>handler.post(Runnable callback)</code> 中的 <code>Runnable</code></li>
+<li>判断自己的回调，这里的回调是 Handler 构造函数中的 <code>Runnable</code></li>
+<li>处理消息 就是需要我们自己覆盖的方法 <code>handleMessage()</code></li>
+</ol>
+<h2 id="梳理-Handler-工作机制"><a href="#梳理-Handler-工作机制" class="headerlink" title="梳理 Handler 工作机制"></a>梳理 Handler 工作机制</h2><ol>
+<li>Thread:  负责业务逻辑</li>
+<li>Handler：负责发送消息和处理消息</li>
+<li>MessageQueue：负责保存消息</li>
+<li>Looper：负责轮询消息队列</li>
+</ol>
+<h2 id="使用Handler的错误姿势及其潜在风险"><a href="#使用Handler的错误姿势及其潜在风险" class="headerlink" title="使用Handler的错误姿势及其潜在风险"></a>使用Handler的错误姿势及其潜在风险</h2><p><code>Hanler</code> 在哪个线程就在那个线程执行<br><code>#View.post(rnnable)</code> 在主线程执行<br><code>#Activity.runOnUiThread()</code>在主线程执行</p>
+<h3 id="匿名内部内引发内存泄露"><a href="#匿名内部内引发内存泄露" class="headerlink" title="匿名内部内引发内存泄露"></a>匿名内部内引发内存泄露</h3><pre><code class="java">    privite void init(){
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                // handler msg
+            }
+        }
+        mhandler.postDelay(new Runnable(){
+            //do something
+        },1000 * 20);
+    }
+</code></pre>
+<p>如上代码匿名内部类 <code>new Runnable()</code> 持有外部 Activity 的引用，如果旋转屏幕当前 Activity 不会被释放。</p>
+<p>解决方式: 弱引用 Handler</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Handler/" rel="tag"># Handler</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/09/Re：从零开始的数据结构 2 - 单链表/" rel="next" title="Re：从零开始的数据结构 2 - 单链表">
+                <i class="fa fa-chevron-left"></i> Re：从零开始的数据结构 2 - 单链表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/15/自定义 View 学习笔记-工具/" rel="prev" title="自定义 View 笔记 1 - 常用工具">
+                自定义 View 笔记 1 - 常用工具 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要内容"><span class="nav-number">1.</span> <span class="nav-text">主要内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">2.</span> <span class="nav-text">ThreadLocal</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Looper"><span class="nav-number">3.</span> <span class="nav-text">Looper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息的发送和处理"><span class="nav-number">4.</span> <span class="nav-text">消息的发送和处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息入队"><span class="nav-number">4.1.</span> <span class="nav-text">消息入队</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息出队"><span class="nav-number">4.2.</span> <span class="nav-text">消息出队</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息处理"><span class="nav-number">4.3.</span> <span class="nav-text">消息处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梳理-Handler-工作机制"><span class="nav-number">5.</span> <span class="nav-text">梳理 Handler 工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Handler的错误姿势及其潜在风险"><span class="nav-number">6.</span> <span class="nav-text">使用Handler的错误姿势及其潜在风险</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#匿名内部内引发内存泄露"><span class="nav-number">6.1.</span> <span class="nav-text">匿名内部内引发内存泄露</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

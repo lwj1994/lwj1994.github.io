@@ -1,0 +1,1056 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="学习笔记," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="自定义之前先了解一下经常使用到的工具类，这些类能帮助我们快速开发，省的我们自己去实现一些细节问题。">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义 View 笔记 1 - 常用工具">
+<meta property="og:url" content="https://luwenjie.me/2017/01/15/自定义 View 学习笔记-工具/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="自定义之前先了解一下经常使用到的工具类，这些类能帮助我们快速开发，省的我们自己去实现一些细节问题。">
+<meta property="og:updated_time" content="2017-01-24T13:38:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义 View 笔记 1 - 常用工具">
+<meta name="twitter:description" content="自定义之前先了解一下经常使用到的工具类，这些类能帮助我们快速开发，省的我们自己去实现一些细节问题。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/01/15/自定义 View 学习笔记-工具/"/>
+
+
+
+
+
+  <title>自定义 View 笔记 1 - 常用工具 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/01/15/自定义 View 学习笔记-工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自定义 View 笔记 1 - 常用工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-15T14:25:00+08:00">
+                2017-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自定义-View/" itemprop="url" rel="index">
+                    <span itemprop="name">自定义 View</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/01/15/自定义 View 学习笔记-工具/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>自定义之前先了解一下经常使用到的工具类，这些类能帮助我们快速开发，省的我们自己去实现一些细节问题。<br><a id="more"></a></p>
+<p>主要用到的工具类有：</p>
+<ol>
+<li>Configuration</li>
+<li>ViewConfiguration</li>
+<li>GestureDetector</li>
+<li>VelocityTracker</li>
+<li>Scroller</li>
+<li>ViewDragHelper</li>
+</ol>
+<h2 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h2><blockquote>
+<p>This class describes all device configuration information that can impact the resources the application retrieves.</p>
+</blockquote>
+<p>用来描述设备的配置信息。<br>比如用户的配置信息：locale 和 scaling 等等<br>比如设备的相关信息：输入模式，屏幕大小，屏幕方向等等。</p>
+<pre><code class="java">Configuration configuration=getResources().getConfiguration();
+//获取国家码
+int countryCode=configuration.mcc;
+//获取网络码
+int networkCode=configuration.mnc;
+//判断横竖屏
+if(configuration.orientation==Configuration.ORIENTATION_PORTRAIT){
+
+   } else {
+
+}
+</code></pre>
+<h2 id="ViewConfiguration"><a href="#ViewConfiguration" class="headerlink" title="ViewConfiguration"></a>ViewConfiguration</h2><blockquote>
+<p>Contains methods to standard constants used in the UI for timeouts, sizes, and distances.</p>
+</blockquote>
+<p>提供了一些自定义控件常用的标准常量，比如 UI 超时，尺寸大小，滑动距离，敏感度等。</p>
+<pre><code class="java">// 获取实例
+ViewConfigutation viewConfiguration = ViewConfiguration.get(context);
+
+//获取touchSlop。该值表示系统所能识别出的被认为是滑动的最小距离
+int touchSlop = viewConfiguration.getScaledTouchSlop();
+//获取Fling速度的最小值和最大值
+int minimumVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
+int maximumVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
+//判断是否有物理按键
+boolean isHavePermanentMenuKey=viewConfiguration.hasPermanentMenuKey();
+
+//双击间隔时间.在该时间内是双击，否则是单击
+int doubleTapTimeout=ViewConfiguration.getDoubleTapTimeout();
+//按住状态转变为长按状态需要的时间
+int longPressTimeout=ViewConfiguration.getLongPressTimeout();
+//重复按键的时间
+int keyRepeatTimeout=ViewConfiguration.getKeyRepeatTimeout();
+</code></pre>
+<h2 id="GestureDetector"><a href="#GestureDetector" class="headerlink" title="GestureDetector"></a>GestureDetector</h2><blockquote>
+<p>Detects various gestures and events using the supplied {@link MotionEvent}s.<br>  The {@link OnGestureListener} callback will notify users when a particular<br>  motion event has occurred. This class should only be used with {@link MotionEvent}s reported via touch (don’t use for trackball events).</p>
+</blockquote>
+<p>翻译：使用 <code>MotionEvent</code> 检测各种手势和事件。通过<code>OnGestureListener</code> 回调事件。不能用于轨迹球事件。</p>
+<p>主要是为了简化 Touch 的操作。</p>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><pre><code class="java">  GestureDetector gestureDetector;
+  gestureDetector = new GestureDetector(this, new GestureDetectorImp());
+  /**
+   * OnGestureListener 的实现类
+   */
+  class GestureDetectorImp implements GestureDetector.OnGestureListener {
+
+    /**
+     * 触摸屏幕时
+     */
+    @Override public boolean onDown(MotionEvent e) {
+      log(&quot;GestureDetectorImp - onDown&quot;);
+      return false;
+    }
+
+    /**
+     * 手指在屏幕上按下,且未移动和松开时
+     */
+    @Override public void onShowPress(MotionEvent e) {
+      log(&quot;GestureDetectorImp - onShowPress&quot;);
+    }
+
+    /**
+     * 轻击屏幕时
+     */
+    @Override public boolean onSingleTapUp(MotionEvent e) {
+      log(&quot;GestureDetectorImp - onSingleTapUp&quot;);
+      return false;
+    }
+
+    /**
+     * 手指在屏幕上滚动时
+     */
+    @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+        float distanceY) {
+      return false;
+    }
+
+    /**
+     * 手指长按屏幕时
+     */
+    @Override public void onLongPress(MotionEvent e) {
+
+    }
+
+    /**
+     * 手指在屏幕上拖动时
+     */
+    @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+        float velocityY) {
+      return false;
+    }
+  }
+
+
+
+
+  /**
+   * 将 View 的 Touch 事件交给 GestureDetector 处理
+   */
+  @Override public boolean onTouchEvent(MotionEvent event) {
+    return gestureDetector.onTouchEvent(event);
+  }
+</code></pre>
+<h2 id="VelocityTracker"><a href="#VelocityTracker" class="headerlink" title="VelocityTracker"></a>VelocityTracker</h2><blockquote>
+<p>Helper for tracking the velocity of touch events, for implementing<br>  flinging and other such gestures.</p>
+</blockquote>
+<p>VelocityTracker 用于跟踪触摸屏事件（比如，Flinging 及其他 Gesture 手势事件等）的速率。</p>
+<pre><code class="java">  VelocityTracker mVelocityTracker;
+ /**
+   * 开始追踪
+   */
+  void startTrack(MotionEvent event) {
+    if (mVelocityTracker == null) mVelocityTracker = VelocityTracker.obtain();
+    mVelocityTracker.addMovement(event);
+  }
+
+  /**
+   * 得到速率
+   */
+  int getVelocity() {
+    // 设置单位，1000 表示 1 秒内移动的像素
+    mVelocityTracker.computeCurrentVelocity(1000);
+
+    // 获取 1 秒内 X 方向移动的像素
+    float xVelocity = mVelocityTracker.getXVelocity();
+
+    // 返回绝对值
+    return (int) Math.abs(xVelocity);
+  }
+
+  /**
+   * 停止追踪
+   */
+  void stopTrack() {
+    if (mVelocityTracker != null) {
+      mVelocityTracker.recycle();
+      mVelocityTracker = null;
+    }
+  }
+</code></pre>
+<h2 id="Scroller"><a href="#Scroller" class="headerlink" title="Scroller"></a>Scroller</h2><p>见 <a href="http://luwenjie.me/2016/12/31/Scroller%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Scroller 学习笔记</a></p>
+<h2 id="ViewDragHelper"><a href="#ViewDragHelper" class="headerlink" title="ViewDragHelper"></a>ViewDragHelper</h2><blockquote>
+<p>ViewDragHelper is a utility class for writing custom ViewGroups. It offers a number of useful operations and state tracking for allowing a user to drag and reposition views within their parent ViewGroup.</p>
+</blockquote>
+<p>用于简化 View 的拖拽的相关操作。</p>
+<pre><code class="java">/**
+ * Author/Date: venjerLu / 2017/1/15 13:36
+ * Email:       alwjlola@gmail.com
+ * Description: viewDragHelper 使用示例
+ */
+
+public class ViewDragHelperLinearLayout extends LinearLayout {
+  private static final String TAG = &quot;VHLinearLayout&quot;;
+
+  private ViewDragHelper mViewDragHelper;
+
+  public ViewDragHelperLinearLayout(Context context) {
+    super(context);
+    initViewDragHelper();
+  }
+
+  public ViewDragHelperLinearLayout(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    initViewDragHelper();
+  }
+
+  public ViewDragHelperLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    initViewDragHelper();
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  public ViewDragHelperLinearLayout(Context context, AttributeSet attrs, int defStyleAttr,
+      int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+    initViewDragHelper();
+  }
+
+  /**
+   * 初始化 ViewDragHelper
+   */
+  private void initViewDragHelper() {
+    mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
+      @Override public boolean tryCaptureView(View child, int pointerId) {
+        Log.d(TAG, &quot;tryCaptureView&quot;);
+        return true;
+      }
+
+      /**
+       * 处理竖直方向上的越界
+       * @param child
+       * @param top
+       * @param dy
+       * @return
+       */
+      @Override public int clampViewPositionVertical(View child, int top, int dy) {
+        Log.d(TAG, &quot;clampViewPositionVertical&quot;);
+        int fixedTop;
+        View parent = (View) child.getParent();
+        int paddingTop = getPaddingTop();
+        int bottomBound = getHeight() - child.getHeight() - parent.getPaddingBottom();
+
+        if (top &lt; paddingTop) {
+          fixedTop = paddingTop;
+        } else if (top &gt; bottomBound) {
+          fixedTop = bottomBound;
+        } else {
+          fixedTop = top;
+        }
+        return fixedTop;
+      }
+
+      /**
+       * 处理水平方向上的越界
+       * @param child
+       * @param left 左划的距离
+       * @param dx
+       * @return
+       */
+      @Override public int clampViewPositionHorizontal(View child, int left, int dx) {
+        Log.d(TAG, &quot;clampViewPositionHorizontal&quot;);
+        int fixedLeft;
+        View parent = (View) child.getParent();
+        int leftBound = parent.getPaddingLeft(); // 左边的 padding
+        int rightBound = parent.getWidth() - child.getWidth() - parent.getPaddingRight(); // 距离右边的最大距离
+
+        if (left &lt; leftBound) {// 如果移动的距离小于左边距
+          fixedLeft = leftBound;
+        } else if (left &gt; rightBound) {
+          fixedLeft = rightBound;
+        } else {
+          fixedLeft = left;
+        }
+        return fixedLeft;
+      }
+
+      /**
+       * 捕获 View
+       * @param capturedChild
+       * @param activePointerId
+       */
+      @Override public void onViewCaptured(View capturedChild, int activePointerId) {
+        Log.d(TAG, &quot;onViewCaptured&quot;);
+        super.onViewCaptured(capturedChild, activePointerId);
+      }
+
+      /**
+       * 释放 View
+       * @param releasedChild
+       * @param xvel
+       * @param yvel
+       */
+      @Override public void onViewReleased(View releasedChild, float xvel, float yvel) {
+        Log.d(TAG, &quot;onViewReleased&quot;);
+        super.onViewReleased(releasedChild, xvel, yvel);
+      }
+
+      /**
+       * 监听拖动状态的改变
+       * @param state
+       */
+      @Override public void onViewDragStateChanged(int state) {
+        switch (state) {
+          case ViewDragHelper.STATE_DRAGGING:
+            Log.d(TAG, &quot;onViewDragStateChanged &gt; STATE_DRAGGING&quot;);
+            break;
+          case ViewDragHelper.STATE_IDLE:
+            Log.d(TAG, &quot;onViewDragStateChanged &gt; STATE_IDLE&quot;);
+            break;
+          case ViewDragHelper.STATE_SETTLING:
+            Log.d(TAG, &quot;onViewDragStateChanged &gt; STATE_SETTLING&quot;);
+            break;
+        } super.onViewDragStateChanged(state);
+      }
+
+      /**
+       * 拖拽方向改变
+       * @param changedView
+       * @param left
+       * @param top
+       * @param dx
+       * @param dy
+       */
+      @Override public void onViewPositionChanged(View changedView, int left, int top, int dx,
+          int dy) {
+        Log.d(TAG, &quot;onViewPositionChanged&quot;);
+        super.onViewPositionChanged(changedView, left, top, dx, dy);
+      }
+    });
+  }
+
+  /**
+   * 将事件拦截交给 ViewDragHelper 处理
+   */
+  @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
+    return mViewDragHelper.shouldInterceptTouchEvent(ev);
+  }
+
+  /**
+   * 将 Touch 事件交给 ViewDragHelper 处理
+   */
+  @Override public boolean onTouchEvent(MotionEvent event) {
+    mViewDragHelper.processTouchEvent(event);
+    return true;
+  }
+}
+</code></pre>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/10/Handler 总结/" rel="next" title="Handler 总结">
+                <i class="fa fa-chevron-left"></i> Handler 总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/19/Mac Chrome 快捷键/" rel="prev" title="Mac Chrome 快捷键">
+                Mac Chrome 快捷键 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Configuration"><span class="nav-number">1.</span> <span class="nav-text">Configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewConfiguration"><span class="nav-number">2.</span> <span class="nav-text">ViewConfiguration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GestureDetector"><span class="nav-number">3.</span> <span class="nav-text">GestureDetector</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例"><span class="nav-number">3.1.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VelocityTracker"><span class="nav-number">4.</span> <span class="nav-text">VelocityTracker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scroller"><span class="nav-number">5.</span> <span class="nav-text">Scroller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewDragHelper"><span class="nav-number">6.</span> <span class="nav-text">ViewDragHelper</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

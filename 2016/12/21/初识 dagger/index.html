@@ -1,0 +1,895 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="学习笔记,dagger2," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="使用 Dagger2 配合 RxJava 和 MVP 能更加方便解耦代码。这么高大上的框架，是时候学习一下了。">
+<meta name="keywords" content="学习笔记,dagger2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识 Dagger2">
+<meta property="og:url" content="https://luwenjie.me/2016/12/21/初识 dagger/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="使用 Dagger2 配合 RxJava 和 MVP 能更加方便解耦代码。这么高大上的框架，是时候学习一下了。">
+<meta property="og:updated_time" content="2017-01-21T09:50:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初识 Dagger2">
+<meta name="twitter:description" content="使用 Dagger2 配合 RxJava 和 MVP 能更加方便解耦代码。这么高大上的框架，是时候学习一下了。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2016/12/21/初识 dagger/"/>
+
+
+
+
+
+  <title>初识 Dagger2 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2016/12/21/初识 dagger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">初识 Dagger2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-21T14:00:00+08:00">
+                2016-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2016/12/21/初识 dagger/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用 Dagger2 配合 RxJava 和 MVP 能更加方便解耦代码。<br>这么高大上的框架，是时候学习一下了。<br><a id="more"></a></p>
+<p><a href="http://google.github.io/dagger/users-guide" target="_blank" rel="external">Dagger2 官方文档</a></p>
+<p>参考资料：<br><a href="http://www.jianshu.com/p/cd2c1c9f68d4" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-基础依赖注入框架篇</a><br><a href="http://www.jianshu.com/p/1d42d2e6f4a5" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-重点概念讲解、融合篇</a><br><a href="http://www.jianshu.com/p/65737ac39c44" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-终结篇</a></p>
+<h2 id="声明依赖"><a href="#声明依赖" class="headerlink" title="声明依赖"></a>声明依赖</h2><p>用 <code>@Inject</code> 声明你需要注入的类的构造，并声明你在哪个地方需要一个这个实例。</p>
+<pre><code class="java">
+class Thermosiphon implements Pump {
+    private final Heater heater;
+
+    @Inject
+    Thermosiphon(Heater heater) {
+      this.heater = heater;
+    }
+
+    ...
+}
+/*--------------------------------------*/
+class CoffeeMaker {
+    @Inject Heater heater;
+    @Inject Pump pump;
+
+    ...
+}
+</code></pre>
+<p>如果你注明了你在哪需要注入一个实例，但是没有注明构造函数：</p>
+<pre><code class="java">class A {
+    @Inject
+    B b;
+}
+
+class B {
+    public B(){}
+}
+</code></pre>
+<p>Dagger2 会注入那些字段，但是不会创建新的实例。</p>
+<p>用 <code>@Inject</code> 注解一个无参构造函数，Dagger2 可以创建实例。</p>
+<p>Dagger2 还支持方法注入， 一般优先考虑字段和构造器注入。</p>
+<p>缺少 <code>@Inject</code> 注释的类不能由 Dagger 构造。</p>
+<h2 id="满足依赖"><a href="#满足依赖" class="headerlink" title="满足依赖"></a>满足依赖</h2><p><code>@Inject</code> 有一定的局限性</p>
+<ul>
+<li>无法构建接口。</li>
+<li>第三方类不能注释。</li>
+<li>必须配置可配置对象！</li>
+</ul>
+<p>所以我们使用 <code>@Module</code> 和 <code>@Provide</code> 来代替。</p>
+<pre><code class="java">@Module
+class DripCoffeeModule {
+    @Provides static Heater provideHeater() {
+        return new ElectricHeater();
+    }
+
+    @Provides static Pump providePump(Thermosiphon pump) {
+        return pump;
+    }
+}
+</code></pre>
+<p>按照惯例，<code>@Provides</code> 注解的方法用<code>provideXxx()</code> 命名，而 <code>@Module</code> 注解的类用 <code>class XxxModule</code>命名。</p>
+<h2 id="Building-Graph-构建组件"><a href="#Building-Graph-构建组件" class="headerlink" title="Building Graph (构建组件)"></a>Building Graph (构建组件)</h2><p><code>@Inject</code>注解的字段和 <code>@Provide</code>注解的类构成一个对象的映射图，通过依赖关系链接。</p>
+<p>在应用程序的主方法中通过明确定义好的根集来访问该映射图形。</p>
+<p>在 Dagger 2 中，该集合由具有没有参数的方法的 <code>interface</code> 定义，并返回所需的类型。 用 <code>@Component</code> 注释这样的接口</p>
+<pre><code class="java">@Component(modules = DripCoffeeModule.class)
+interface CoffeeShop {
+    CoffeeMaker maker();
+}
+</code></pre>
+<p>rebuild 一下，Dagger2 会自动生成该接口的实现类，形如 <code>DaggerCoffeeShop</code> 以 Dagger 为前缀，后面和接口名称一样。<br>调用该实现的 <code>builder()</code> 方法来得到一个建造者实例。</p>
+<p>使用这个建造者设置依赖关系，并 <code>build()</code>一个实例。</p>
+<pre><code class="java">CoffeeShop coffeeShop = DaggerCoffeeShop.builder()
+                    .dripCoffeeModule(new DripCoffeeModule())
+                    .build();
+</code></pre>
+<p>如果 <code>@Componet</code> 注解的不是一个顶级类型，也就是一个内部接口。  那么生成的实现的命名会包含外部类。</p>
+<pre><code class="java">    class Foo {
+      static class Bar {
+        @Component
+        interface BazComponent {}
+      }
+    }
+</code></pre>
+<p>如上所示，会生成 <code>DaggerFoo_Bar_BazCoponent</code></p>
+<p>对于任何@Provides方法都是静态的模块，实现根本不需要一个实例。 如果所有依赖关系都可以在用户没有创建依赖关系实例的情况下构建，那么生成的实现也将有一个create（）方法，可用于获取一个新实例，而无需处理构建器。</p>
+<p>如果 <code>@Provides</code>注解的方法是静态的，实现不需要一个实例，</p>
+<p>生成的实现类有一个<code>create()</code>方法，用于获取一个实例，而不需要构造器。</p>
+<pre><code class="java">CoffeeShop coffeeShop = DaggerCoffeeShop.create();
+
+public class CoffeeApp {
+    public static void main(String[] args) {
+        CoffeeShop coffeeShop = DaggerCoffeeShop.create();
+        coffeeShop.maker().brew();
+      }
+    }
+</code></pre>
+<h3 id="Bindings-in-the-graph"><a href="#Bindings-in-the-graph" class="headerlink" title="Bindings in the graph"></a>Bindings in the graph</h3><h2 id="Singletons-and-Scoped-Bindings"><a href="#Singletons-and-Scoped-Bindings" class="headerlink" title="Singletons and Scoped Bindings"></a>Singletons and Scoped Bindings</h2><p>用 <code>@Singleton</code> 注解一个注解了<code>@Provides</code>的方法或者可注入的类。该组件将提供一个单例给需要注入的地方。</p>
+<pre><code class="java">    @Provides @Singleton static Heater provideHeater() {
+      return new ElectricHeater();
+    }
+</code></pre>
+<p>可注入类上的<code>@Singleton</code>注释也用作文档。 它提醒这个类可以被多个线程共享。</p>
+<pre><code class="java">    @Singleton
+    class CoffeeMaker {
+      ...
+    }
+</code></pre>
+<p>声明的相同的 <code>scoped</code>注解， 具有相同的生命周期。</p>
+<pre><code class="java">    @Component(modules = DripCoffeeModule.class)
+    @Singleton
+    interface CoffeeShop {
+      CoffeeMaker maker();
+    }
+</code></pre>
+<h2 id="Reusable-scope"><a href="#Reusable-scope" class="headerlink" title="Reusable scope"></a>Reusable scope</h2><h2 id="Lazy-injections"><a href="#Lazy-injections" class="headerlink" title="Lazy injections"></a>Lazy injections</h2><p>懒注入，需要的时候再注入。<br>用<code>Lazy&lt;T&gt;</code>的形式包裹需要懒加载的对象。<br>需要加载的时候调用 <code>Lazy&lt;T&gt;.get()</code>。</p>
+<pre><code class="java">    class GridingCoffeeMaker {
+      @Inject Lazy&lt;Grinder&gt; lazyGrinder;
+
+      public void brew() {
+        while (needsGrinding()) {
+          // Grinder created once on first call to .get() and cached.
+          lazyGrinder.get().grind();
+        }
+      }
+    }
+</code></pre>
+<h2 id="Provider-injections"><a href="#Provider-injections" class="headerlink" title="Provider injections"></a>Provider injections</h2><p>有时你需要返回多个实例，而不是仅仅注入单个值。<br>虽然可以用工厂模式，建造者模式，还有一个选择是注入一个 <code>Provider&lt;T&gt;</code>，而不是一个 <code>T</code>。</p>
+<p><code>Provider&lt;T&gt;</code>每次调用 <code>get()</code>时，会调用 <code>T</code> 的绑定逻辑。 如果这个绑定逻辑是一个 <code>@Inject</code> 构造器，会创建一个新的实例。<br>但是如果你用 <code>@Provider</code> 方法不会有这样的保证。</p>
+<pre><code class="java">    class BigCoffeeMaker {
+      @Inject Provider&lt;Filter&gt; filterProvider;
+
+      public void brew(int numberOfPots) {
+      ...
+        for (int p = 0; p &lt; numberOfPots; p++) {
+          maker.addFilter(filterProvider.get()); //new filter every time.
+          maker.addCoffee(...);
+          maker.percolate();
+          ...
+        }
+      }
+    }
+</code></pre>
+<p>note： 注入<code>@Provider&lt;T&gt;</code> 有可能创建混乱的代码。</p>
+<h2 id="Qualifiers"><a href="#Qualifiers" class="headerlink" title="Qualifiers"></a>Qualifiers</h2><p><code>Component</code> 创建一个类实例有2种方法。</p>
+<ol>
+<li>通过用<code>Inject</code>注解标注的构造函数来创建（以下简称<code>Inject维度</code>）</li>
+<li>通过工厂模式的<code>Module</code>来创建（以下简称<code>Module维度</code>）</li>
+</ol>
+<p>这2个维度是有优先级之分的，<code>Component</code>会首先从<code>Module维度</code>中查找类实例，若找到就用<code>Module维度</code>创建类实例，并停止查找<code>Inject维度</code>。否则才是从<code>Inject维度</code>查找类实例。所以创建类实例级别<code>Module维度</code>要高于<code>Inject维度</code>。</p>
+<p>现在有个问题，基于同一个维度条件下，若一个类的实例有多种方法可以创建出来，那注入器（Component）应该选择哪种方法来创建该类的实例呢？</p>
+<p>我把上面遇到的问题起个名字叫<code>依赖注入迷失</code>。</p>
+<p>Qualifier（限定符）就是解决依赖注入迷失问题的。</p>
+<pre><code class="java">    class ExpensiveCoffeeMaker {
+      @Inject @Named(&quot;water&quot;) Heater waterHeater;
+      @Inject @Named(&quot;hot plate&quot;) Heater hotPlateHeater;
+      ...
+    }
+
+---
+    Provides @Named(&quot;hot plate&quot;) static Heater provideHotPlateHeater() {
+      return new ElectricHeater(70);
+    }
+
+    @Provides @Named(&quot;water&quot;) static Heater provideWaterHeater() {
+      return new ElectricHeater(93);
+    }
+</code></pre>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+            <a href="/tags/dagger2/" rel="tag"># dagger2</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/21/避免-Android-的冷启动/" rel="prev" title="避免 Android 的冷启动">
+                避免 Android 的冷启动 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#声明依赖"><span class="nav-number">1.</span> <span class="nav-text">声明依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#满足依赖"><span class="nav-number">2.</span> <span class="nav-text">满足依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-Graph-构建组件"><span class="nav-number">3.</span> <span class="nav-text">Building Graph (构建组件)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bindings-in-the-graph"><span class="nav-number">3.1.</span> <span class="nav-text">Bindings in the graph</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Singletons-and-Scoped-Bindings"><span class="nav-number">4.</span> <span class="nav-text">Singletons and Scoped Bindings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reusable-scope"><span class="nav-number">5.</span> <span class="nav-text">Reusable scope</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lazy-injections"><span class="nav-number">6.</span> <span class="nav-text">Lazy injections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Provider-injections"><span class="nav-number">7.</span> <span class="nav-text">Provider injections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qualifiers"><span class="nav-number">8.</span> <span class="nav-text">Qualifiers</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,2131 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第2章 Android的IPC机制">
+<meta property="og:url" content="https://luwenjie.me/2017/06/28/AndroidArtChapter2/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sbTujh7yS/SX5AJ9QwDfTjxD.jpg">
+<meta property="og:image" content="http://gityuan.com/images/binder/prepare/IPC-Binder.jpg">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170615149751520160135.png">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01XLr0MNKfD/cQEfipyHxwyW9c.jpg">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/33fcd0776ee12b29e43bd819cf825f79">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/fa1eb34bd7621f9d36bc75e5a2386970">
+<meta property="og:updated_time" content="2017-06-28T09:19:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第2章 Android的IPC机制">
+<meta name="twitter:description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
+<meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sbTujh7yS/SX5AJ9QwDfTjxD.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/06/28/AndroidArtChapter2/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第2章 Android的IPC机制 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/06/28/AndroidArtChapter2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第2章 Android的IPC机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-28T16:37:00+08:00">
+                2017-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/28/AndroidArtChapter2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间通信方式的优缺点和适用场景。通过本章，可以让读者对Android中的IPC机制和多进程开发模式有深入的理解。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>IPC (Inter-Process Communication)：进程间通信或者跨进程通信，指 2 个进程之间进行数据交换的过程。</p>
+<p>线程：CPU 调度的最小单元。<br>进程：一个执行单元，在 PC 和移动设备上指一个程序或者一个应用。  </p>
+<p>一个进程可以包含多个线程。</p>
+<p>其他操作系统的 IPC 机制：</p>
+<p>Windows：剪贴板，管道，邮槽 </p>
+<h2 id="多进程"><a href="#多进程" class="headerlink" title="多进程"></a>多进程</h2><ol>
+<li>App 因为某些原因，有些模块需要运行在单独的线程中。</li>
+<li>加大一个 App 的可使用内存。多线程可以获取更多的可使用内存限制。</li>
+<li>2 个 App 之间传递数据。</li>
+</ol>
+<h1 id="Android-中的多进程模式"><a href="#Android-中的多进程模式" class="headerlink" title="Android 中的多进程模式"></a>Android 中的多进程模式</h1><h2 id="开启多进程"><a href="#开启多进程" class="headerlink" title="开启多进程"></a>开启多进程</h2><ol>
+<li>在 AndroidMenifest 文件中指定四大组件（Activity、Service、Receiver、ContentProvider）的 <code>android:process</code> 属性。</li>
+<li>通过 JNI 在 native 层 fork 一个新的进程。</li>
+</ol>
+<pre><code class="xml">&lt;activity android:name=&quot;.BAct&quot;
+        android:process=&quot;:ThreadB&quot;/&gt;
+
+&lt;activity android:name=&quot;.BAct&quot;
+        android:process=&quot;.ThreadB&quot;/&gt;
+</code></pre>
+<p>process 的命名：</p>
+<ol>
+<li>以<code>:</code>为前缀：在当前进程前面加上包名。属于当前App的私有进程，其他App的组件不可以和她跑在同一个进程中。</li>
+<li>以<code>.</code>为前缀：不会附加包名。全局进程，其他App通过 <code>ShareUID</code> 的方式可以和她跑在一个进程中。</li>
+</ol>
+<h2 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h2><h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><pre><code class="xml">  &lt;activity android:name=&quot;.SecondActivity&quot;
+        android:process=&quot;:secondThread&quot;
+        /&gt;
+</code></pre>
+<p>UserManager</p>
+<pre><code class="java">public class UserManager  {
+    public static int sUserId = 1;
+}
+</code></pre>
+<p>MainActivity#onCreate</p>
+<pre><code class="java"> @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        UserManager.sUserId += 1;
+        Log.d(TAG, &quot;userId = &quot; + UserManager.sUserId);
+        startActivity(new Intent(this, SecondActivity.class));
+    }
+</code></pre>
+<p>SecondActivity#onCreate</p>
+<pre><code class="java">    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, &quot;userId = &quot; + UserManager.sUserId);
+    }
+</code></pre>
+<p>指定 SecondActivity 的 <code>process</code> 为 <code>:secondThread</code>, 在主线程中先将 userId +1，再打开 SecondActivity, 分别打印 userId 的值。</p>
+<pre><code class="java">06-11 18:06:49.639 5078-5078/com.venjer.ibinderdemo D/MainActivity: userId = 2
+06-11 18:06:50.668 5171-5171/com.venjer.ibinderdemo:secondThread D/SecondActivity: userId = 1
+</code></pre>
+<p>结果他们的值是不一样的。</p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>Android 为每一个 App 分配一个独立的虚拟机，不同的虚拟机在内存分配上有不同的地址空间，导致在不同的虚拟机中访问同一个类的对象会产生多个副本。</p>
+<h3 id="使用多进程造成的问题"><a href="#使用多进程造成的问题" class="headerlink" title="使用多进程造成的问题"></a>使用多进程造成的问题</h3><ol>
+<li>静态成员和单例模式完全失效</li>
+<li>线程同步机制完全失效<blockquote>
+<p>锁的不是同一块内存的对象</p>
+</blockquote>
+</li>
+<li>Sharepreferences 的可靠性下降<blockquote>
+<p>SharedPreferences不支持两个进程同时去执行写操作，否则会导致一定几率的数据丢失, 因为 SharedPreferences 底层是通过读/写XML文件来实现的，并发写显然是可能出问题的，甚至并发读/写都有可能出问题。</p>
+</blockquote>
+</li>
+<li>Application 会多次创建<blockquote>
+<p>运行在同一个进程中的组件是属于同一个虚拟机和同一个Application的，同理，运行在不同进程中的组件是属于两个不同的虚拟机和Application。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="系统提供跨进程方式解决"><a href="#系统提供跨进程方式解决" class="headerlink" title="系统提供跨进程方式解决"></a>系统提供跨进程方式解决</h3><ol>
+<li>使用 Intent 传递数据</li>
+<li>基于 Binder 的 Messenger 和 AIDL 以及 Socket。</li>
+</ol>
+<h1 id="IPC-基础概念"><a href="#IPC-基础概念" class="headerlink" title="IPC 基础概念"></a>IPC 基础概念</h1><h2 id="Serializable-接口"><a href="#Serializable-接口" class="headerlink" title="Serializable 接口"></a>Serializable 接口</h2><p>Serializable 是 Java 所提供的一个序列化接口。  </p>
+<p>在类的声明中指定类似下面的标识</p>
+<pre><code class="java">private static final long serialVersionUID = 8711368828010083044L;
+</code></pre>
+<p>不添加 <code>serialVersionUID</code> 也可以序列化，但是会对反序列化过程产生影响。  </p>
+<p>使用 <code>ObjectOutputStream</code> 和 <code>ObjectInputStream</code> 实现正反序列化。  </p>
+<h3 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h3><pre><code class="java">public class User {
+    private static final long serialVersionUID = 519067123721295773L;
+    public int userId;
+    public String userName;
+    public boolean isMale;
+}
+</code></pre>
+<pre><code class="java">        User user = new User();
+        user.isMale = true;
+        user.userName = &quot;djkh&quot;;
+        user.userId = 0;
+
+        try {
+            // 序列化
+            ObjectOutputStream outputStream =
+                new ObjectOutputStream(new FileOutputStream(&quot;cache.txt&quot;));
+            outputStream.writeObject(user);
+            outputStream.close();
+
+            // 反序列化
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(&quot;cache.txt&quot;));
+            User newUser = (User) inputStream.readObject();
+            inputStream.close();
+            Log.d(TAG,newUser.userName);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+</code></pre>
+<h3 id="serialVersionUID-的工作机制"><a href="#serialVersionUID-的工作机制" class="headerlink" title="serialVersionUID 的工作机制"></a>serialVersionUID 的工作机制</h3><p>原则上序列化后的数据中的 serialVersionUID 只有和当前类的 serialVersionUID 相同时才能正常的被反序列化。</p>
+<p>序列化的时候系统会把当前类的 serialVersionUID 写入序列化的文件中(也可能是其他中介)。反序列化的时候检查 serialVersionUID, 如果和之前不一致会报如下错误。  </p>
+<pre><code class="java">java.io.InvalidClassException: Main; 
+local class incompatible: 
+stream     classdesc serialVersionUID = 8711368828010083044,
+local class serial-     VersionUID = 8711368828010083043。
+</code></pre>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ol>
+<li>静态成员变量不属于对象，不会参与序列化过程</li>
+<li>使用 transient 关键字标记的成员变量不会参与序列化过程</li>
+</ol>
+<h2 id="Parcelable-接口"><a href="#Parcelable-接口" class="headerlink" title="Parcelable 接口"></a>Parcelable 接口</h2><p>实现 Parcelable 接口的对象可以通过 Intent 和 Binder 传递。</p>
+<pre><code class="java">public class User implements Parcelable {
+
+  public int asd;
+  public String asd1;
+  public String asd2;
+
+  protected User(Parcel in) {
+    asd = in.readInt();
+    asd1 = in.readString();
+    asd2 = in.readString();
+  }
+
+  public static final Creator&lt;User&gt; CREATOR = new Creator&lt;User&gt;() {
+    @Override public User createFromParcel(Parcel in) {
+      return new User(in);
+    }
+
+    @Override public User[] newArray(int size) {
+      return new User[size];
+    }
+  };
+
+  @Override public int describeContents() {
+    return 0;
+  }
+
+  @Override public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeInt(asd);
+    parcel.writeString(asd1);
+    parcel.writeString(asd2);
+  }
+}
+</code></pre>
+<h2 id="Parcel"><a href="#Parcel" class="headerlink" title="Parcel"></a>Parcel</h2><p>内部包装了可序列化的数据，可以在 Binder 中自由传输。     </p>
+<p>writeToParcel: 序列化<br>CREATOR：反序列化，内部标明了如何创建序列化对象和数组。<br>describeContents: 内容描述功能，默认返回0；仅当对象中存在文件描述时返回 1。</p>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sbTujh7yS/SX5AJ9QwDfTjxD.jpg" alt=""></p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>Parcelable 效率较高，主要用在内存序列化上。<br>将对象序列化到存储设备中或者将对象序列化后通过网络传输建议使用 Serializable。</p>
+<h1 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h1><p>android.os.Binder 是一个类，实现了 IBinder 接口。  </p>
+<pre><code class="java">public class Binder implements IBinder
+</code></pre>
+<p>Binder 是 Android 中的一种跨进程通信方式，可以理解为一种虚拟的物理设备，设备驱动是 dev/binder。  </p>
+<ul>
+<li>从 Framework 角度来说，Binder 是 ServiceManager 连接各种 Manager（ActivityManager、WindowManager..）和相应的 ManagerService 的桥梁。</li>
+<li>从 Android 应用层来说，Binder 是客户端和服务端进行通信的媒介。</li>
+</ul>
+<p>图片来自<a href="http://gityuan.com/about/" target="_blank" rel="external">@Gityuan</a><br><img src="http://gityuan.com/images/binder/prepare/IPC-Binder.jpg" alt=""></p>
+<h2 id="AIDL-的例子"><a href="#AIDL-的例子" class="headerlink" title="AIDL 的例子"></a>AIDL 的例子</h2><p>新建实体类 Book，实现 Parcelable 接口。在 aidl 文件中引用自定义的对象需要同时声明那个对象的aidl。</p>
+<p>Book.java</p>
+<pre><code class="java">package me.luwenjie.myapplication;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * created by venjer on 15/06/2017 14:13
+ */
+
+public class Book implements Parcelable {
+  public static final Creator&lt;Book&gt; CREATOR = new Creator&lt;Book&gt;() {
+    @Override public Book createFromParcel(Parcel in) {
+      return new Book(in);
+    }
+
+    @Override public Book[] newArray(int size) {
+      return new Book[size];
+    }
+  };
+  private int bookId;
+  private String bookName;
+
+  protected Book(Parcel in) {
+    bookId = in.readInt();
+    bookName = in.readString();
+  }
+
+  public int getBookId() {
+    return bookId;
+  }
+
+  public void setBookId(int bookId) {
+    this.bookId = bookId;
+  }
+
+  public String getBookName() {
+    return bookName;
+  }
+
+  public void setBookName(String bookName) {
+    this.bookName = bookName;
+  }
+
+  @Override public int describeContents() {
+    return 0;
+  }
+
+  @Override public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeInt(bookId);
+    parcel.writeString(bookName);
+  }
+}
+</code></pre>
+<p>Book.aidl</p>
+<pre><code class="java">// Book.aidl
+package me.luwenjie.myapplication;
+
+// Declare any non-default types here with import statements
+parcelable Book;
+</code></pre>
+<p>IBookManager.aidl</p>
+<pre><code class="java">// IBookManager.aidl
+package me.luwenjie.myapplication;
+// Declare any non-default types here with import statements
+import me.luwenjie.myapplication.Book;
+interface IBookManager {
+
+    List&lt;Book&gt; getBookList();
+
+    void addBook(in Book book);
+}
+</code></pre>
+<p>系统根据 IBookManager.aidl 自动生成的 IBookManager.java 接口。<br>它继承了 IInterface 接口，定义了 aidl 中声明的方法。同时内部有一个继承 android.os.Binder 的 Stub 静态抽象类。Stub 内部还有一个静态 Proxy 代理类。</p>
+<pre><code class="java">/*
+ * This file is auto-generated.  DO NOT MODIFY.
+ * Original file: /Users/venjerLu/Documents/AndroidStudioStorage/MyApplication2/app/src/main/aidl/me/luwenjie/myapplication/IBookManager.aidl
+ */
+package me.luwenjie.myapplication;
+
+public interface IBookManager extends android.os.IInterface {
+  public java.util.List&lt;me.luwenjie.myapplication.Book&gt; getBookList()
+      throws android.os.RemoteException;
+
+  public void addBook(me.luwenjie.myapplication.Book book) throws android.os.RemoteException;
+
+  /** Local-side IPC implementation stub class. */
+  /**
+   * 客户端和服务端都位于同一个进程时，方法调用不会走 transact 过程，位于不同进程时，
+   * 方法调用需要走 transact 过程，这个逻辑由 Proxy 代理类完成。
+   */
+  public static abstract class Stub extends android.os.Binder
+      implements me.luwenjie.myapplication.IBookManager {
+
+    /** 声明2个整型的id分别用于标识这2个方法，用于标识在 transact 过程中客户端请求的是哪个方法。 */
+    static final int TRANSACTION_getBookList = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+    static final int TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+
+    /** Binder 的唯一标识 */
+    private static final java.lang.String DESCRIPTOR = &quot;me.luwenjie.myapplication.IBookManager&quot;;
+
+    /** Construct the stub at attach it to the interface. */
+    public Stub() {
+      this.attachInterface(this, DESCRIPTOR);
+    }
+
+    /**
+     * Cast an IBinder object into an me.luwenjie.myapplication.IBookManager interface,
+     * generating a proxy if needed.
+     */
+
+    /**
+     * 将服务端的 Binder 对象转换成客户端所需的 AIDL 接口类型的对象
+     * 如果是同一进程，返回 Stub 对象本身。不同进程返回的是 Stub.Proxy
+     */
+    public static me.luwenjie.myapplication.IBookManager asInterface(android.os.IBinder obj) {
+      if ((obj == null)) {
+        return null;
+      }
+      android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+      if (((iin != null) &amp;&amp; (iin instanceof me.luwenjie.myapplication.IBookManager))) {
+        return ((me.luwenjie.myapplication.IBookManager) iin);
+      }
+      return new me.luwenjie.myapplication.IBookManager.Stub.Proxy(obj);
+    }
+
+    /**
+     * 返回当前的 Binder 对象
+     */
+    @Override public android.os.IBinder asBinder() {
+      return this;
+    }
+
+    /**
+     * 运行在服务端中的 Binder 线程池中。当客户端发起跨进程请求时，远程请求会通过系统底层封装
+     * 后交由此方法处理。
+     * @param code 通过 code 确定客户端请求的目标方法是什么
+     * @param data 从 data 中取出目标方法所需要的参数，然后执行目标方法。
+     * @param reply 目标方法执行完毕后向 reply 中写入返回值
+     * @param flags 额外的操作标记，默认的RPC是0，单向的RPC是{@link #FLAG_ONEWAY}
+     * @return 返回false客户端的请求会失败。因此我们可以利用这个特性来做权限验证，毕竟我们也不希望随便一个进程都能远程调
+     *         用我们的服务
+     * @throws android.os.RemoteException
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+        throws android.os.RemoteException {
+      switch (code) {
+        case INTERFACE_TRANSACTION: {
+          reply.writeString(DESCRIPTOR);
+          return true;
+        }
+        case TRANSACTION_getBookList: {
+          data.enforceInterface(DESCRIPTOR);
+          java.util.List&lt;me.luwenjie.myapplication.Book&gt; _result = this.getBookList();
+          reply.writeNoException();
+          reply.writeTypedList(_result);
+          return true;
+        }
+        case TRANSACTION_addBook: {
+          data.enforceInterface(DESCRIPTOR);
+          me.luwenjie.myapplication.Book _arg0;
+          if ((0 != data.readInt())) {
+            _arg0 = me.luwenjie.myapplication.Book.CREATOR.createFromParcel(data);
+          } else {
+            _arg0 = null;
+          }
+          this.addBook(_arg0);
+          reply.writeNoException();
+          return true;
+        }
+      }
+      return super.onTransact(code, data, reply, flags);
+    }
+
+    private static class Proxy implements me.luwenjie.myapplication.IBookManager {
+      private android.os.IBinder mRemote;
+
+      Proxy(android.os.IBinder remote) {
+        mRemote = remote;
+      }
+
+      @Override public android.os.IBinder asBinder() {
+        return mRemote;
+      }
+
+      public java.lang.String getInterfaceDescriptor() {
+        return DESCRIPTOR;
+      }
+
+      /**
+       * 运行在客户端
+       * @return
+       * @throws android.os.RemoteException
+       */
+      @Override public java.util.List&lt;me.luwenjie.myapplication.Book&gt; getBookList()
+          throws android.os.RemoteException {
+        // 创建输入型 Parcel 对象 _data, 输出型对象 _reply
+        android.os.Parcel _data = android.os.Parcel.obtain();
+        android.os.Parcel _reply = android.os.Parcel.obtain();
+        java.util.List&lt;me.luwenjie.myapplication.Book&gt; _result;
+        try {
+          _data.writeInterfaceToken(DESCRIPTOR);
+
+          // 发起 RPC(远程过程调用)请求，同时当前线程挂起，服务端的 onTarnsact 会被调用。
+          // RPC 过程返回后，当前线程继续执行，从 _reply 中取出 RPC 过程的返回结果，最后返回 _reply
+          // 中的数据。
+          mRemote.transact(Stub.TRANSACTION_getBookList, _data, _reply, 0);
+          _reply.readException();
+          _result = _reply.createTypedArrayList(me.luwenjie.myapplication.Book.CREATOR);
+        } finally {
+          _reply.recycle();
+          _data.recycle();
+        }
+        return _result;
+      }
+
+      /**
+       * 和 getBookList 一样。它没有返回值，所以不需要从 _reply 中取值。
+       * @param book
+       * @throws android.os.RemoteException
+       */
+      @Override public void addBook(me.luwenjie.myapplication.Book book)
+          throws android.os.RemoteException {
+        android.os.Parcel _data = android.os.Parcel.obtain();
+        android.os.Parcel _reply = android.os.Parcel.obtain();
+        try {
+          _data.writeInterfaceToken(DESCRIPTOR);
+          if ((book != null)) {
+            _data.writeInt(1);
+            book.writeToParcel(_data, 0);
+          } else {
+            _data.writeInt(0);
+          }
+          mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, 0);
+          _reply.readException();
+        } finally {
+          _reply.recycle();
+          _data.recycle();
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h2 id="Binder-的工作机制"><a href="#Binder-的工作机制" class="headerlink" title="Binder 的工作机制"></a>Binder 的工作机制</h2><ol>
+<li>当客户端发起远程请求时，当前线程会被挂起直至服务端返回数据，如果一个远程方法是很耗时的，那么不能在 UI 线程中发起请求。</li>
+<li>因为服务端的 Binder 方法运行在 Binder 的线程池中，所以 Binder 方法不管是否耗时都应该采用同步的方式去实现。因为它已经运行在一个线程中了。</li>
+</ol>
+<p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170615149751520160135.png" alt=""></p>
+<h2 id="手动实现-Binder"><a href="#手动实现-Binder" class="headerlink" title="手动实现 Binder"></a>手动实现 Binder</h2><p>AIDL 是为了方便生成代码。系统根据 AIDL 生成代码的格式是固定的。</p>
+<p>将 Stub 从生成的代码中剥离出来。</p>
+<p>IBookManager</p>
+<pre><code class="java">public interface IBookManager extends IInterface{
+
+  /** 声明2个整型的id分别用于标识这2个方法，用于标识在 transact 过程中客户端请求的是哪个方法。 */
+  int TRANSACTION_getBookList = (android.os.IBinder.FIRST_CALL_TRANSACTION);
+  int TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+
+  /** Binder 的唯一标识 */
+  java.lang.String DESCRIPTOR = &quot;me.luwenjie.myapplication.IBookManager&quot;;
+
+
+  List&lt;Book&gt; getBookList() throws RemoteException;
+
+  void addBook(Book book)throws RemoteException;
+}
+</code></pre>
+<p>BookManagerImpl</p>
+<pre><code class="java">public class BookManagerImpl extends Binder implements IBookManager {
+  public BookManagerImpl() {
+    //super();
+    this.attachInterface(this, IBookManager.DESCRIPTOR);
+  }
+
+  /**
+   * 将服务端的 Binder 对象转换成客户端所需的 AIDL 接口类型的对象
+   * 如果是同一进程，返回 Stub 对象本身。不同进程返回的是 Stub.Proxy
+   */
+  public static IBookManager asInterface(android.os.IBinder obj) {
+    if ((obj == null)) {
+      return null;
+    }
+    android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+    if (((iin != null) &amp;&amp; (iin instanceof IBookManager))) {
+      return ((IBookManager) iin);
+    }
+    return new Proxy(obj);
+  }
+
+  @Override public List&lt;Book&gt; getBookList() throws RemoteException {
+    return null;
+  }
+
+  @Override public void addBook(Book book) throws RemoteException {
+
+  }
+
+  @Override public IBinder asBinder() {
+    return this;
+  }
+
+  /**
+   * 运行在服务端中的 Binder 线程池中。当客户端发起跨进程请求时，远程请求会通过系统底层封装
+   * 后交由此方法处理。
+   *
+   * @param code 通过 code 确定客户端请求的目标方法是什么
+   * @param data 从 data 中取出目标方法所需要的参数，然后执行目标方法。
+   * @param reply 目标方法执行完毕后向 reply 中写入返回值
+   * @param flags 额外的操作标记，默认的RPC是0，单向的RPC是{@link #FLAG_ONEWAY}
+   * @return 返回false客户端的请求会失败。因此我们可以利用这个特性来做权限验证，毕竟我们也不希望随便一个进程都能远程调
+   * 用我们的服务
+   * @throws android.os.RemoteException
+   */
+  @Override public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply,
+      int flags) throws android.os.RemoteException {
+    switch (code) {
+      case INTERFACE_TRANSACTION: {
+        reply.writeString(DESCRIPTOR);
+        return true;
+      }
+      case TRANSACTION_getBookList: {
+        data.enforceInterface(DESCRIPTOR);
+        java.util.List&lt;me.luwenjie.myapplication.Book&gt; _result = this.getBookList();
+        reply.writeNoException();
+        reply.writeTypedList(_result);
+        return true;
+      }
+      case TRANSACTION_addBook: {
+        data.enforceInterface(DESCRIPTOR);
+        me.luwenjie.myapplication.Book _arg0;
+        if ((0 != data.readInt())) {
+          _arg0 = me.luwenjie.myapplication.Book.CREATOR.createFromParcel(data);
+        } else {
+          _arg0 = null;
+        }
+        this.addBook(_arg0);
+        reply.writeNoException();
+        return true;
+      }
+    }
+    return super.onTransact(code, data, reply, flags);
+  }
+
+  private static class Proxy implements IBookManager{
+    private android.os.IBinder mRemote;
+
+    Proxy(android.os.IBinder remote) {
+      mRemote = remote;
+    }
+
+    @Override public android.os.IBinder asBinder() {
+      return mRemote;
+    }
+
+    public java.lang.String getInterfaceDescriptor() {
+      return DESCRIPTOR;
+    }
+
+    /**
+     * 运行在客户端
+     * @return
+     * @throws android.os.RemoteException
+     */
+    @Override public java.util.List&lt;Book&gt; getBookList()
+        throws android.os.RemoteException {
+      // 创建输入型 Parcel 对象 _data, 输出型对象 _reply
+      android.os.Parcel _data = android.os.Parcel.obtain();
+      android.os.Parcel _reply = android.os.Parcel.obtain();
+      java.util.List&lt;me.luwenjie.myapplication.Book&gt; _result;
+      try {
+        _data.writeInterfaceToken(DESCRIPTOR);
+
+        // 发起 RPC(远程过程调用)请求，同时当前线程挂起，服务端的 onTarnsact 会被调用。
+        // RPC 过程返回后，当前线程继续执行，从 _reply 中取出 RPC 过程的返回结果，最后返回 _reply
+        // 中的数据。
+        mRemote.transact(TRANSACTION_getBookList, _data, _reply, 0);
+        _reply.readException();
+        _result = _reply.createTypedArrayList(me.luwenjie.myapplication.Book.CREATOR);
+      } finally {
+        _reply.recycle();
+        _data.recycle();
+      }
+      return _result;
+    }
+
+    /**
+     * 和 getBookList 一样。它没有返回值，所以不需要从 _reply 中取值。
+     * @param book
+     * @throws android.os.RemoteException
+     */
+    @Override public void addBook(Book book)
+        throws android.os.RemoteException {
+      android.os.Parcel _data = android.os.Parcel.obtain();
+      android.os.Parcel _reply = android.os.Parcel.obtain();
+      try {
+        _data.writeInterfaceToken(DESCRIPTOR);
+        if ((book != null)) {
+          _data.writeInt(1);
+          book.writeToParcel(_data, 0);
+        } else {
+          _data.writeInt(0);
+        }
+        mRemote.transact(TRANSACTION_addBook, _data, _reply, 0);
+        _reply.readException();
+      } finally {
+        _reply.recycle();
+        _data.recycle();
+      }
+    }
+  }
+}
+</code></pre>
+<h2 id="linkToDeath-和-unlinkToDeath"><a href="#linkToDeath-和-unlinkToDeath" class="headerlink" title="linkToDeath 和 unlinkToDeath"></a>linkToDeath 和 unlinkToDeath</h2><p>Binder 运行在服务端进程，如果服务端进程异常终止，这时客户端到服务端的连接断开(Binder死亡)，导致调用失败。  </p>
+<p>通过 linkToDeath 给 Binder 设置一个死亡代理，当 Bidner 死亡时，我们就会收到通知。   </p>
+<pre><code class="java">   /**
+     * Register the recipient for a notification if this binder
+     * goes away.  If this binder object unexpectedly goes away
+     * (typically because its hosting process has been killed),
+     * then the given {@link DeathRecipient}&#39;s
+     * {@link DeathRecipient#binderDied DeathRecipient.binderDied()} method
+     * will be called.
+     * 
+     * &lt;p&gt;You will only receive death notifications for remote binders,
+     * as local binders by definition can&#39;t die without you dying as well.
+     * 
+     * @throws RemoteException if the target IBinder&#39;s
+     * process has already died.
+     * 
+     * @see #unlinkToDeath
+     */
+    public void linkToDeath(DeathRecipient recipient, int flags)
+            throws RemoteException;
+
+    /**
+     * Interface for receiving a callback when the process hosting an IBinder
+     * has gone away.
+     *
+     * @see #linkToDeath
+     */
+    public interface DeathRecipient {
+        public void binderDied();
+    }
+</code></pre>
+<p>当 Binder 死亡时，系统就会回调 binderDied 方法。</p>
+<h2 id="Android-中的-IPC-方式"><a href="#Android-中的-IPC-方式" class="headerlink" title="Android 中的 IPC 方式"></a>Android 中的 IPC 方式</h2><h3 id="Bundle"><a href="#Bundle" class="headerlink" title="Bundle"></a>Bundle</h3><pre><code class="java">public final class Bundle extends BaseBundle implements Cloneable, Parcelable
+</code></pre>
+<p>Bundle 实现了 Parcelable 接口，可以方便的在不同的进程之间传输。  </p>
+<p>只能传输 Bundle 支持的数据。  </p>
+<h3 id="使用文件共享"><a href="#使用文件共享" class="headerlink" title="使用文件共享"></a>使用文件共享</h3><p>2 个文件通过读/写同一个文件来交换数据。有一定的局限性，比如并发读/写的问题。</p>
+<p>适合在对数据同步要求不高的进程之间进行通信，并且要求妥善处理并发读/写的问题。</p>
+<p>SharePreference 是 Android 中的轻量级存储方案。</p>
+<p>它通过键值对的方式来存储数据，底层采用 XML 文件来存储键值对。本质上 SharePreference 也属于文件的一种，由于系统对它的读写有一定的缓存策略，内存中会有一份 SharePreference 文件的缓存，多进程的时候变得不可靠，有很大几率丢失数据。</p>
+<h3 id="使用-Messenger"><a href="#使用-Messenger" class="headerlink" title="使用 Messenger"></a>使用 Messenger</h3><p>一种轻量级的 IPC 方案，底层实现是 AIDL。  </p>
+<p>构造方法可以看出 AIDL 的痕迹。</p>
+<pre><code class="java"> public Messenger(Handler target) {
+    mTarget = target.getIMessenger();
+}
+
+public Messenger(IBinder target) {
+    mTarget = IMessenger.Stub.asInterface(target);
+}
+</code></pre>
+<p>例子： </p>
+<p>客户端 MessengerActivity</p>
+<pre><code class="java">public class MessengerActivity extends AppCompatActivity {
+  private static final String TAG = &quot;MessengerActivity&quot;;
+  private final Messenger clientMessenger = new Messenger(new WeakHandler(this));
+  private ServiceConnection mConnection = new ServiceConnection() {
+    @Override public void onServiceConnected(ComponentName name, IBinder service) {
+      // 得到服务端的 Messenger
+      Messenger service1 = new Messenger(service);
+      Message message = Message.obtain(null, MessengerService.MSG_FROM_CLIENT);
+      Bundle bundle = new Bundle();
+      bundle.putString(&quot;msg&quot;, &quot;hello,this is client&quot;);
+      message.setData(bundle);
+      message.replyTo = clientMessenger;
+      try {
+        service1.send(message);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Override public void onServiceDisconnected(ComponentName name) {
+
+    }
+  };
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_messenger);
+    Intent intent = new Intent(this, MessengerService.class);
+    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    unbindService(mConnection);
+  }
+
+  private static class WeakHandler extends Handler {
+    private final WeakReference&lt;MessengerActivity&gt; mActivity;
+
+    public WeakHandler(MessengerActivity activity) {
+      mActivity = new WeakReference&lt;&gt;(activity);
+    }
+
+    @Override public void handleMessage(Message msg) {
+      MessengerActivity activity = mActivity.get();
+      if (activity != null) {
+        switch (msg.what) {
+          case MessengerService.MSG_FROM_SERVICE:
+            Log.d(TAG, &quot;receive msg from Service:&quot; + msg.getData().getString(&quot;reply&quot;));
+            break;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>服务端 MessengerService</p>
+<pre><code class="java">public class MessengerService extends Service {
+  public static final int MSG_FROM_CLIENT = 0X1000;
+  public static final int MSG_FROM_SERVICE = 0X1001;
+  private static final String TAG = &quot;MessengerService&quot;;
+  private final Messenger messenger = new Messenger(new MessengerHandler());
+
+  @Nullable @Override public IBinder onBind(Intent intent) {
+    return messenger.getBinder();
+  }
+
+  private static class MessengerHandler extends Handler {
+    @Override public void handleMessage(Message msg) {
+      switch (msg.what) {
+        case MSG_FROM_CLIENT:
+          Log.d(TAG,&quot;receive msg from Client:&quot; + msg.getData().getString(&quot;msg&quot;));
+          // 得到客户端的 Messenger
+          Messenger client = msg.replyTo;
+
+          Message replyMsg = Message.obtain(null, MSG_FROM_SERVICE);
+          Bundle bundle = new Bundle();
+          bundle.putString(&quot;reply&quot;,&quot;yes，i have received, i will reply to you after a moment&quot;);
+          replyMsg.setData(bundle);
+          try {
+            client.send(replyMsg);
+          } catch (RemoteException e) {
+            e.printStackTrace();
+          }
+          break;
+      }
+    }
+  }
+}
+</code></pre>
+<pre><code class="xml"> &lt;service
+        android:name=&quot;.MessengerService&quot;
+        android:process=&quot;:remote&quot;/&gt;
+</code></pre>
+<p>在 Messenger 中进行数据传输必须将数据放入 Message 中，Messenger 和 Message 都实现了 Parcelable 接口，因此可以跨进程传输。  </p>
+<p>Message 可以使用的载体：  </p>
+<ol>
+<li>arg1</li>
+<li>arg2</li>
+<li><p>object</p>
+<blockquote>
+<p>2.2 之前不支持跨进程, 2.2 之后只支持系统提供的 Parcelable 对象传输</p>
+</blockquote>
+</li>
+<li><p>Bundle</p>
+</li>
+<li>replyTo</li>
+</ol>
+<p>Messenger 的工作原理：</p>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01XLr0MNKfD/cQEfipyHxwyW9c.jpg" alt=""></p>
+<h3 id="使用-AIDL"><a href="#使用-AIDL" class="headerlink" title="使用 AIDL"></a>使用 AIDL</h3><p>Messenger 以串行的方式处理客户端发来的消息，如果有大量的消息同时发送，服务端仍然只能一个个处理。</p>
+<p>ADIL 支持的数据类型：  </p>
+<ol>
+<li>基本数据类型, String, CharSequence</li>
+<li>List, 只支持 ArrayList, 里面每个元素都必须能够被 AIDL 支持</li>
+<li>Map, 只支持 HashMap，里面每个元素都必须被 AIDL 支持，包括 key 和 value</li>
+<li>Parcelable</li>
+<li>AIDL, 所有 AIDL 接口本身也可以在 AIDL 文件中使用</li>
+</ol>
+<p>除了基本类，其他类型的参数必须标上方向：in(输入型参数), out(输出型参数), inout(输入输出型参数)</p>
+<ul>
+<li>客户端调用服务端的方法，被调用的方法运行在 Binder 线程池中，同时客户端被挂起，如果服务端的方法比较耗时，并且客户端运行在UI线程就会发生 ANR。避免在客户端的 UI 线程访问远程方法。</li>
+<li>服务端的方法本身就运行在 Binder 线程池，可以执行大量任务。非常不建议在服务端方法中开启线程去进行异步任务。</li>
+<li>当远程客户端需要调用客户端的 listener 中的方法时，被调用的方法也运行在 Binder 客户端的线程池中。同样不可以在服务端的 UI 线程调用客户端的耗时方法。</li>
+<li>如果要在客户端的 Binder 线程池的方法里访问 UI，必须使用 Handler 切换到 UI 线程。</li>
+</ul>
+<h4 id="RemoteCallbackList"><a href="#RemoteCallbackList" class="headerlink" title="RemoteCallbackList"></a>RemoteCallbackList</h4><pre><code class="java">public class RemoteCallbackList&lt;E extends IInterface&gt;
+</code></pre>
+<p>系统专门提供的用于删除跨进程 Listener 的类。支持任意的 AIDL 类型。  </p>
+<p>内部有一个 <code>ArrayMap&lt;IBinder, Callback&gt;</code> 来保存所有的 AIDL 回调。</p>
+<p>虽然多进程时服务端会生成一个不同的对象，但是他们对应的底层的 Binder 是同一个。只需要根据 Binder 查找对应的 listener 删除。  </p>
+<p>当客户端进程终止后，它可以自动移除客户端所注册的 listener。  </p>
+<p>内部自动实现了线程同步的功能。各个方法都加了 synchronized 锁。</p>
+<pre><code class="java">final int N = mListenerList.beginBroadcast();
+    for (int i = 0; i &lt; N; i++) {
+    IOnNewBookArrivedListener l = mListenerList.getBroadcastItem(i);          
+        if (l != null) {
+        //TODO handle l 
+        }
+    }
+mListenerList.finishBroadcast();
+</code></pre>
+<p><code>beginBroadcast</code>和<code>finishBroadcast</code>必须配对使用，哪怕只是想获取里面的元素数量。</p>
+<h4 id="Binder-意外死亡"><a href="#Binder-意外死亡" class="headerlink" title="Binder 意外死亡"></a>Binder 意外死亡</h4><p>服务端意外停止，需要重新连接服务。</p>
+<ol>
+<li>给 Binder 设置 DeathRecipient 监听，Binder 死亡时会收到 binderDied() 回调，此方法在 Binder 线程池中被调用，不能访问 UI</li>
+<li>在 ServiceConnection 中 onServiceDisconnected() 方法重连，此方法在 UI 线程中调用，可以访问 UI。</li>
+</ol>
+<h4 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h4><ol>
+<li>在 onBind() 中验证。例如使用 permission 验证。</li>
+<li>在服务端的 onTransact 方法进行验证，验证失败直接返回 false。<br>可以采用 permission，Uid 和 Pid</li>
+</ol>
+<h4 id="例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。"><a href="#例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。" class="headerlink" title="例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。"></a>例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。</h4><p>Book.aidl</p>
+<pre><code class="java">// IBook.aidl
+package me.luwenjie.myapplication;
+
+// Declare any non-default types here with import statements
+//import me.luwenjie.myapplication.Book;
+
+parcelable Book;
+</code></pre>
+<p>IBookListener.aidl</p>
+<pre><code class="java">// IOnNewBookArrivedListener.aidl
+package me.luwenjie.myapplication;
+
+// Declare any non-default types here with import statements
+import me.luwenjie.myapplication.Book;
+interface IBookListener {
+   void onAddBook(in Book book);
+}
+</code></pre>
+<p>IBookManager.aidl</p>
+<pre><code class="java">// IBookManager.aidl
+package me.luwenjie.myapplication;
+
+// Declare any non-default types here with import statements
+import me.luwenjie.myapplication.Book;
+import me.luwenjie.myapplication.IBookListener;
+interface IBookManager {
+  List&lt;Book&gt; getBookList();
+  void addBook(in Book book);
+  void registerListener(IBookListener listener);
+  void unregisterListener(IBookListener listener);
+}
+</code></pre>
+<p>BookManagerService</p>
+<pre><code class="java">public class BookManagerService extends Service {
+  private static final String TAG = &quot;BookManagerService&quot;;
+  private CopyOnWriteArrayList&lt;Book&gt; mBooks = new CopyOnWriteArrayList&lt;&gt;();
+  private RemoteCallbackList&lt;IBookListener&gt; mBookListeners = new RemoteCallbackList&lt;&gt;();
+  private AtomicBoolean mIsServiceDestoryed = new AtomicBoolean(false);
+
+  private Binder mBinder = new IBookManager.Stub() {
+
+    @Override public List&lt;Book&gt; getBookList() throws RemoteException {
+      return mBooks;
+    }
+
+    @Override public void addBook(Book book) throws RemoteException {
+      mBooks.add(book);
+    }
+
+    @Override public void registerListener(IBookListener listener) throws RemoteException {
+      mBookListeners.register(listener);
+      //if (!mBookListeners.contains(listener)) {
+      //  mBookListeners.add(listener);
+      //} else {
+      //  Log.d(TAG, listener + &quot;already exits&quot;);
+      //}
+      Log.d(TAG, &quot;listeners.size =  &quot; + getListenerSize());
+    }
+
+    @Override public void unregisterListener(IBookListener listener) throws RemoteException {
+      mBookListeners.unregister(listener);
+
+      //if (mBookListeners.contains(listener)) {
+      //  mBookListeners.remove(listener);
+      //} else {
+      //  Log.d(TAG, listener + &quot;，not exits&quot;);
+      //}
+      Log.d(TAG, &quot;listeners.size =  &quot; + getListenerSize());
+    }
+
+    @Override public boolean onTransact(int code, Parcel data, Parcel reply, int flags)
+        throws RemoteException {
+      // 验证 permission
+      int i = checkCallingOrSelfPermission(&quot;me.luwenjie.permission.BOOKMANAGER&quot;);
+      if (i == PackageManager.PERMISSION_DENIED) {
+        Log.d(TAG, &quot;PERMISSION_DENIED：me.luwenjie.permission.BOOKMANAGER&quot;);
+        return false;
+      }
+
+      // 验证包名
+      String packageName;
+      String[] packages = getPackageManager().getPackagesForUid(getCallingUid());
+      if (packages != null &amp;&amp; packages.length &gt; 0) {
+        packageName = packages[0];
+        if (!packageName.startsWith(&quot;me.luwenjie&quot;)) {
+          return false;
+        }
+      }
+
+      return super.onTransact(code, data, reply, flags);
+    }
+  };
+
+  private int getListenerSize() {
+    int i = mBookListeners.beginBroadcast();
+    mBookListeners.finishBroadcast();
+    return i;
+  }
+
+  @Nullable @Override public IBinder onBind(Intent intent) {
+    int i = checkCallingOrSelfPermission(&quot;me.luwenjie.permission.BOOKMANAGER&quot;);
+    if (i == PackageManager.PERMISSION_DENIED) {
+      Log.d(TAG, &quot;PERMISSION_DENIED：me.luwenjie.permission.BOOKMANAGER&quot;);
+      return null;
+    }
+    Log.d(TAG, &quot;PERMISSION_GRANTED&quot;);
+    return mBinder;
+  }
+
+  @Override public void onCreate() {
+    super.onCreate();
+    mBooks.add(new Book(&quot;think in java&quot;, &quot;48.90&quot;));
+    mBooks.add(new Book(&quot;Android开发艺术探索&quot;, &quot;78.90&quot;));
+    new Thread(new ServiceWorker()).start();
+  }
+
+  /**
+   * 避免直接在 UI 线程调用客户端的耗时方法，防止服务端无响应
+   */
+  private void onAddBook(Book book) {
+    mBooks.add(book);
+    int size = mBookListeners.beginBroadcast();
+    for (int i = 0; i &lt; size; i++) {
+      IBookListener item = mBookListeners.getBroadcastItem(i);
+      if (item != null) {
+        try {
+          item.onAddBook(book);
+        } catch (RemoteException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    mBookListeners.finishBroadcast();
+    //for (IBookListener listener : mBookListeners) {
+    //  try {
+    //    listener.onAddBook(book);
+    //  } catch (RemoteException e) {
+    //    e.printStackTrace();
+    //  }
+    //}
+  }
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    mIsServiceDestoryed.set(true);
+  }
+
+  private class ServiceWorker implements Runnable {
+    @Override public void run() {
+      while (!mIsServiceDestoryed.get()) {
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+
+        int bookId = mBooks.size() + 1;
+        int price = new Random().nextInt(100);
+        Book newBook = new Book(&quot;newBook#&quot; + bookId, price + &quot;&quot;);
+        onAddBook(newBook);
+      }
+    }
+  }
+}
+</code></pre>
+<p>BookManagerActivity</p>
+<pre><code class="java">public class BookManagerActivity extends AppCompatActivity {
+  private static final String TAG = &quot;BookManagerActivity&quot;;
+  private static final int MESSAGE_NEW_BOOK_ADD = 1;
+  private IBookManager mRemoteManager;
+  private WeakHandler mHandler = new WeakHandler(this);
+  private IBookListener mBookListener = new IBookListener.Stub() {
+
+    @Override public void onAddBook(Book book) throws RemoteException {
+      Message message = mHandler.obtainMessage(MESSAGE_NEW_BOOK_ADD, book);
+      message.sendToTarget();
+
+      // 如果要在客户端的 Binder 线程池的方法里访问 UI，必须使用 Handler 切换到 UI 线程。
+      // mHandler.post()
+    }
+  };
+  private final ServiceConnection mConnection = new ServiceConnection() {
+    @Override public void onServiceConnected(ComponentName name, IBinder service) {
+      mRemoteManager = IBookManager.Stub.asInterface(service);
+      try {
+        mRemoteManager.registerListener(mBookListener);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Override public void onServiceDisconnected(ComponentName name) {
+
+    }
+  };
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_bookmanager);
+    Intent intent = new Intent(this, BookManagerService.class);
+    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+    findViewById(R.id.bt_add).setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        // 在子线程去调用远程服务端的耗时方法
+        new Thread(new Runnable() {
+          @Override public void run() {
+            try {
+              int price = new Random().nextInt(100);
+              int name = mRemoteManager.getBookList().size() + 1;
+              addABook(&quot;new Book#&quot; + name, &quot;&quot; + price);
+            } catch (RemoteException e) {
+              e.printStackTrace();
+            }
+          }
+        }).start();
+      }
+    });
+  }
+
+  private void addABook(String name, String price) {
+    try {
+      List&lt;Book&gt; list = mRemoteManager.getBookList();
+      Log.d(TAG, &quot;query book list,list type:&quot; + list.getClass().getCanonicalName());
+      Log.d(TAG, &quot;query book list:&quot; + list.toString());
+      for (Book book : list) {
+        Log.d(TAG, &quot;book info: &quot; + book.getName() + &quot;, &quot; + book.getPrice());
+      }
+
+      // 添加一本书
+      final Book newBook = new Book(name, price);
+      mRemoteManager.addBook(newBook);
+
+      List&lt;Book&gt; newBookList = mRemoteManager.getBookList();
+      Log.i(TAG, &quot;query book list:&quot; + newBookList.toString());
+      for (Book book : newBookList) {
+        Log.d(TAG, &quot;newBook info: &quot; + book.getName() + &quot;, &quot; + book.getPrice());
+      }
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    unbindService(mConnection);
+
+    // 反注册监听器，这里会发现不起作用。后台找不到注册过的这个监听器，
+    // 这里的监听器是从前台传到后台的，难道中间发生了变化？
+    // 因为这是多进程，操作的不是同一个对象，Binder 会把客户端传过来的对象
+    // 重新转化并生成一个新的对象。对象是不能跨进程传输的，本质上是通过序列化反序列化来完成。
+    // 所以 AIDL 中的自定义对象都需要实现 Parcelable。
+    // 必须使用 RemoteCallbackList 来解决这个问题。
+
+    if (mRemoteManager != null &amp;&amp; mRemoteManager.asBinder().isBinderAlive()) {
+      Log.d(TAG, &quot;unregister listener:&quot; + mBookListener);
+      try {
+        mRemoteManager.unregisterListener(mBookListener);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private static class WeakHandler extends Handler {
+    private final WeakReference&lt;BookManagerActivity&gt; mActivity;
+
+    WeakHandler(BookManagerActivity activity) {
+      mActivity = new WeakReference&lt;&gt;(activity);
+    }
+
+    @Override public void handleMessage(Message msg) {
+      BookManagerActivity activity = mActivity.get();
+      if (activity != null) {
+        switch (msg.what) {
+          case MESSAGE_NEW_BOOK_ADD:
+            Log.d(TAG, &quot;receive new book :&quot; + msg.obj);
+            break;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3 id="使用-ContentProvider"><a href="#使用-ContentProvider" class="headerlink" title="使用 ContentProvider"></a>使用 ContentProvider</h3><p>用于不同应用共享数据，天生适合进程间通信。  </p>
+<p>与 Messenger 一样，底层实现也是 Binder。</p>
+<pre><code class="java">Uri uri = Uri.parse(&quot;content://me.luwenjie.BookContentProvider&quot;);
+getContentResolver().query(uri,null,null,null,null);
+getContentResolver().query(uri,null,null,null,null);
+getContentResolver().query(uri,null,null,null,null);
+</code></pre>
+<p>调用 3 次 query，onCreate 在主线程执行，三次 query 在 Binder 线程池的 3 个不同的线程执行。</p>
+<pre><code class="java">onCreate, main
+query, Binder:6895_2
+query, Binder:6895_3
+query, Binder:6895_2
+</code></pre>
+<h4 id="例子-2"><a href="#例子-2" class="headerlink" title="例子"></a>例子</h4><p>BookContentProvider</p>
+<pre><code class="java">**
+ * created by venjer on 23/06/2017 18:52
+ * 除了(onCreate()) 方法都运行在 ContentProvider 的进程中
+ */
+
+public class BookContentProvider extends ContentProvider {
+  public static final String AUTHORITY = &quot;me.luwenjie.BookContentProvider&quot;;
+  public static final Uri BOOK_CONTENT_URI = Uri.parse(&quot;content://&quot; + AUTHORITY + &quot;/book&quot;);
+  public static final Uri USER_CONTENT_URI = Uri.parse(&quot;content://&quot; + AUTHORITY + &quot;/user&quot;);
+  public static final int BOOK_URI_CODE = 0;
+  public static final int USER_URI_CODE = 1;
+  private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+  private static final String TAG = &quot;BookContentProvider&quot;;
+
+  static {
+    // 分别为 book 表和 user 表指定了 Uri。
+    sUriMatcher.addURI(AUTHORITY, &quot;book&quot;, BOOK_URI_CODE);
+    sUriMatcher.addURI(AUTHORITY, &quot;user&quot;, USER_URI_CODE);
+  }
+
+  private ContentResolver mContentResolver;
+  private SQLiteDatabase mDb;
+
+  /**
+   * 由系统回调运行在主线程中
+   */
+  @Override public boolean onCreate() {
+    Log.d(TAG, &quot;onCreate, &quot; + Thread.currentThread().getName());
+
+    initProviderData();
+    mContentResolver = getContext().getContentResolver();
+    return false;
+  }
+
+  private void initProviderData() {
+    mDb = new DbOpenHelper(getContext()).getWritableDatabase();
+    mDb.execSQL(&quot;delete from &quot; + DbOpenHelper.BOOK_TABLE_NAME);
+    mDb.execSQL(&quot;delete from &quot; + DbOpenHelper.USER_TABLE_NAME);
+    mDb.execSQL(&quot;insert into book values(3,&#39;Android&#39;);&quot;);
+    mDb.execSQL(&quot;insert into book values(4,&#39;iOS&#39;);&quot;);
+    mDb.execSQL(&quot;insert into book values(5,&#39;Html5&#39;);&quot;);
+    mDb.execSQL(&quot;insert into user values(1,&#39;jake&#39;,1);&quot;);
+    mDb.execSQL(&quot;insert into user values(2,&#39;jasmine&#39;,0);&quot;);
+  }
+
+  @Nullable @Override public String getType(@NonNull Uri uri) {
+    Log.d(TAG, &quot;getType, &quot; + Thread.currentThread().getName());
+    return null;
+  }
+
+  @Nullable @Override
+  public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+      @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    Log.d(TAG, &quot;query, &quot; + Thread.currentThread().getName());
+    String tableName = getTableName(uri);
+    if (TextUtils.isEmpty(tableName)) {
+      throw new IllegalArgumentException(&quot;Unsupported URI: &quot; + uri);
+    }
+
+    return mDb.query(tableName, projection, selection, selectionArgs, null, null, sortOrder, null);
+  }
+
+  @Nullable @Override public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+    Log.d(TAG, &quot;insert, &quot; + Thread.currentThread().getName());
+    String tableName = getTableName(uri);
+    if (TextUtils.isEmpty(tableName)) {
+      throw new IllegalArgumentException(&quot;Unsupported URI: &quot; + uri);
+    }
+    mDb.insert(tableName, null, values);
+    if (mContentResolver != null) mContentResolver.notifyChange(uri, null);
+    return uri;
+  }
+
+  @Override public int delete(@NonNull Uri uri, @Nullable String selection,
+      @Nullable String[] selectionArgs) {
+    Log.d(TAG, &quot;delete, &quot; + Thread.currentThread().getName());
+    String table = getTableName(uri);
+    if (table == null) {
+      throw new IllegalArgumentException(&quot;Unsupported URI: &quot; + uri);
+    }
+    int raw = mDb.delete(table, selection, selectionArgs);
+    if (raw &gt; 0 &amp;&amp; mContentResolver != null) mContentResolver.notifyChange(uri, null);
+    return raw;
+  }
+
+  @Override
+  public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
+      @Nullable String[] selectionArgs) {
+    Log.d(TAG, &quot;update, &quot; + Thread.currentThread().getName());
+    return 0;
+  }
+
+  /**
+   * 通过uri获取表名
+   */
+  private String getTableName(Uri uri) {
+    String tableName = null;
+    switch (sUriMatcher.match(uri)) {
+      case BOOK_URI_CODE:
+        tableName = DbOpenHelper.BOOK_TABLE_NAME;
+        break;
+      case USER_URI_CODE:
+        tableName = DbOpenHelper.USER_TABLE_NAME;
+        break;
+    }
+
+    return tableName;
+  }
+}
+</code></pre>
+<p>DbOpenHelper</p>
+<pre><code class="java">
+public class DbOpenHelper extends SQLiteOpenHelper {
+  public static final String BOOK_TABLE_NAME = &quot;book&quot;;
+  public static final String USER_TABLE_NAME = &quot;user&quot;;
+  private static final String TAG = &quot;DbOpenHelper&quot;;
+  private static final String DB_NAME = &quot;book_provider.db&quot;;
+  private static final int DB_VERSION = 1;
+
+  // 图书和用户信息表
+  private String CREATE_BOOK_TABLE =
+      &quot;CREATE TABLE IF NOT EXISTS &quot; + BOOK_TABLE_NAME + &quot;(_ID INTEGER PRIMARY KEY,&quot; + &quot;name TEXT)&quot;;
+  private String CREATE_USER_TABLE = &quot;CREATE TABLE IF NOT EXISTS &quot;
+      + USER_TABLE_NAME
+      + &quot;(_ID INTEGER PRIMARY KEY,&quot;
+      + &quot;name TEXT,&quot;
+      + &quot;sex INT)&quot;;
+
+  public DbOpenHelper(Context context) {
+    super(context, DB_NAME, null, DB_VERSION);
+  }
+
+  public DbOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
+      int version) {
+    super(context, name, factory, version);
+  }
+
+  public DbOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
+      int version, DatabaseErrorHandler errorHandler) {
+    super(context, name, factory, version, errorHandler);
+  }
+
+  @Override public void onCreate(SQLiteDatabase db) {
+    db.execSQL(CREATE_USER_TABLE);
+    db.execSQL(CREATE_BOOK_TABLE);
+  }
+
+  @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+  }
+}
+</code></pre>
+<p>ContentProviderActivity</p>
+<pre><code class="java">public class ContentProviderActivity extends AppCompatActivity {
+  private static final String TAG = &quot;ContentProviderActivity&quot;;
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_contentprovider);
+    //Uri uri = Uri.parse(&quot;content://me.luwenjie.BookContentProvider&quot;);
+    //getContentResolver().query(uri,null,null,null,null);
+    //getContentResolver().query(uri,null,null,null,null);
+    //getContentResolver().query(uri,null,null,null,null);
+    Uri bookUri = Uri.parse(&quot;content://me.luwenjie.BookContentProvider/book&quot;);
+
+    // 先添加一本 程序设计的艺术
+    ContentValues values = new ContentValues();
+    values.put(&quot;_id&quot;, 6);
+    values.put(&quot;name&quot;, &quot;程序设计的艺术&quot;);
+    getContentResolver().insert(bookUri, values);
+
+    // 查询所有的书
+    Cursor bookCursor =
+        getContentResolver().query(bookUri, new String[] { &quot;_id&quot;, &quot;name&quot; }, null, null, null);
+    if (bookCursor != null) {
+      while (bookCursor.moveToNext()) {
+        Book book = new Book();
+        book.setBookId(bookCursor.getInt(0));
+        book.setName(bookCursor.getString(1));
+        Log.d(TAG, &quot;query book: &quot; + book.toString());
+      }
+      bookCursor.close();
+    }
+
+    Uri userUri = Uri.parse(&quot;content://me.luwenjie.BookContentProvider/user&quot;);
+
+    Cursor userCursor =
+        getContentResolver().query(userUri, new String[] { &quot;_id&quot;, &quot;name&quot;, &quot;sex&quot; }, null, null,
+            null);
+    if (userCursor != null) {
+      while (userCursor.moveToNext()) {
+        User user = new User();
+        user.setUserId(userCursor.getInt(0));
+        user.setUserName(userCursor.getString(1));
+        user.setMale(userCursor.getInt(2) == 1);
+        Log.d(TAG, &quot;query user: &quot; + user.toString());
+      }
+      userCursor.close();
+    }
+  }
+}
+</code></pre>
+<p>AndroidManifest.xml</p>
+<pre><code class="xml"> &lt;provider
+        android:name=&quot;.BookContentProvider&quot;
+        android:authorities=&quot;me.luwenjie.BookContentProvider&quot;
+        android:permission=&quot;me.luwenjie.BOOK_PROVIDER&quot;
+        android:process=&quot;:provider&quot;
+        /&gt;
+</code></pre>
+<h3 id="使用-Socket"><a href="#使用-Socket" class="headerlink" title="使用 Socket"></a>使用 Socket</h3><p>套接字，分为流式套接字和用户数据报套接字。<br>对应于网络的传输控制层的 TCP 和 UDP 协议。TCP 协议是面向连接的协议，提供稳定的双向通信功能。<br>UDP 是无连接的，提供不稳定的单向通信功能，也可实现双向通信。  </p>
+<p>UDP 拥有更好的效率，但是不保证数据的正确传输。</p>
+<h2 id="Binder-连接池"><a href="#Binder-连接池" class="headerlink" title="Binder 连接池"></a>Binder 连接池</h2><p>当有非常多的业务模块都需要使用 AIDL 时，不能无限制的增加 Service 的数量。应该将所有的 AIDL 放在同一个 Service 中去管理。</p>
+<p>每个业务模块创建自己的 AIDL 接口并实现此接口，不同的业务模块不能有耦合，向服务端提供自己的唯一标识和其对应的 Binder 对象。</p>
+<p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/33fcd0776ee12b29e43bd819cf825f79" alt=""></p>
+<pre><code class="java">public class BindPool {
+  public static final int BINDER_SECURITY_CENTER = 1;
+  public static final int BINDER_COMPUTE = 2;
+  private static final String TAG = &quot;BindPool&quot;;
+  private static volatile BindPool sInstance;
+  private IBindPool mIBinderPool;
+  private CountDownLatch mCountDownLatch;
+  private Context mContext;
+  private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+    @Override public void binderDied() {
+      Log.d(TAG, &quot;binder died&quot;);
+      mIBinderPool.asBinder().unlinkToDeath(mDeathRecipient, 0);
+      mIBinderPool = null;
+      connectBinderPoolService();
+    }
+  };
+  private ServiceConnection mBinderPoolConnection = new ServiceConnection() {
+    @Override public void onServiceConnected(ComponentName name, IBinder service) {
+      mIBinderPool = IBindPool.Stub.asInterface(service);
+      try {
+        mIBinderPool.asBinder().linkToDeath(mDeathRecipient, 0);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+      mCountDownLatch.countDown();
+    }
+
+    @Override public void onServiceDisconnected(ComponentName name) {
+
+    }
+  };
+
+  public BindPool(Context context) {
+    mContext = context.getApplicationContext();
+    connectBinderPoolService();
+  }
+
+  public static BindPool getInstance(Context context) {
+    if (sInstance == null) {
+      synchronized (BindPool.class) {
+        if (sInstance == null) {
+          sInstance = new BindPool(context);
+        }
+      }
+    }
+    return sInstance;
+  }
+
+  private synchronized void connectBinderPoolService() {
+    mCountDownLatch = new CountDownLatch(1);
+    Intent service = new Intent(mContext, BinderPoolService.class);
+    mContext.bindService(service, mBinderPoolConnection, Context.BIND_AUTO_CREATE);
+    try {
+      mCountDownLatch.await();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public IBinder queryBinder(int bindCode) {
+    IBinder binder = null;
+    if (mIBinderPool != null) {
+      try {
+        binder = mIBinderPool.queryBinder(bindCode);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+    return binder;
+  }
+
+  public static class BinderPoolImpl extends IBindPool.Stub {
+    private static final String TAG = &quot;BinderPoolImpl&quot;;
+
+    @Override public IBinder queryBinder(int binderCode) {
+      IBinder iBinder = null;
+      switch (binderCode) {
+        case BINDER_SECURITY_CENTER:
+          iBinder = new SecurityCenterImpl();
+          break;
+
+        case BINDER_COMPUTE:
+          iBinder = new ComputeImpl();
+          break;
+      }
+      return iBinder;
+    }
+  }
+}
+</code></pre>
+<h2 id="选用合适的-IPC"><a href="#选用合适的-IPC" class="headerlink" title="选用合适的 IPC"></a>选用合适的 IPC</h2><p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/fa1eb34bd7621f9d36bc75e5a2386970" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/19/Android开发艺术探索笔记第6章/" rel="next" title="Android开发艺术探索笔记-第6章 Android的Drawable">
+                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第6章 Android的Drawable
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程"><span class="nav-number">1.1.</span> <span class="nav-text">多进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-中的多进程模式"><span class="nav-number">2.</span> <span class="nav-text">Android 中的多进程模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开启多进程"><span class="nav-number">2.1.</span> <span class="nav-text">开启多进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行机制"><span class="nav-number">2.2.</span> <span class="nav-text">运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">2.2.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原因"><span class="nav-number">2.2.2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用多进程造成的问题"><span class="nav-number">2.2.3.</span> <span class="nav-text">使用多进程造成的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统提供跨进程方式解决"><span class="nav-number">2.2.4.</span> <span class="nav-text">系统提供跨进程方式解决</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IPC-基础概念"><span class="nav-number">3.</span> <span class="nav-text">IPC 基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Serializable-接口"><span class="nav-number">3.1.</span> <span class="nav-text">Serializable 接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#serialVersionUID-的工作机制"><span class="nav-number">3.1.2.</span> <span class="nav-text">serialVersionUID 的工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">3.1.3.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parcelable-接口"><span class="nav-number">3.2.</span> <span class="nav-text">Parcelable 接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parcel"><span class="nav-number">3.3.</span> <span class="nav-text">Parcel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">3.4.</span> <span class="nav-text">区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Binder"><span class="nav-number">4.</span> <span class="nav-text">Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AIDL-的例子"><span class="nav-number">4.1.</span> <span class="nav-text">AIDL 的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-的工作机制"><span class="nav-number">4.2.</span> <span class="nav-text">Binder 的工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动实现-Binder"><span class="nav-number">4.3.</span> <span class="nav-text">手动实现 Binder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linkToDeath-和-unlinkToDeath"><span class="nav-number">4.4.</span> <span class="nav-text">linkToDeath 和 unlinkToDeath</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-中的-IPC-方式"><span class="nav-number">4.5.</span> <span class="nav-text">Android 中的 IPC 方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bundle"><span class="nav-number">4.5.1.</span> <span class="nav-text">Bundle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用文件共享"><span class="nav-number">4.5.2.</span> <span class="nav-text">使用文件共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Messenger"><span class="nav-number">4.5.3.</span> <span class="nav-text">使用 Messenger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-AIDL"><span class="nav-number">4.5.4.</span> <span class="nav-text">使用 AIDL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RemoteCallbackList"><span class="nav-number">4.5.4.1.</span> <span class="nav-text">RemoteCallbackList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Binder-意外死亡"><span class="nav-number">4.5.4.2.</span> <span class="nav-text">Binder 意外死亡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权限"><span class="nav-number">4.5.4.3.</span> <span class="nav-text">权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。"><span class="nav-number">4.5.4.4.</span> <span class="nav-text">例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-ContentProvider"><span class="nav-number">4.5.5.</span> <span class="nav-text">使用 ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子-2"><span class="nav-number">4.5.5.1.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Socket"><span class="nav-number">4.5.6.</span> <span class="nav-text">使用 Socket</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-连接池"><span class="nav-number">4.6.</span> <span class="nav-text">Binder 连接池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选用合适的-IPC"><span class="nav-number">4.7.</span> <span class="nav-text">选用合适的 IPC</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

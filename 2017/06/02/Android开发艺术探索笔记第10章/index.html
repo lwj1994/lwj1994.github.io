@@ -1,0 +1,1565 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过H">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第10章 Android的消息机制">
+<meta property="og:url" content="https://luwenjie.me/2017/06/02/Android开发艺术探索笔记第10章/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过H">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01f1zjmfFPH/SKMT4VQzA7SRjU.jpg?thumb=1024x&scale=auto">
+<meta property="og:updated_time" content="2017-06-02T03:50:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第10章 Android的消息机制">
+<meta name="twitter:description" content="Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过H">
+<meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01f1zjmfFPH/SKMT4VQzA7SRjU.jpg?thumb=1024x&scale=auto">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/06/02/Android开发艺术探索笔记第10章/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第10章 Android的消息机制 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/06/02/Android开发艺术探索笔记第10章/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第10章 Android的消息机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-02T18:37:00+08:00">
+                2017-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/02/Android开发艺术探索笔记第10章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过Handler就可以将更新UI的操作切换到主线程中执行。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Handler, Looper, MessageQueue 三者是一个整体。Handler的作用是将一个任务切换到某个指定的线程中去执行。  </p>
+<p>因为Android规定访问UI只能在主线程中进行，如果在子线程中访问UI，那么程序就会抛出异常。ViewRootImpl对UI操作做了验证，这个验证工作是由ViewRootImpl的checkThread方法来完成的。  </p>
+<p>ViewRootImpl#checkThread()</p>
+<pre><code class="java">    void checkThread() {
+        if (mThread != Thread.currentThread()) {
+            throw new CalledFromWrongThreadException(
+                    &quot;Only the original thread that created a view hierarchy can touch its views.&quot;);
+        }
+    }
+</code></pre>
+<p>系统之所以提供Handler，主要原因就是为了解决在子线程中无法访问UI的矛盾。</p>
+<p>为什么不允许在子线程中访问UI呢？</p>
+<blockquote>
+<p>Android的UI控件不是线程安全的，如果在多线程中并发访问可能会导致UI控件处于不可预期的状态，那为什么系统不对UI控件的访问加上锁机制呢？缺点有两个：首先加上锁机制会让UI访问的逻辑变得复杂；其次锁机制会降低UI访问的效率，因为锁机制会阻塞某些线程的执行。鉴于这两个缺点，最简单且高效的方法就是采用单线程模型来处理UI操作，对于开发者来说也不是很麻烦，只是需要通过Handler切换一下UI访问的执行线程即可。</p>
+</blockquote>
+<p>Handler的工作原理</p>
+<blockquote>
+<p>Handler 创建时会使用当前线程的 Looper 来构建循环系统，如果线程中没有 Looper，就会报错。  需要在执行任务前调用<code>Looper.prepare()</code>创建Looper。</p>
+</blockquote>
+<pre><code class="java">
+ E/AndroidRuntime(27568): 
+
+ java.lang.RuntimeException:
+
+ Can&#39;t create handler  inside thread that has not called Looper.prepare()
+</code></pre>
+<p> <img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01f1zjmfFPH/SKMT4VQzA7SRjU.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<p> Handler的post和send方法最终都会调用sendMessageAtTime()</p>
+<p> Handler#sendMessageAtTime()</p>
+<pre><code class="java">     public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+        MessageQueue queue = mQueue;
+        if (queue == null) {
+            RuntimeException e = new RuntimeException(
+                    this + &quot; sendMessageAtTime() called with no mQueue&quot;);
+            Log.w(&quot;Looper&quot;, e.getMessage(), e);
+            return false;
+        }
+        return enqueueMessage(queue, msg, uptimeMillis);
+    }
+</code></pre>
+<p>  Handler#enqueueMessage()</p>
+<pre><code class="java">    private boolean enqueueMessage(MessageQueue queue, Message msg, long uptimeMillis) {
+        msg.target = this;
+        if (mAsynchronous) {
+            msg.setAsynchronous(true);
+        }
+        return queue.enqueueMessage(msg, uptimeMillis);
+    }
+</code></pre>
+<p> 最后他回调用MessageQueue的enqueueMessage() 将消息放入消息队列，然后Looper发现有新消息到来时，就回处理这个消息，最后消息中的Runnable或者Handler的handleMessage方法就会被调用。<br> Looper 运行在创建 Handler 所在的线程中，这样Handler中的业务逻辑就被切换到创建Handler所在的线程中去执行了。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="ThreadLocal-工作原理"><a href="#ThreadLocal-工作原理" class="headerlink" title="ThreadLocal 工作原理"></a>ThreadLocal 工作原理</h3><p> 某些数据是以线程为作用域并且不同线程具有不同的数据副本。  </p>
+<p> 使用场景：</p>
+<ol>
+<li>对于 Handler，需要获取当前线程的 Looper，不同的线程对应不同的 Looper，通过 ThreadLocal 就可以轻松实现 Looper 在线程中的存取。如果不用 ThreadLocal，系统就必须提供一个 LooperManager 类来管理。  </li>
+<li>复杂逻辑下的对象传递。比如存储监听器。</li>
+</ol>
+<p>ThreaLocal#set()、get()</p>
+<pre><code class="java">    /**
+     * Sets the current thread&#39;s copy of this thread-local variable
+     * to the specified value.  Most subclasses will have no need to
+     * override this method, relying solely on the {@link #initialValue}
+     * method to set the values of thread-locals.
+     *
+     * @param value the value to be stored in the current thread&#39;s copy of
+     *        this thread-local.
+     */
+    public void set(T value) {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null)
+            map.set(this, value);
+        else
+            createMap(t, value);
+    }
+    public T get() {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null) {
+            ThreadLocalMap.Entry e = map.getEntry(this);
+            if (e != null) {
+                @SuppressWarnings(&quot;unchecked&quot;)
+                T result = (T)e.value;
+                return result;
+            }
+        }
+        return setInitialValue();
+    }
+</code></pre>
+<p>ThreadLocal 将数据存储在一个 ThradLocalMap 里，每个线程都有一个 map。</p>
+<h3 id="消息队列的工作原理"><a href="#消息队列的工作原理" class="headerlink" title="消息队列的工作原理"></a>消息队列的工作原理</h3><p>MessageQueue 主要有 2 个操作：插入和读取。  </p>
+<p>MessageQueue#enqueueMessage()</p>
+<pre><code class="java"> boolean enqueueMessage(Message msg, long when) {
+
+        // ...
+        synchronized (this) {
+
+            // ...
+            msg.markInUse();
+            msg.when = when;
+            Message p = mMessages;
+            boolean needWake;
+            if (p == null || when == 0 || when &lt; p.when) {
+                // New head, wake up the event queue if blocked.
+                msg.next = p;
+                mMessages = msg;
+                needWake = mBlocked;
+            } else {
+                // Inserted within the middle of the queue.  Usually we don&#39;t have to wake
+                // up the event queue unless there is a barrier at the head of the queue
+                // and the message is the earliest asynchronous message in the queue.
+                needWake = mBlocked &amp;&amp; p.target == null &amp;&amp; msg.isAsynchronous();
+                Message prev;
+                for (;;) {
+
+                    prev = p;
+                    p = p.next;
+                    if (p == null || when &lt; p.when) {
+                        break;
+                    }
+                    if (needWake &amp;&amp; p.isAsynchronous()) {
+                        needWake = false;
+                    }
+                }
+                msg.next = p; // invariant: p == prev.next
+                prev.next = msg;
+            }
+
+            // We can assume mPtr != 0 because mQuitting is false.
+            if (needWake) {
+                nativeWake(mPtr);
+            }
+        }
+        return true;
+    }
+</code></pre>
+<p>主要的操作就是一个单链表的插入。</p>
+<p>MessageQueue#next()</p>
+<pre><code class="java">
+    Message next() {
+
+
+        int pendingIdleHandlerCount = -1; // -1 only during first iteration
+        int nextPollTimeoutMillis = 0;
+        for (;;) {
+            if (nextPollTimeoutMillis != 0) {
+                Binder.flushPendingCommands();
+            }
+
+            nativePollOnce(ptr, nextPollTimeoutMillis);
+
+            synchronized (this) {
+                // Try to retrieve the next message.  Return if found.
+                final long now = SystemClock.uptimeMillis();
+                Message prevMsg = null;
+                Message msg = mMessages;
+                if (msg != null &amp;&amp; msg.target == null) {
+                    // Stalled by a barrier.  Find the next asynchronous message in the queue.
+                    do {
+                        prevMsg = msg;
+                        msg = msg.next;
+                    } while (msg != null &amp;&amp; !msg.isAsynchronous());
+                }
+                if (msg != null) {
+                    if (now &lt; msg.when) {
+                        // Next message is not ready.  Set a timeout to wake up when it is ready.
+                        nextPollTimeoutMillis = (int) Math.min(msg.when - now, Integer.MAX_VALUE);
+                    } else {
+                        // Got a message.
+                        mBlocked = false;
+                        if (prevMsg != null) {
+                            prevMsg.next = msg.next;
+                        } else {
+                            mMessages = msg.next;
+                        }
+                        msg.next = null;
+                        if (DEBUG) Log.v(TAG, &quot;Returning message: &quot; + msg);
+                        msg.markInUse();
+                        return msg;
+                    }
+                } else {
+                    // No more messages.
+                    nextPollTimeoutMillis = -1;
+                }
+
+                // Process the quit message now that all pending messages have been handled.
+                if (mQuitting) {
+                    dispose();
+                    return null;
+                }
+
+                // If first time idle, then get the number of idlers to run.
+                // Idle handles only run if the queue is empty or if the first message
+                // in the queue (possibly a barrier) is due to be handled in the future.
+                if (pendingIdleHandlerCount &lt; 0
+                        &amp;&amp; (mMessages == null || now &lt; mMessages.when)) {
+                    pendingIdleHandlerCount = mIdleHandlers.size();
+                }
+                if (pendingIdleHandlerCount &lt;= 0) {
+                    // No idle handlers to run.  Loop and wait some more.
+                    mBlocked = true;
+                    continue;
+                }
+
+                if (mPendingIdleHandlers == null) {
+                    mPendingIdleHandlers = new IdleHandler[Math.max(pendingIdleHandlerCount, 4)];
+                }
+                mPendingIdleHandlers = mIdleHandlers.toArray(mPendingIdleHandlers);
+            }
+
+            // Run the idle handlers.
+            // We only ever reach this code block during the first iteration.
+            for (int i = 0; i &lt; pendingIdleHandlerCount; i++) {
+                final IdleHandler idler = mPendingIdleHandlers[i];
+                mPendingIdleHandlers[i] = null; // release the reference to the handler
+
+                boolean keep = false;
+                try {
+                    keep = idler.queueIdle();
+                } catch (Throwable t) {
+                    Log.wtf(TAG, &quot;IdleHandler threw exception&quot;, t);
+                }
+
+                if (!keep) {
+                    synchronized (this) {
+                        mIdleHandlers.remove(idler);
+                    }
+                }
+            }
+
+            // Reset the idle handler count to 0 so we do not run them again.
+            pendingIdleHandlerCount = 0;
+
+            // While calling an idle handler, a new message could have been delivered
+            // so go back and look again for a pending message without waiting.
+            nextPollTimeoutMillis = 0;
+        }
+    }
+</code></pre>
+<p>next 是一个无限循环的方法，如果消息队列没有消息，next会一直阻塞在这。有新消息到来时，next会返回新消息并将其从单链表删除。</p>
+<h3 id="Looper的工作原理"><a href="#Looper的工作原理" class="headerlink" title="Looper的工作原理"></a>Looper的工作原理</h3><h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><p>Looper#Looper()</p>
+<pre><code class="java">    private Looper(boolean quitAllowed) {
+        mQueue = new MessageQueue(quitAllowed);
+        mThread = Thread.currentThread();
+}
+</code></pre>
+<p>构造方法中创建消息队列，把当前的线程对象保存。</p>
+<p>使用例子：</p>
+<pre><code class="java">class LooperThread extends Thread {
+    public Handler mHandler;
+
+    @Override
+    public void run() {
+        // 为当前线程创建一个Looper
+        Looper.prepare();
+        mHandler = new Handler(){
+
+          @Override
+          public void handleMessage(Message msg){
+
+          }
+        };
+        // 开启消息循环
+        Looper.loop();
+    }
+}
+</code></pre>
+<h4 id="Looper-prepare"><a href="#Looper-prepare" class="headerlink" title="Looper#prepare()"></a>Looper#prepare()</h4><pre><code class="java">    private static void prepare(boolean quitAllowed) {
+        if (sThreadLocal.get() != null) {
+            throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);
+        }
+        sThreadLocal.set(new Looper(quitAllowed));
+}
+</code></pre>
+<p>prepare方法就是将当前线程的looper存入ThreadLocal中。</p>
+<p>另外给主线程单独提供了prepareMainLooper()方法，内部也是调用prepare方法，只是保存了静态值<code>sMainLooper</code>。</p>
+<h4 id="Looper的退出"><a href="#Looper的退出" class="headerlink" title="Looper的退出"></a>Looper的退出</h4><pre><code class="java">    // 直接退出Looper
+   public void quit() {
+        mQueue.quit(false);
+}
+
+// 设定一个退出标记，把消息队列中已有的消息处理完再退出。
+public void quitSafely() {
+        mQueue.quit(true);
+}
+</code></pre>
+<p>Looper 退出后，通过 Handler 发送的消息会失败，Handler 的 send 方法返回 false。</p>
+<h4 id="loop"><a href="#loop" class="headerlink" title="loop"></a>loop</h4><p>Looper#loop()</p>
+<pre><code class="java">  public static void loop() {
+        final Looper me = myLooper();
+        if (me == null) {
+            throw new RuntimeException(&quot;No Looper; Looper.prepare() wasn&#39;t called on this thread.&quot;);
+        }
+        final MessageQueue queue = me.mQueue;
+
+        // Make sure the identity of this thread is that of the local process,
+        // and keep track of what that identity token actually is.
+        Binder.clearCallingIdentity();
+        final long ident = Binder.clearCallingIdentity();
+
+        for (;;) {
+            Message msg = queue.next(); // might block
+            if (msg == null) {
+                // No message indicates that the message queue is quitting.
+                return;
+            }
+
+            // This must be in a local variable, in case a UI event sets the logger
+            final Printer logging = me.mLogging;
+            if (logging != null) {
+                logging.println(&quot;&gt;&gt;&gt;&gt;&gt; Dispatching to &quot; + msg.target + &quot; &quot; +
+                        msg.callback + &quot;: &quot; + msg.what);
+            }
+
+            final long traceTag = me.mTraceTag;
+            if (traceTag != 0 &amp;&amp; Trace.isTagEnabled(traceTag)) {
+                Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
+            }
+            try {
+                msg.target.dispatchMessage(msg);
+            } finally {
+                if (traceTag != 0) {
+                    Trace.traceEnd(traceTag);
+                }
+            }
+
+            if (logging != null) {
+                logging.println(&quot;&lt;&lt;&lt;&lt;&lt; Finished to &quot; + msg.target + &quot; &quot; + msg.callback);
+            }
+
+            // Make sure that during the course of dispatching the
+            // identity of the thread wasn&#39;t corrupted.
+            final long newIdent = Binder.clearCallingIdentity();
+            if (ident != newIdent) {
+                Log.wtf(TAG, &quot;Thread identity changed from 0x&quot;
+                        + Long.toHexString(ident) + &quot; to 0x&quot;
+                        + Long.toHexString(newIdent) + &quot; while dispatching to &quot;
+                        + msg.target.getClass().getName() + &quot; &quot;
+                        + msg.callback + &quot; what=&quot; + msg.what);
+            }
+
+            msg.recycleUnchecked();
+        }
+    }
+</code></pre>
+<p>这是一个死循环，当 <code>queue.next()==null</code> 时才跳出循环。 </p>
+<p>如果 MessageQueue 的 next() 返回了新消息，Looper 就会处理这条消息：<br><code>msg.target.dispatchMessage(msg);</code>，<code>msg.target</code> 就是发送这条消息的 Handler 对象。</p>
+<p>Handler#dispatchMessage()</p>
+<pre><code class="java">    /**
+     * Handle system messages here.
+     */
+    public void dispatchMessage(Message msg) {
+        if (msg.callback != null) {
+            handleCallback(msg);
+        } else {
+            if (mCallback != null) {
+                if (mCallback.handleMessage(msg)) {
+                    return;
+                }
+            }
+            handleMessage(msg);
+        }
+    }
+</code></pre>
+<p>Handler 的 dispatchMessage 方法是在创建 Handler 时所使用的 Looper 中执行的，这样就成功地将代码逻辑切换到指定的线程中去执行了。</p>
+<h3 id="Handler-的工作原理"><a href="#Handler-的工作原理" class="headerlink" title="Handler 的工作原理"></a>Handler 的工作原理</h3><pre><code class="java">public final boolean post(Runnable r)
+{
+    return  sendMessageDelayed(getPostMessage(r), 0);
+}
+
+public final boolean postAtTime(Runnable r, long uptimeMillis)
+{
+    return sendMessageAtTime(getPostMessage(r), uptimeMillis);
+}
+
+public final boolean postAtTime(Runnable r, Object token, long uptimeMillis)
+{
+    return sendMessageAtTime(getPostMessage(r, token), uptimeMillis);
+}
+
+public final boolean sendMessageDelayed(Message msg, long delayMillis)
+    {
+        if (delayMillis &lt; 0) {
+            delayMillis = 0;
+        }
+        return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
+    }
+</code></pre>
+<p>最终都会调用sendMessageAtTime</p>
+<pre><code class="java">    public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+        MessageQueue queue = mQueue;
+        if (queue == null) {
+            RuntimeException e = new RuntimeException(
+                    this + &quot; sendMessageAtTime() called with no mQueue&quot;);
+            Log.w(&quot;Looper&quot;, e.getMessage(), e);
+            return false;
+        }
+        // 向消息队列中插入一条消息，MessageQueue的next方法就会返回消息给
+        // Looper，Looper收到后开始处理，最终交给Handler处理。
+        return enqueueMessage(queue, msg, uptimeMillis);
+    }
+</code></pre>
+<pre><code class="java">    public void dispatchMessage(Message msg) {
+        // 检查Message的callback是否为空
+        if (msg.callback != null) {
+            handleCallback(msg);
+        } else {
+            // 这里的mCallback是构造方法传入的，默认为null
+            if (mCallback != null) {
+                // 如果这里返回true就不会走下面的handleMessage
+                if (mCallback.handleMessage(msg)) {
+                    return;
+                }
+            }
+            handleMessage(msg);
+        }
+    }
+</code></pre>
+<h3 id="主线程的消息循环"><a href="#主线程的消息循环" class="headerlink" title="主线程的消息循环"></a>主线程的消息循环</h3><p>Android 的主线程就是 ActivityThread，入口就是 Java 的 main 方法。</p>
+<pre><code class="java">    public static void main(String[] args) {
+
+        // ...
+        // 创建Looper
+        Looper.prepareMainLooper();
+
+        ActivityThread thread = new ActivityThread();
+        thread.attach(false);
+
+        // 创建主线程的Handler，是一个H类
+        if (sMainThreadHandler == null) {
+            sMainThreadHandler = thread.getHandler();
+        }
+
+        if (false) {
+            Looper.myLooper().setMessageLogging(new
+                    LogPrinter(Log.DEBUG, &quot;ActivityThread&quot;));
+        }
+
+        // End of event ActivityThreadMain.
+        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+
+        // 循环looper
+        Looper.loop();
+
+        throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);
+    }
+</code></pre>
+<p>H 类内部定义了一组消息类型，主要包含四大组件的启动和停止等过程。  </p>
+<p>ActivityThread#H</p>
+<pre><code class="java">    private class H extends Handler {
+        public static final int LAUNCH_ACTIVITY         = 100;
+        public static final int PAUSE_ACTIVITY          = 101;
+        public static final int PAUSE_ACTIVITY_FINISHING= 102;
+        public static final int STOP_ACTIVITY_SHOW      = 103;
+        public static final int STOP_ACTIVITY_HIDE      = 104;
+        public static final int SHOW_WINDOW             = 105;
+        public static final int HIDE_WINDOW             = 106;
+        public static final int RESUME_ACTIVITY         = 107;
+        public static final int SEND_RESULT             = 108;
+        public static final int DESTROY_ACTIVITY        = 109;
+        public static final int BIND_APPLICATION        = 110;
+        public static final int EXIT_APPLICATION        = 111;
+        public static final int NEW_INTENT              = 112;
+        public static final int RECEIVER                = 113;
+        public static final int CREATE_SERVICE          = 114;
+        public static final int SERVICE_ARGS            = 115;
+        public static final int STOP_SERVICE            = 116;
+
+        public static final int CONFIGURATION_CHANGED   = 118;
+        public static final int CLEAN_UP_CONTEXT        = 119;
+        public static final int GC_WHEN_IDLE            = 120;
+        public static final int BIND_SERVICE            = 121;
+        public static final int UNBIND_SERVICE          = 122;
+        public static final int DUMP_SERVICE            = 123;
+        public static final int LOW_MEMORY              = 124;
+        public static final int ACTIVITY_CONFIGURATION_CHANGED = 125;
+        public static final int RELAUNCH_ACTIVITY       = 126;
+        public static final int PROFILER_CONTROL        = 127;
+        public static final int CREATE_BACKUP_AGENT     = 128;
+        public static final int DESTROY_BACKUP_AGENT    = 129;
+        public static final int SUICIDE                 = 130;
+        public static final int REMOVE_PROVIDER         = 131;
+        public static final int ENABLE_JIT              = 132;
+        public static final int DISPATCH_PACKAGE_BROADCAST = 133;
+        public static final int SCHEDULE_CRASH          = 134;
+        public static final int DUMP_HEAP               = 135;
+        public static final int DUMP_ACTIVITY           = 136;
+        public static final int SLEEPING                = 137;
+        public static final int SET_CORE_SETTINGS       = 138;
+        public static final int UPDATE_PACKAGE_COMPATIBILITY_INFO = 139;
+        public static final int TRIM_MEMORY             = 140;
+        public static final int DUMP_PROVIDER           = 141;
+        public static final int UNSTABLE_PROVIDER_DIED  = 142;
+        public static final int REQUEST_ASSIST_CONTEXT_EXTRAS = 143;
+        public static final int TRANSLUCENT_CONVERSION_COMPLETE = 144;
+        public static final int INSTALL_PROVIDER        = 145;
+        public static final int ON_NEW_ACTIVITY_OPTIONS = 146;
+        public static final int CANCEL_VISIBLE_BEHIND = 147;
+        public static final int BACKGROUND_VISIBLE_BEHIND_CHANGED = 148;
+        public static final int ENTER_ANIMATION_COMPLETE = 149;
+        public static final int START_BINDER_TRACKING = 150;
+        public static final int STOP_BINDER_TRACKING_AND_DUMP = 151;
+        public static final int MULTI_WINDOW_MODE_CHANGED = 152;
+        public static final int PICTURE_IN_PICTURE_MODE_CHANGED = 153;
+        public static final int LOCAL_VOICE_INTERACTION_STARTED = 154;
+
+        String codeToString(int code) {
+            if (DEBUG_MESSAGES) {
+                switch (code) {
+                    case LAUNCH_ACTIVITY: return &quot;LAUNCH_ACTIVITY&quot;;
+                    case PAUSE_ACTIVITY: return &quot;PAUSE_ACTIVITY&quot;;
+                    case PAUSE_ACTIVITY_FINISHING: return &quot;PAUSE_ACTIVITY_FINISHING&quot;;
+                    case STOP_ACTIVITY_SHOW: return &quot;STOP_ACTIVITY_SHOW&quot;;
+                    case STOP_ACTIVITY_HIDE: return &quot;STOP_ACTIVITY_HIDE&quot;;
+                    case SHOW_WINDOW: return &quot;SHOW_WINDOW&quot;;
+                    case HIDE_WINDOW: return &quot;HIDE_WINDOW&quot;;
+                    case RESUME_ACTIVITY: return &quot;RESUME_ACTIVITY&quot;;
+                    case SEND_RESULT: return &quot;SEND_RESULT&quot;;
+                    case DESTROY_ACTIVITY: return &quot;DESTROY_ACTIVITY&quot;;
+                    case BIND_APPLICATION: return &quot;BIND_APPLICATION&quot;;
+                    case EXIT_APPLICATION: return &quot;EXIT_APPLICATION&quot;;
+                    case NEW_INTENT: return &quot;NEW_INTENT&quot;;
+                    case RECEIVER: return &quot;RECEIVER&quot;;
+                    case CREATE_SERVICE: return &quot;CREATE_SERVICE&quot;;
+                    case SERVICE_ARGS: return &quot;SERVICE_ARGS&quot;;
+                    case STOP_SERVICE: return &quot;STOP_SERVICE&quot;;
+                    case CONFIGURATION_CHANGED: return &quot;CONFIGURATION_CHANGED&quot;;
+                    case CLEAN_UP_CONTEXT: return &quot;CLEAN_UP_CONTEXT&quot;;
+                    case GC_WHEN_IDLE: return &quot;GC_WHEN_IDLE&quot;;
+                    case BIND_SERVICE: return &quot;BIND_SERVICE&quot;;
+                    case UNBIND_SERVICE: return &quot;UNBIND_SERVICE&quot;;
+                    case DUMP_SERVICE: return &quot;DUMP_SERVICE&quot;;
+                    case LOW_MEMORY: return &quot;LOW_MEMORY&quot;;
+                    case ACTIVITY_CONFIGURATION_CHANGED: return &quot;ACTIVITY_CONFIGURATION_CHANGED&quot;;
+                    case RELAUNCH_ACTIVITY: return &quot;RELAUNCH_ACTIVITY&quot;;
+                    case PROFILER_CONTROL: return &quot;PROFILER_CONTROL&quot;;
+                    case CREATE_BACKUP_AGENT: return &quot;CREATE_BACKUP_AGENT&quot;;
+                    case DESTROY_BACKUP_AGENT: return &quot;DESTROY_BACKUP_AGENT&quot;;
+                    case SUICIDE: return &quot;SUICIDE&quot;;
+                    case REMOVE_PROVIDER: return &quot;REMOVE_PROVIDER&quot;;
+                    case ENABLE_JIT: return &quot;ENABLE_JIT&quot;;
+                    case DISPATCH_PACKAGE_BROADCAST: return &quot;DISPATCH_PACKAGE_BROADCAST&quot;;
+                    case SCHEDULE_CRASH: return &quot;SCHEDULE_CRASH&quot;;
+                    case DUMP_HEAP: return &quot;DUMP_HEAP&quot;;
+                    case DUMP_ACTIVITY: return &quot;DUMP_ACTIVITY&quot;;
+                    case SLEEPING: return &quot;SLEEPING&quot;;
+                    case SET_CORE_SETTINGS: return &quot;SET_CORE_SETTINGS&quot;;
+                    case UPDATE_PACKAGE_COMPATIBILITY_INFO: return &quot;UPDATE_PACKAGE_COMPATIBILITY_INFO&quot;;
+                    case TRIM_MEMORY: return &quot;TRIM_MEMORY&quot;;
+                    case DUMP_PROVIDER: return &quot;DUMP_PROVIDER&quot;;
+                    case UNSTABLE_PROVIDER_DIED: return &quot;UNSTABLE_PROVIDER_DIED&quot;;
+                    case REQUEST_ASSIST_CONTEXT_EXTRAS: return &quot;REQUEST_ASSIST_CONTEXT_EXTRAS&quot;;
+                    case TRANSLUCENT_CONVERSION_COMPLETE: return &quot;TRANSLUCENT_CONVERSION_COMPLETE&quot;;
+                    case INSTALL_PROVIDER: return &quot;INSTALL_PROVIDER&quot;;
+                    case ON_NEW_ACTIVITY_OPTIONS: return &quot;ON_NEW_ACTIVITY_OPTIONS&quot;;
+                    case CANCEL_VISIBLE_BEHIND: return &quot;CANCEL_VISIBLE_BEHIND&quot;;
+                    case BACKGROUND_VISIBLE_BEHIND_CHANGED: return &quot;BACKGROUND_VISIBLE_BEHIND_CHANGED&quot;;
+                    case ENTER_ANIMATION_COMPLETE: return &quot;ENTER_ANIMATION_COMPLETE&quot;;
+                    case MULTI_WINDOW_MODE_CHANGED: return &quot;MULTI_WINDOW_MODE_CHANGED&quot;;
+                    case PICTURE_IN_PICTURE_MODE_CHANGED: return &quot;PICTURE_IN_PICTURE_MODE_CHANGED&quot;;
+                    case LOCAL_VOICE_INTERACTION_STARTED: return &quot;LOCAL_VOICE_INTERACTION_STARTED&quot;;
+                }
+            }
+            return Integer.toString(code);
+        }
+        public void handleMessage(Message msg) {
+            if (DEBUG_MESSAGES) Slog.v(TAG, &quot;&gt;&gt;&gt; handling: &quot; + codeToString(msg.what));
+            switch (msg.what) {
+                case LAUNCH_ACTIVITY: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityStart&quot;);
+                    final ActivityClientRecord r = (ActivityClientRecord) msg.obj;
+
+                    r.packageInfo = getPackageInfoNoCheck(
+                            r.activityInfo.applicationInfo, r.compatInfo);
+                    handleLaunchActivity(r, null, &quot;LAUNCH_ACTIVITY&quot;);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case RELAUNCH_ACTIVITY: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityRestart&quot;);
+                    ActivityClientRecord r = (ActivityClientRecord)msg.obj;
+                    handleRelaunchActivity(r);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case PAUSE_ACTIVITY: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityPause&quot;);
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    handlePauseActivity((IBinder) args.arg1, false,
+                            (args.argi1 &amp; USER_LEAVING) != 0, args.argi2,
+                            (args.argi1 &amp; DONT_REPORT) != 0, args.argi3);
+                    maybeSnapshot();
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case PAUSE_ACTIVITY_FINISHING: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityPause&quot;);
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    handlePauseActivity((IBinder) args.arg1, true, (args.argi1 &amp; USER_LEAVING) != 0,
+                            args.argi2, (args.argi1 &amp; DONT_REPORT) != 0, args.argi3);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case STOP_ACTIVITY_SHOW: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityStop&quot;);
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    handleStopActivity((IBinder) args.arg1, true, args.argi2, args.argi3);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case STOP_ACTIVITY_HIDE: {
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityStop&quot;);
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    handleStopActivity((IBinder) args.arg1, false, args.argi2, args.argi3);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                } break;
+                case SHOW_WINDOW:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityShowWindow&quot;);
+                    handleWindowVisibility((IBinder)msg.obj, true);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case HIDE_WINDOW:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityHideWindow&quot;);
+                    handleWindowVisibility((IBinder)msg.obj, false);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case RESUME_ACTIVITY:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityResume&quot;);
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    handleResumeActivity((IBinder) args.arg1, true, args.argi1 != 0, true,
+                            args.argi3, &quot;RESUME_ACTIVITY&quot;);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case SEND_RESULT:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityDeliverResult&quot;);
+                    handleSendResult((ResultData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case DESTROY_ACTIVITY:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityDestroy&quot;);
+                    handleDestroyActivity((IBinder)msg.obj, msg.arg1 != 0,
+                            msg.arg2, false);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case BIND_APPLICATION:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;bindApplication&quot;);
+                    AppBindData data = (AppBindData)msg.obj;
+                    handleBindApplication(data);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case EXIT_APPLICATION:
+                    if (mInitialApplication != null) {
+                        mInitialApplication.onTerminate();
+                    }
+                    Looper.myLooper().quit();
+                    break;
+                case NEW_INTENT:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityNewIntent&quot;);
+                    handleNewIntent((NewIntentData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case RECEIVER:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;broadcastReceiveComp&quot;);
+                    handleReceiver((ReceiverData)msg.obj);
+                    maybeSnapshot();
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case CREATE_SERVICE:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, (&quot;serviceCreate: &quot; + String.valueOf(msg.obj)));
+                    handleCreateService((CreateServiceData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case BIND_SERVICE:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;serviceBind&quot;);
+                    handleBindService((BindServiceData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case UNBIND_SERVICE:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;serviceUnbind&quot;);
+                    handleUnbindService((BindServiceData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case SERVICE_ARGS:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, (&quot;serviceStart: &quot; + String.valueOf(msg.obj)));
+                    handleServiceArgs((ServiceArgsData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case STOP_SERVICE:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;serviceStop&quot;);
+                    handleStopService((IBinder)msg.obj);
+                    maybeSnapshot();
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case CONFIGURATION_CHANGED:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;configChanged&quot;);
+                    mCurDefaultDisplayDpi = ((Configuration)msg.obj).densityDpi;
+                    mUpdatingSystemConfig = true;
+                    handleConfigurationChanged((Configuration)msg.obj, null);
+                    mUpdatingSystemConfig = false;
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case CLEAN_UP_CONTEXT:
+                    ContextCleanupInfo cci = (ContextCleanupInfo)msg.obj;
+                    cci.context.performFinalCleanup(cci.who, cci.what);
+                    break;
+                case GC_WHEN_IDLE:
+                    scheduleGcIdler();
+                    break;
+                case DUMP_SERVICE:
+                    handleDumpService((DumpComponentInfo)msg.obj);
+                    break;
+                case LOW_MEMORY:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;lowMemory&quot;);
+                    handleLowMemory();
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case ACTIVITY_CONFIGURATION_CHANGED:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;activityConfigChanged&quot;);
+                    handleActivityConfigurationChanged((ActivityConfigChangeData) msg.obj,
+                            msg.arg1 == 1 ? REPORT_TO_ACTIVITY : !REPORT_TO_ACTIVITY);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case PROFILER_CONTROL:
+                    handleProfilerControl(msg.arg1 != 0, (ProfilerInfo)msg.obj, msg.arg2);
+                    break;
+                case CREATE_BACKUP_AGENT:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;backupCreateAgent&quot;);
+                    handleCreateBackupAgent((CreateBackupAgentData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case DESTROY_BACKUP_AGENT:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;backupDestroyAgent&quot;);
+                    handleDestroyBackupAgent((CreateBackupAgentData)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case SUICIDE:
+                    Process.killProcess(Process.myPid());
+                    break;
+                case REMOVE_PROVIDER:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;providerRemove&quot;);
+                    completeRemoveProvider((ProviderRefCount)msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case ENABLE_JIT:
+                    ensureJitEnabled();
+                    break;
+                case DISPATCH_PACKAGE_BROADCAST:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;broadcastPackage&quot;);
+                    handleDispatchPackageBroadcast(msg.arg1, (String[])msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case SCHEDULE_CRASH:
+                    throw new RemoteServiceException((String)msg.obj);
+                case DUMP_HEAP:
+                    handleDumpHeap(msg.arg1 != 0, (DumpHeapData)msg.obj);
+                    break;
+                case DUMP_ACTIVITY:
+                    handleDumpActivity((DumpComponentInfo)msg.obj);
+                    break;
+                case DUMP_PROVIDER:
+                    handleDumpProvider((DumpComponentInfo)msg.obj);
+                    break;
+                case SLEEPING:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;sleeping&quot;);
+                    handleSleeping((IBinder)msg.obj, msg.arg1 != 0);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case SET_CORE_SETTINGS:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;setCoreSettings&quot;);
+                    handleSetCoreSettings((Bundle) msg.obj);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case UPDATE_PACKAGE_COMPATIBILITY_INFO:
+                    handleUpdatePackageCompatibilityInfo((UpdateCompatibilityData)msg.obj);
+                    break;
+                case TRIM_MEMORY:
+                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;trimMemory&quot;);
+                    handleTrimMemory(msg.arg1);
+                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+                    break;
+                case UNSTABLE_PROVIDER_DIED:
+                    handleUnstableProviderDied((IBinder)msg.obj, false);
+                    break;
+                case REQUEST_ASSIST_CONTEXT_EXTRAS:
+                    handleRequestAssistContextExtras((RequestAssistContextExtras)msg.obj);
+                    break;
+                case TRANSLUCENT_CONVERSION_COMPLETE:
+                    handleTranslucentConversionComplete((IBinder)msg.obj, msg.arg1 == 1);
+                    break;
+                case INSTALL_PROVIDER:
+                    handleInstallProvider((ProviderInfo) msg.obj);
+                    break;
+                case ON_NEW_ACTIVITY_OPTIONS:
+                    Pair&lt;IBinder, ActivityOptions&gt; pair = (Pair&lt;IBinder, ActivityOptions&gt;) msg.obj;
+                    onNewActivityOptions(pair.first, pair.second);
+                    break;
+                case CANCEL_VISIBLE_BEHIND:
+                    handleCancelVisibleBehind((IBinder) msg.obj);
+                    break;
+                case BACKGROUND_VISIBLE_BEHIND_CHANGED:
+                    handleOnBackgroundVisibleBehindChanged((IBinder) msg.obj, msg.arg1 &gt; 0);
+                    break;
+                case ENTER_ANIMATION_COMPLETE:
+                    handleEnterAnimationComplete((IBinder) msg.obj);
+                    break;
+                case START_BINDER_TRACKING:
+                    handleStartBinderTracking();
+                    break;
+                case STOP_BINDER_TRACKING_AND_DUMP:
+                    handleStopBinderTrackingAndDump((ParcelFileDescriptor) msg.obj);
+                    break;
+                case MULTI_WINDOW_MODE_CHANGED:
+                    handleMultiWindowModeChanged((IBinder) msg.obj, msg.arg1 == 1);
+                    break;
+                case PICTURE_IN_PICTURE_MODE_CHANGED:
+                    handlePictureInPictureModeChanged((IBinder) msg.obj, msg.arg1 == 1);
+                    break;
+                case LOCAL_VOICE_INTERACTION_STARTED:
+                    handleLocalVoiceInteractionStarted((IBinder) ((SomeArgs) msg.obj).arg1,
+                            (IVoiceInteractor) ((SomeArgs) msg.obj).arg2);
+                    break;
+            }
+            Object obj = msg.obj;
+            if (obj instanceof SomeArgs) {
+                ((SomeArgs) obj).recycle();
+            }
+            if (DEBUG_MESSAGES) Slog.v(TAG, &quot;&lt;&lt;&lt; done: &quot; + codeToString(msg.what));
+        }
+</code></pre>
+<p>ActiviyThread 通过 ApplicationThread 和 AMS 进行进程间通信，AMS 以进程间通信的方式完成 ActivityThread 的请求后会回调 ApplicationThread 中的 Binder 方法，然后 ApplicationThread 会向 H 发送消息，H 收到消息后会将 ApplicationThread 中的逻辑切换到 ActivityThread 中去执行，即在主线程中执行，这就是主线程的消息循环模型。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/31/Android开发艺术探索笔记第4章/" rel="next" title="Android开发艺术探索笔记-第4章 View的工作原理">
+                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第4章 View的工作原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/19/Android开发艺术探索笔记第6章/" rel="prev" title="Android开发艺术探索笔记-第6章 Android的Drawable">
+                Android开发艺术探索笔记-第6章 Android的Drawable <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal-工作原理"><span class="nav-number">2.1.</span> <span class="nav-text">ThreadLocal 工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列的工作原理"><span class="nav-number">2.2.</span> <span class="nav-text">消息队列的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Looper的工作原理"><span class="nav-number">2.3.</span> <span class="nav-text">Looper的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法"><span class="nav-number">2.3.1.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Looper-prepare"><span class="nav-number">2.3.2.</span> <span class="nav-text">Looper#prepare()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Looper的退出"><span class="nav-number">2.3.3.</span> <span class="nav-text">Looper的退出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loop"><span class="nav-number">2.3.4.</span> <span class="nav-text">loop</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler-的工作原理"><span class="nav-number">2.4.</span> <span class="nav-text">Handler 的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主线程的消息循环"><span class="nav-number">2.5.</span> <span class="nav-text">主线程的消息循环</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

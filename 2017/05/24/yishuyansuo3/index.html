@@ -1,0 +1,1748 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第3章 View的事件体系">
+<meta property="og:url" content="https://luwenjie.me/2017/05/24/yishuyansuo3/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01Qegi1JW91/o6LcfD39TadSwj.jpg?thumb=1024x&scale=auto">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01ENzdjP1OG/863gZnJFyxxMiM.jpg?thumb=1024x&scale=auto">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01tqzsjFSwQ/fWpslaBUDM9uQn.jpg?thumb=1024x&scale=auto">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170523149552955853596.png">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170523149553515260307.png">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01X0V59hyJQ/8avNw8r26om3pC.jpg?thumb=1024x&scale=auto">
+<meta property="og:updated_time" content="2017-05-24T08:09:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第3章 View的事件体系">
+<meta name="twitter:description" content="本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根">
+<meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01Qegi1JW91/o6LcfD39TadSwj.jpg?thumb=1024x&scale=auto">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/05/24/yishuyansuo3/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第3章 View的事件体系 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/05/24/yishuyansuo3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第3章 View的事件体系</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-24T11:17:00+08:00">
+                2017-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/24/yishuyansuo3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根据需求进行新控件的定义，而控件的自定义就需要对Android的View体系有深入的理解，只有这样才能写出完美的自定义控件。  </p>
+</blockquote>
+<a id="more"></a>  
+<h2 id="View的基础知识"><a href="#View的基础知识" class="headerlink" title="View的基础知识"></a>View的基础知识</h2><p>主要介绍内容：</p>
+<ol>
+<li>View的位置参数</li>
+<li>MotionEvent 和 TouchSlop对象</li>
+<li>VelocityTracker</li>
+<li>GestureDetector</li>
+<li>Scroller</li>
+</ol>
+<h3 id="View-的位置参数"><a href="#View-的位置参数" class="headerlink" title="View 的位置参数"></a>View 的位置参数</h3><p>主要由四个顶点来决定：</p>
+<ol>
+<li>top：左上角纵坐标</li>
+<li>left：左上角横坐标</li>
+<li>right：右下角横坐标</li>
+<li>bottom：右下角纵坐标</li>
+</ol>
+<p>四个顶点坐标都是相对于View的父容器来说的。是相对坐标。</p>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01Qegi1JW91/o6LcfD39TadSwj.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<p>View 的宽高和坐标的关系：</p>
+<pre><code class="java">width = right - left;
+height = bottom - top
+</code></pre>
+<p>在View的源码中四个坐标对应于<code>mLeft</code>,<code>mRight</code>,<code>mTop</code>,<code>mBottom</code>这四个成员变量。View中有对应的方法获取这四个值：</p>
+<pre><code class="java">mleft = getLeft();
+mRight = getRight();
+mTop = getTop();
+mBottom = getBottom();
+</code></pre>
+<p>从Android 3.0 之后，View增加了额外的几个参数：</p>
+<ol>
+<li>(x, y): View左上角的坐标</li>
+<li>translationX: View左上角相对于父容器X方向的偏移量，默认值为0</li>
+<li>translationY: View左上角相对于父容器Y方向的偏移量，默认值为0</li>
+</ol>
+<p>View中提供了对应的Get/Set方法。</p>
+<pre><code class="java">public float getX() {
+    return mLeft + getTranslationX();
+}
+
+public void setX(float x) {
+    setTranslationX(x - mLeft);
+}
+
+public float getY() {
+    return mTop + getTranslationY();
+}
+
+public void setY(float y) {
+    setTranslationY(y - mTop);
+}
+</code></pre>
+<p>x = left + translationX<br>y = top + translationY  </p>
+<p><strong>注意：</strong><br>View在平移的过程中，top和left表示的是原始左上角的位置信息，其值并不会发生改变。发生变化的是x,y,translationX,translationY。</p>
+<h3 id="MotionEvent和TouchSlop"><a href="#MotionEvent和TouchSlop" class="headerlink" title="MotionEvent和TouchSlop"></a>MotionEvent和TouchSlop</h3><h4 id="MotionEvent"><a href="#MotionEvent" class="headerlink" title="MotionEvent"></a>MotionEvent</h4><p>手指接触屏幕后会产生一些列事件。典型的有下面几种：</p>
+<ol>
+<li>ACTION_DOWN: 手指刚接触屏幕</li>
+<li>ACTION_MOVE: 手指在屏幕上滑动</li>
+<li>ACTION_UP: 手指从屏幕上松开的一瞬间</li>
+</ol>
+<p>2种时间序列：</p>
+<ol>
+<li>点击屏幕立刻松开, 事件序列为: DOWN-&gt;UP</li>
+<li>点击屏幕后滑动一会再松开，事件序列为：DOWN-&gt;MOVE…-&gt;UP</li>
+</ol>
+<p>通过MotionEvent可以得到点击事件发生的坐标（x,y）。</p>
+<p>getX/getY: 得到相对于View左上角的坐标（x,y）<br>getRawX/getRawY：得到相对于手机屏幕的坐标(x,y)</p>
+<h4 id="TouchSlop"><a href="#TouchSlop" class="headerlink" title="TouchSlop"></a>TouchSlop</h4><p>TouchSlop是系统所能识别出的被认为是滑动的最小距离。</p>
+<p>这是一个常量，不同设备值可能不一样。</p>
+<p>获取方式：<code>ViewConfiguration.get(getCon-text()).getScaledTouchSlop()。</code></p>
+<p>可以利用这个常量做一些滑动的过滤。</p>
+<p>在源码中可以找到这个常量的定义：frameworks/base/core/ res/res/values/config.xml</p>
+<pre><code class="xml">&lt;!--Base &quot;touch slop&quot; value used by ViewConfiguration as a movement threshold     where scrolling should begin. --&gt;   
+&lt;dimen name=&quot;config_viewConfigurationTouchSlop&quot;&gt;8dp&lt;/dimen&gt;
+</code></pre>
+<h3 id="VelocityTracker、GestureDetector和Scroller"><a href="#VelocityTracker、GestureDetector和Scroller" class="headerlink" title="VelocityTracker、GestureDetector和Scroller"></a>VelocityTracker、GestureDetector和Scroller</h3><h4 id="VelocityTracker"><a href="#VelocityTracker" class="headerlink" title="VelocityTracker"></a>VelocityTracker</h4><p>追踪手指在滑动过程中的速度。包括水平和竖直</p>
+<pre><code class="java">VelocityTracker velocityTracker = VelocityTracker.obtain();
+// 1000代表速度的单位为1秒
+velocityTracker.computeCurrentVelocity(1000);
+float xVelocity = velocityTracker.getXVelocity();
+float yVelocity = velocityTracker.getYVelocity();
+</code></pre>
+<ol>
+<li>获取速度之前先计算速度。先调用computeCurrentVelocity</li>
+<li>这里的速度是指一段时间手指划过的像素数。</li>
+</ol>
+<p>不使用的时候需要调用recyle回收内存。</p>
+<pre><code class="java">velocityTracker.recycle();
+</code></pre>
+<h4 id="GestureDetector"><a href="#GestureDetector" class="headerlink" title="GestureDetector"></a>GestureDetector</h4><p>手势检测，用于辅助检测用户的单击，滑动，长按，双击等行为。</p>
+<pre><code class="java">    // 创建GestureDetector对象
+    GestureDetector gestureDetector = new GestureDetector(getContext(), mOnGestureListener);
+    // 设置长按屏幕后可以拖动
+    gestureDetector.setIsLongpressEnabled(false);
+
+    // 接管事件
+    boolean b = gestureDetector.onTouchEvent(event);
+</code></pre>
+<p>OnGestureListener和OnDoubleTapListener中的方法介绍：<br><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01ENzdjP1OG/863gZnJFyxxMiM.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<p>实际开发中，如果只是监听滑动相关的，建议在onTouchEvent中实现。如果要监听双击行为就使用GestureDetector。</p>
+<h4 id="Scroller"><a href="#Scroller" class="headerlink" title="Scroller"></a>Scroller</h4><p>用于实现View的弹性滑动。</p>
+<p>Scroller 让View在一定时间内完成连续的滑动。Scrller本身无法让View弹性滑动，需要和View的computeScroll方法配合使用才能共同使用。</p>
+<p>Scroller只能是父View使用，来滑动子View。</p>
+<pre><code class="java">public class ViewA extends LinearLayout {
+  private Scroller mScroller;
+
+  public ViewA(Context context) {
+    super(context);
+    init(context);
+  }
+
+  public ViewA(Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
+
+  public ViewA(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+  public ViewA(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+    init(context);
+  }
+
+  private void init(Context context) {
+    mScroller = new Scroller(context);
+  }
+
+  public void smoothScrollTo(int destX, int destY) {
+    int scrollX = getScrollX();
+    int scrollY = getScrollY();
+    int deltaX = destX - scrollX;
+    int deltaY = destY - scrollY;
+    // (scrollX,scrollY) 是view左上角的初始坐标。dx,dy是位移量，x正数左移动。y正数上移动
+    mScroller.startScroll(scrollX, scrollY, -deltaX, -deltaY, 1000);
+
+    invalidate();
+  }
+
+  @Override public void computeScroll() {
+    super.computeScroll();
+    if (mScroller.computeScrollOffset()) {
+      scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+      postInvalidate();
+    }
+  }
+}
+</code></pre>
+<h2 id="View-的滑动"><a href="#View-的滑动" class="headerlink" title="View 的滑动"></a>View 的滑动</h2><p>通过三种方式可以实现View的滑动：</p>
+<ol>
+<li>第一种是通过View本身提供的scrollTo/scrollBy方法来实现滑动；</li>
+<li>第二种是通过动画给View施加平移效果来实现滑动；</li>
+<li>第三种是通过改变View的LayoutParams使得View重新布局从而实现滑动。</li>
+</ol>
+<h3 id="使用scrollTo-scrollBy"><a href="#使用scrollTo-scrollBy" class="headerlink" title="使用scrollTo/scrollBy"></a>使用scrollTo/scrollBy</h3><pre><code class="java">    /**
+     * Set the scrolled position of your view. This will cause a call to
+     * {@link #onScrollChanged(int, int, int, int)} and the view will be
+     * invalidated.
+     * @param x the x position to scroll to
+     * @param y the y position to scroll to
+     */
+    public void scrollTo(int x, int y) {
+        if (mScrollX != x || mScrollY != y) {
+            int oldX = mScrollX;
+            int oldY = mScrollY;
+            mScrollX = x;
+            mScrollY = y;
+            invalidateParentCaches();
+            onScrollChanged(mScrollX, mScrollY, oldX, oldY);
+            if (!awakenScrollBars()) {
+                postInvalidateOnAnimation();
+            }
+        }
+    }
+
+
+    /**
+     * Move the scrolled position of your view. This will cause a call to
+     * {@link #onScrollChanged(int, int, int, int)} and the view will be
+     * invalidated.
+     * @param x the amount of pixels to scroll by horizontally
+     * @param y the amount of pixels to scroll by vertically
+     */
+    public void scrollBy(int x, int y) {
+        scrollTo(mScrollX + x, mScrollY + y);
+    }
+</code></pre>
+<p>mScrollX 和 mScrollY 的改变规则：</p>
+<p>在滑动的过程中，mScrollX 的值总是等于View左边缘和View内容左边缘的水平距离。mScrollY的值总是等于View上边缘和View内容上边缘在竖直方向的距离。</p>
+<p>设原来View左上角的坐标为(a,b),移动后View内容的左上角坐标为(a’,b’),则：</p>
+<pre><code class="java">mScrollX = a - a&#39;
+mScrollY = b - b&#39;
+</code></pre>
+<p>如果mScrollX&gt;0,View的内容往左边移动了。反之右移了。<br>如果mScrollY&gt;0,View的内容往上移动了，反之就下移了。</p>
+<p>mScrollX和mScrollY的变换规律示意:<br><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01tqzsjFSwQ/fWpslaBUDM9uQn.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<p>只能改变View内容的位置而不能改变view在布局中的位置。</p>
+<h3 id="使用动画"><a href="#使用动画" class="headerlink" title="使用动画"></a>使用动画</h3><p>使用属性动画。</p>
+<h3 id="改变布局参数"><a href="#改变布局参数" class="headerlink" title="改变布局参数"></a>改变布局参数</h3><ol>
+<li>改变LayoutParams。比如右移一个view 10dp，只需要设置它的marginLeft为10dp。</li>
+<li>放置一个宽度为0的空view，当我们需要向右移动Button时，只需要重新设置空View的宽度即可，当空View的宽度增大时（假设Button的父容器是水平方向的LinearLayout），Button就自动被挤向右边，即实现了向右平移的效果。</li>
+</ol>
+<h3 id="各种滑动方式对比"><a href="#各种滑动方式对比" class="headerlink" title="各种滑动方式对比"></a>各种滑动方式对比</h3><p>scrollTo/scrollBy 只能滑动View的内容，不能滑动View本身。  </p>
+<p>动画只能3.0以上使用属性动画，3.0以下使用View动画不能改变本身的属性，动画有一个优点，它可以实现比较复杂的效果。  </p>
+<ul>
+<li>scrollTo/scrollBy：操作简单，适合对View内容的滑动；     </li>
+<li>动画：操作简单，主要适用于没有交互的View和实现复杂的动画效果；   </li>
+<li>改变布局参数：操作稍微复杂，适用于有交互的View。</li>
+</ul>
+<h3 id="跟手滑动的例子"><a href="#跟手滑动的例子" class="headerlink" title="跟手滑动的例子"></a>跟手滑动的例子</h3><p>实现一个跟手滑动的效果，这是一个自定义View，拖动它可以让它在整个屏幕上随意滑动。  </p>
+<p>实现View的onTouchEvent方法在里面处理ACTION_MOVE事件。</p>
+<pre><code class="java"> @Override public boolean onTouchEvent(MotionEvent event) {
+    float rawX = event.getRawX();
+    float rawY = event.getRawY();
+    switch (event.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        break;
+      case MotionEvent.ACTION_MOVE:
+        float deltaX = rawX - mLastX;
+        float deltaY = rawY - mLastY;
+
+        // 移动后的位移改变量
+        float translationX = getTranslationX() + deltaX;
+        float translationY = getTranslationY() + deltaY;
+        // setTranslationX setTranslationY, 改变translationX，Y 的值来改变View的位置
+        setTranslationX(translationX);
+        setTranslationY(translationY);
+
+        Log.d(TAG,&quot;move,deltaX:&quot; + deltaX + &quot; deltaY:&quot; + deltaY);
+        break;
+      case MotionEvent.ACTION_UP:
+        break;
+      default:
+        break;
+    }
+
+    mLastX = rawX;
+    mLastY = rawY;
+    return true;
+  }
+</code></pre>
+<h2 id="弹性滑动"><a href="#弹性滑动" class="headerlink" title="弹性滑动"></a>弹性滑动</h2><p>主要思想：将一个大的滑动分成很多个小的滑动。实现方式有多种：</p>
+<ol>
+<li>Scroller</li>
+<li>Handler#PostDelayed</li>
+<li>Thread#sleep</li>
+</ol>
+<h3 id="Scroller-1"><a href="#Scroller-1" class="headerlink" title="Scroller"></a>Scroller</h3><p>当调用Scroller#startScroll()时，内部只是对一些变量进行赋值。  </p>
+<ul>
+<li>startX 滑动的起点x坐标</li>
+<li>startY 滑动的起点y坐标</li>
+<li>dx 滑动的x方向距离。正数View就往左移动，负数往右移动</li>
+<li>dy 滑动的y方向距离。正数View就往上移动，负数往下移动<pre><code class="java"> public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+      mMode = SCROLL_MODE;
+      mFinished = false;
+      mDuration = duration;
+      mStartTime = AnimationUtils.currentAnimationTimeMillis();
+      mStartX = startX;
+      mStartY = startY;
+      mFinalX = startX + dx;
+      mFinalY = startY + dy;
+      mDeltaX = dx;
+      mDeltaY = dy;
+      mDurationReciprocal = 1.0f / (float) mDuration;
+  }
+</code></pre>
+</li>
+</ul>
+<pre><code class="java">public void smoothScrollTo(int destX, int destY) {
+    int scrollX = getScrollX();
+    int scrollY = getScrollY();
+    int deltaX = destX - scrollX;
+    int deltaY = destY - scrollY;
+    // (scrollX,scrollY) 是view左上角的初始坐标。dx,dy是位移量，x正数左移动。y正数上移动
+    mScroller.startScroll(scrollX, scrollY, -deltaX, -deltaY, 1000);
+    invalidate();
+  }
+
+  @Override public void computeScroll() {
+    super.computeScroll();
+    if (mScroller.computeScrollOffset()) {
+      scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+      postInvalidate();
+    }
+  }
+</code></pre>
+<p>只调用startScroll方法无法完成滑动，因为他只是赋值而已。在调用startScroll后需要调用invalidate()重绘。父布局会调用<code>View#draw(Canvas canvas, ViewGroup parent, long drawingTime)</code>这个方法中会调用<code>View#computeScroll();</code>。  </p>
+<p>复写computeScroll()，computeScrollOffset()返回true代表滑动还未结束，就需要用scrollTo滑动View。然后调用 postInvalidate()继续重绘，这样形成一个递归，直到computeScrollOffset()返回false代表滑动完成。  </p>
+<pre><code class="java">    /**
+     * Call this when you want to know the new location.  If it returns true,
+     * the animation is not yet finished.
+     */ 
+    public boolean computeScrollOffset() {
+        if (mFinished) {
+            // 滑动完成直接返回false。
+            return false;
+        }
+
+        // 已经滑动的时间
+        int timePassed = (int)(AnimationUtils.currentAnimationTimeMillis() - mStartTime);
+
+        // 如果小于mDuration代表还在滑动
+        if (timePassed &lt; mDuration) {
+            // 判断2种滑动模式
+            switch (mMode) {
+            case SCROLL_MODE:
+                final float x = mInterpolator.getInterpolation(timePassed * mDurationReciprocal);
+                mCurrX = mStartX + Math.round(x * mDeltaX);
+                mCurrY = mStartY + Math.round(x * mDeltaY);
+                break;
+            case FLING_MODE:
+                final float t = (float) timePassed / mDuration;
+                final int index = (int) (NB_SAMPLES * t);
+                float distanceCoef = 1.f;
+                float velocityCoef = 0.f;
+                if (index &lt; NB_SAMPLES) {
+                    final float t_inf = (float) index / NB_SAMPLES;
+                    final float t_sup = (float) (index + 1) / NB_SAMPLES;
+                    final float d_inf = SPLINE_POSITION[index];
+                    final float d_sup = SPLINE_POSITION[index + 1];
+                    velocityCoef = (d_sup - d_inf) / (t_sup - t_inf);
+                    distanceCoef = d_inf + (t - t_inf) * velocityCoef;
+                }
+
+                mCurrVelocity = velocityCoef * mDistance / mDuration * 1000.0f;
+
+                mCurrX = mStartX + Math.round(distanceCoef * (mFinalX - mStartX));
+                // Pin to mMinX &lt;= mCurrX &lt;= mMaxX
+                mCurrX = Math.min(mCurrX, mMaxX);
+                mCurrX = Math.max(mCurrX, mMinX);
+
+                mCurrY = mStartY + Math.round(distanceCoef * (mFinalY - mStartY));
+                // Pin to mMinY &lt;= mCurrY &lt;= mMaxY
+                mCurrY = Math.min(mCurrY, mMaxY);
+                mCurrY = Math.max(mCurrY, mMinY);
+
+                if (mCurrX == mFinalX &amp;&amp; mCurrY == mFinalY) {
+                    mFinished = true;
+                }
+
+                break;
+            }
+        }
+        else {
+            mCurrX = mFinalX;
+            mCurrY = mFinalY;
+            mFinished = true;
+        }
+        return true;
+    }
+</code></pre>
+<h3 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h3><h3 id="延迟策略"><a href="#延迟策略" class="headerlink" title="延迟策略"></a>延迟策略</h3><h2 id="View的事件分发机制"><a href="#View的事件分发机制" class="headerlink" title="View的事件分发机制"></a>View的事件分发机制</h2><p> 3个重要的方法：</p>
+<pre><code class="java">  // 进行事件的分发，如果事件能够传递给当前的view，此方法一定会被调用。返回的boolean值受到当前View的
+  // onTouchEvent()和下级view的dispatchTouchEvent()的影响，true表示消费了事件，false表示不消费。
+  @Override public boolean dispatchTouchEvent(MotionEvent ev) {
+    return super.dispatchTouchEvent(ev);
+  }
+
+  // 在dispatchTouchEvent()中被调用。用来判断是否拦截事件，如果拦截了，同一事件序列不会再调用此方法。
+  // 返回true为拦截该事件，false为不拦截。
+  @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
+    return super.onInterceptTouchEvent(ev);
+  }
+
+  // 在dispatchTouchEvent()中被调用。用来处理点击事件，返回true为消费当前事件，false为不消费。如果不
+  // 消费，在同一事件序列中，该View无法再次收到事件。
+  @Override public boolean onTouchEvent(MotionEvent event) {
+    return super.onTouchEvent(event);
+  }
+</code></pre>
+<p>伪代码：  </p>
+<pre><code class="java">// 点击事件产生后首先会传递给根ViewGroup，它的dispatchTouchEvent()被调用
+public boolean dispatchTouchEvent(MotionEvent ev) {
+    boolean consume = false;
+    // 如果它拦截了事件，由onTouchEvent()来处理是否消费，否则交给子类。
+    if (onInterceptTouchEvent(ev)) {
+        consume = onTouchEvent(ev);
+    } else {
+        consume = child.dispatchTouchEvent(ev);
+    }
+    return consume;
+}
+</code></pre>
+<h3 id="onTouchListener"><a href="#onTouchListener" class="headerlink" title="onTouchListener"></a>onTouchListener</h3><pre><code class="java">    /**
+     * Interface definition for a callback to be invoked when a touch event is
+     * dispatched to this view. The callback will be invoked before the touch
+     * event is given to the view.
+     */
+    public interface OnTouchListener {
+        /**
+         * Called when a touch event is dispatched to a view. This allows listeners to
+         * get a chance to respond before the target view.
+         *
+         * @param v The view the touch event has been dispatched to.
+         * @param event The MotionEvent object containing full information about
+         *        the event.
+         * @return True if the listener has consumed the event, false otherwise.
+         */
+        boolean onTouch(View v, MotionEvent event);
+    }
+</code></pre>
+<p>如果一个View设置了onTouchListenr，那么onTouchListenr的onTouch方法会被回调。返回true表示onTouchListenr消耗了这个事件，onTouchEvent()不会被调用。<br>在onTouchEvent方法中，如果view设置了OnClickListenr, 那么onClik()方法会被回调。  </p>
+<p>优先级：OnTouchListener &gt; onTouchEvent &gt; OnClickListener  </p>
+<h3 id="事件传递过程"><a href="#事件传递过程" class="headerlink" title="事件传递过程"></a>事件传递过程</h3><p>Activity -&gt; Window -&gt; View。<br>顶级View接收到事件后就会按照事件分发机制去分发事件。  </p>
+<p>如果一个View的onTouchEvent返回false，那么它的父容器的onTouchEvent()会被执行。依次类推，都不处理的话最后会返回到Activity的onTouchEvent()处理。  </p>
+<p>Activity#onTouchEvent(MotionEvent event)</p>
+<pre><code class="java">    /**
+     * Called when a touch screen event was not handled by any of the views
+     * under it.  This is most useful to process touch events that happen
+     * outside of your window bounds, where there is no view to receive it.
+     *
+     * @param event The touch screen event being processed.
+     *
+     * @return Return true if you have consumed the event, false if you haven&#39;t.
+     * The default implementation always returns false.
+     */
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mWindow.shouldCloseOnTouch(this, event)) {
+            finish();
+            return true;
+        }
+
+        return false;
+    }
+</code></pre>
+<h3 id="一些结论"><a href="#一些结论" class="headerlink" title="一些结论"></a>一些结论</h3><ol>
+<li>同一个事件序列是指从手指接触屏幕的那一刻起，到手指离开屏幕的那一刻结束，在这个过程中所产生的一系列事件，这个事件序列以down事件开始，中间含有数量不定的move事件，最终以up事件结束。</li>
+<li>正常情况下，一个事件序列只能被一个View拦截且消耗。这一条的原因可以参考（3），因为一旦一个元素拦截了某此事件，那么同一个事件序列内的所有事件都会直接交给它处理，因此同一个事件序列中的事件不能分别由两个View同时处理，但是通过特殊手段可以做到，比如一个View将本该自己处理的事件通过onTouchEvent强行传递给其他View处理。</li>
+<li>某个View一旦决定拦截，那么这一个事件序列都只能由它来处理（如果事件序列能够传递给它的话），并且它的onIn-terceptTouchEvent不会再被调用。这条也很好理解，就是说当一个View决定拦截一个事件后，那么系统会把同一个事件序列内的其他方法都直接交给它来处理，因此就不用再调用这个View的onInterceptTouchEvent去询问它是否要拦截了。</li>
+<li>某个View一旦开始处理事件，如果它不消耗AC-TION_DOWN事件（onTouchEvent返回了false），那么同一事件序列中的其他事件都不会再交给它来处理，并且事件将重新交由它的父元素去处理，即父元素的onTouchEvent会被调用。意思就是事件一旦交给一个View处理，那么它就必须消耗掉，否则同一事件序列中剩下的事件就不再交给它来处理了，这就好比上级交给程序员一件事，如果这件事没有处理好，短期内上级就不敢再把事情交给这个程序员做了，二者是类似的道理。</li>
+<li>如果View不消耗除ACTION_DOWN以外的其他事件，那么这个点击事件会消失，此时父元素的onTouchEvent并不会被调用，并且当前View可以持续收到后续的事件，最终这些消失的点击事件会传递给Activity处理。</li>
+<li>ViewGroup默认不拦截任何事件。Android源码中ViewGroup的onInterceptTouch-Event方法默认返回false。</li>
+<li>View没有onInterceptTouchEvent方法，一旦有点击事件传递给它，那么它的onTouchEvent方法就会被调用。</li>
+<li>View的onTouchEvent默认都会消耗事件（返回true），除非它是不可点击的（clickable 和longClickable同时为false）。View的longClickable属性默认都为false，clickable属性要分情况，比如Button的clickable属性默认为true，而TextView的clickable属性默认为false。</li>
+<li>View的enable属性不影响onTouchEvent的默认返回值。哪怕一个View是disable状态的，只要它的clickable或者longClickable有一个为true，那么它的onTouchEvent就返回true。</li>
+<li>onClick会发生的前提是当前View是可点击的，并且它收到了down和up的事件。</li>
+<li>事件传递过程是由外向内的，即事件总是先传递给父元素，然后再由父元素分发给子View，通过requestDisallowIn-terceptTouchEvent方法可以在子元素中干预父元素的事件分发过程，但是ACTION_DOWN事件除外。</li>
+</ol>
+<h3 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h3><h4 id="Activity对点击事件的分发过程"><a href="#Activity对点击事件的分发过程" class="headerlink" title="Activity对点击事件的分发过程"></a>Activity对点击事件的分发过程</h4><p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170523149552955853596.png" alt=""></p>
+<p>Activty#dispatchTouchEvent(MotionEvent ev)</p>
+<pre><code class="java">    /**
+     * Called to process touch screen events.  You can override this to
+     * intercept all touch screen events before they are dispatched to the
+     * window.  Be sure to call this implementation for touch screen events
+     * that should be handled normally.
+     *
+     * @param ev The touch screen event.
+     *
+     * @return boolean Return true if this event was consumed.
+     */
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            onUserInteraction();
+        }
+        // 如果window处理了就返回true。
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+</code></pre>
+<p>Window#superDispatchTouchEvent</p>
+<pre><code class="java">   /**
+     * Used by custom windows, such as Dialog, to pass the touch screen event
+     * further down the view hierarchy. Application developers should
+     * not need to implement or call this.
+     *
+     */
+    public abstract boolean superDispatchTouchEvent(MotionEvent event);
+</code></pre>
+<p>Window是一个抽象类，这个方法也是抽象方法，得去找它的实现类。</p>
+<pre><code class="java">/**
+ * Abstract base class for a top-level window look and behavior policy.  An
+ * instance of this class should be used as the top-level view added to the
+ * window manager. It provides standard UI policies such as a background, title
+ * area, default key processing, etc.
+ *
+ * &lt;p&gt;The only existing implementation of this abstract class is
+ * android.view.PhoneWindow, which you should instantiate when needing a
+ * Window.
+ */
+</code></pre>
+<p>源码中说明了唯一的实现类就是<code>android.view.PhoneWindow</code>  </p>
+<p>android.view.PhoneWindow#superDispatchTouchEvent</p>
+<pre><code class="java">    @Override
+    public boolean superDispatchTouchEvent(MotionEvent event) {
+        return mDecor.superDispatchTouchEvent(event);
+    }
+
+    // This is the top-level view of the window, containing the window decor.
+    private DecorView mDecor;
+
+        @Override
+    public final View getDecorView() {
+        if (mDecor == null || mForceDecorInstall) {
+            installDecor();
+        }
+        return mDecor;
+    }
+</code></pre>
+<p>Window将事件交给了DecorView。</p>
+<pre><code class="java">public class DecorView extends FrameLayout implements RootViewSurfaceTaker, WindowCallbacks
+</code></pre>
+<p>利用 AS 的Layout Inspector 检查Activity的视图：<br><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170523149553515260307.png" alt=""></p>
+<p>我们setContentView()就是把View设置在ContentFrameLayout中。</p>
+<pre><code class="java">
+// id为android.R.id.content的View就是 android.support.v7.widget.ContentFrameLayout
+View contentView =
+        ((ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content)).getChildAt(0);
+</code></pre>
+<p>目前事件传到DecorView，由于DecorView继承自FrameLayout，也是也一个View。所以会把事件分发下去。</p>
+<h4 id="顶级View的分发"><a href="#顶级View的分发" class="headerlink" title="顶级View的分发"></a>顶级View的分发</h4><h5 id="ViewGroup的拦截"><a href="#ViewGroup的拦截" class="headerlink" title="ViewGroup的拦截"></a>ViewGroup的拦截</h5><p>ViewGroup#dispatchTouchEvent 检查拦截的逻辑：</p>
+<pre><code class="java">// Check for interception.
+            final boolean intercepted;
+
+             // 满足事件为MotionEvent.ACTION_DOWN或者mFirstTouchTarget不为空时就判断是否需要拦截，
+             // 否则直接拦截。DOWN事件之后的就都会拦截，不会走onInterceptTouchEvent方法。
+            if (actionMasked == MotionEvent.ACTION_DOWN
+                    || mFirstTouchTarget != null) {
+
+
+                final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;
+                if (!disallowIntercept) {
+                    intercepted = onInterceptTouchEvent(ev);
+                    ev.setAction(action); // restore action in case it was changed
+
+                } else {
+                    intercepted = false;
+                }
+            } else {
+                // There are no touch targets and this action is not an initial down
+                // so this view group continues to intercept touches.
+                intercepted = true;
+            }
+
+            // If intercepted, start normal event dispatch. Also if there is already
+            // a view that is handling the gesture, do normal event dispatch.
+            if (intercepted || mFirstTouchTarget != null) {
+                ev.setTargetAccessibilityFocus(false);
+            }
+</code></pre>
+<p><code>mFirstTouchTarget != null</code>是什么意思？</p>
+<pre><code class="java"> // First touch target in the linked list of touch targets.
+    private TouchTarget mFirstTouchTarget;
+</code></pre>
+<p>当事件由ViewGroup的子元素成功处理时，<code>mFirstTouchTarget</code>被赋值指向子元素。  </p>
+<p>当ViewGroup不拦截事件，由子类消费事件时，<code>mFirstTouchTarget != null</code>。<br>当ViewGroup拦截事件，<code>mFristTouchTarget == null</code>。</p>
+<p>有一种特殊情况：  </p>
+<p>通过<code>requestDisallowInterceptTouchEvent</code>设置<code>FLAG_DISAL-LOW_INTERCEPT</code>标记位。一般用于子View中。<br>设置这个标记后，ViewGroup只能拦截<code>ACTION_DOWN</code>事件。如果是<code>ACTION_DOWN</code>就会重置<code>FLAG_DISALLOW_INTERCEPT</code>这个标记位，将导致子View中设置的这个标记位无效。</p>
+<pre><code class="java">  // Handle an initial down.
+            if (actionMasked == MotionEvent.ACTION_DOWN) {
+                // Throw away all previous state when starting a new touch gesture.
+                // The framework may have dropped the up or cancel event for the previous gesture
+                // due to an app switch, ANR, or some other state change.
+                cancelAndClearTouchTargets(ev);
+                resetTouchState();
+            }
+
+ /**
+     * Resets all touch state in preparation for a new cycle.
+     */
+    private void resetTouchState() {
+        clearTouchTargets();
+        resetCancelNextUpFlag(this);
+        mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;
+        mNestedScrollAxes = SCROLL_AXIS_NONE;
+    }
+</code></pre>
+<p>总结：  </p>
+<ol>
+<li>ViewGroup决定拦截事件后，后续的事件都会交给他处理，不会调用<code>onInterceptTouchEvent()</code>。<code>onInterceptTouchEvent</code>不是每次事件都会被调用的，如果我们想提前处理所有的点击事件，要选择<code>dispatchTouchEvent</code>方法，只有这个方法能确保每次都会调用，当然前提是事件能够传递到当前的ViewGroup。</li>
+<li>当子View设置<code>FLAG_DISALLOW_INTERCEPT</code>标记，父View不再拦截事件。<code>FLAG_DISALLOW_INTERCEPT</code>标记位的作用给我们提供了一个思路，当面对滑动冲突时，我们可以是不是考虑用这种方法去解决问题？</li>
+</ol>
+<h5 id="ViewGroup不拦截事件时，事件的分发过程"><a href="#ViewGroup不拦截事件时，事件的分发过程" class="headerlink" title="ViewGroup不拦截事件时，事件的分发过程"></a>ViewGroup不拦截事件时，事件的分发过程</h5><pre><code class="java">                    final int childrenCount = mChildrenCount;
+                    if (newTouchTarget == null &amp;&amp; childrenCount != 0) {
+                        final float x = ev.getX(actionIndex);
+                        final float y = ev.getY(actionIndex);
+                        // Find a child that can receive the event.
+                        // Scan children from front to back.
+                        final ArrayList&lt;View&gt; preorderedList = buildTouchDispatchChildList();
+                        final boolean customOrder = preorderedList == null
+                                &amp;&amp; isChildrenDrawingOrderEnabled();
+                        final View[] children = mChildren;
+                        // 遍历所有的子View
+                        for (int i = childrenCount - 1; i &gt;= 0; i--) {
+                            final int childIndex = getAndVerifyPreorderedIndex(
+                                    childrenCount, i, customOrder);
+                            final View child = getAndVerifyPreorderedView(
+                                    preorderedList, children, childIndex);
+
+                            // If there is a view that has accessibility focus we want it
+                            // to get the event first and if not handled we will perform a
+                            // normal dispatch. We may do a double iteration but this is
+                            // safer given the timeframe.
+
+                            // 不能得到焦点就跳到下一个循环
+                            if (childWithAccessibilityFocus != null) {
+                                if (childWithAccessibilityFocus != child) {
+                                    continue;
+                                }
+                                childWithAccessibilityFocus = null;
+                                i = childrenCount - 1;
+                            }
+
+                            // 点击事件的坐标没有落在子元素内或者没有在播放动画，就跳到下一个
+                            if (!canViewReceivePointerEvents(child)
+                                    || !isTransformedTouchPointInView(x, y, child, null)) {
+                                ev.setTargetAccessibilityFocus(false);
+                                continue;
+                            }
+
+                            newTouchTarget = getTouchTarget(child);
+                            if (newTouchTarget != null) {
+                                // Child is already receiving touch within its bounds.
+                                // Give it the new pointer in addition to the ones it is handling.
+                                newTouchTarget.pointerIdBits |= idBitsToAssign;
+                                break;
+                            }
+
+                            resetCancelNextUpFlag(child);
+                            // 如果子View.dispatchTouchEvent返回true
+                            if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) {
+                                // Child wants to receive touch within its bounds.
+                                mLastTouchDownTime = ev.getDownTime();
+                                if (preorderedList != null) {
+                                    // childIndex points into presorted list, find original index
+                                    for (int j = 0; j &lt; childrenCount; j++) {
+                                        if (children[childIndex] == mChildren[j]) {
+                                            mLastTouchDownIndex = j;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    mLastTouchDownIndex = childIndex;
+                                }
+                                mLastTouchDownX = ev.getX();
+                                mLastTouchDownY = ev.getY();
+
+                                //mFirst-TouchTarget就会被赋值同时跳出for循环
+                                newTouchTarget = addTouchTarget(child, idBitsToAssign);
+                                alreadyDispatchedToNewTouchTarget = true;
+                                break;
+                            }
+
+                            // The accessibility focus didn&#39;t handle the event, so clear
+                            // the flag and do a normal dispatch to all children.
+                            ev.setTargetAccessibilityFocus(false);
+                        }
+                        if (preorderedList != null) preorderedList.clear();
+                    }
+</code></pre>
+<p>ViewGroup#dispatchTransformedTouchEvent</p>
+<pre><code class="java">if (child == null) {
+    // 子类为空就转到View的dispatchTouchEvent
+    handled = super.dispatchTouchEvent(event);
+} else {
+    handled = child.dispatchTouchEvent(event);
+}
+</code></pre>
+<h6 id="mFirstTouchTarget-的赋值过程"><a href="#mFirstTouchTarget-的赋值过程" class="headerlink" title="mFirstTouchTarget 的赋值过程"></a>mFirstTouchTarget 的赋值过程</h6><p>ViewGroup#addTouchTarget</p>
+<pre><code class="java">    /**
+     * Adds a touch target for specified child to the beginning of the list.
+     * Assumes the target child is not already present.
+     */
+    private TouchTarget addTouchTarget(@NonNull View child, int pointerIdBits) {
+        final TouchTarget target = TouchTarget.obtain(child, pointerIdBits);
+        // 把新的target插到链表的最前面。
+        target.next = mFirstTouchTarget;
+        mFirstTouchTarget = target;
+        return target;
+    }
+</code></pre>
+<p>内部是一种单链表结构。</p>
+<h5 id="遍历所有的子元素后事件都没有被合适地处理"><a href="#遍历所有的子元素后事件都没有被合适地处理" class="headerlink" title="遍历所有的子元素后事件都没有被合适地处理"></a>遍历所有的子元素后事件都没有被合适地处理</h5><ol>
+<li>第一种是ViewGroup没有子元素；</li>
+<li>第二种是子元素处理了点击事件，但是在dispatchTouchEvent中返回了false，这一般是因为子元素在onTouchEvent中返回了false。</li>
+</ol>
+<pre><code class="java">if (mFirstTouchTarget == null) {
+    // No touch targets so treat this as an ordinary view.
+    handled = dispatchTransformedTouchEvent(ev, canceled, null,
+                        TouchTarget.ALL_POINTER_IDS);
+}
+</code></pre>
+<h4 id="View对点击事件的处理过程"><a href="#View对点击事件的处理过程" class="headerlink" title="View对点击事件的处理过程"></a>View对点击事件的处理过程</h4><h5 id="分发dispatchTouchEvent"><a href="#分发dispatchTouchEvent" class="headerlink" title="分发dispatchTouchEvent"></a>分发dispatchTouchEvent</h5><p>View#dispatchTouchEvent</p>
+<pre><code class="java">    /**
+     * Pass the touch screen motion event down to the target view, or this
+     * view if it is the target.
+     *
+     * @param event The motion event to be dispatched.
+     * @return True if the event was handled by the view, false otherwise.
+     */
+    public boolean dispatchTouchEvent(MotionEvent event) {
+
+
+        boolean result = false;
+
+        // .... 
+
+        if (onFilterTouchEventForSecurity(event)) {
+            if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) {
+                result = true;
+            }
+            //noinspection SimplifiableIfStatement
+            ListenerInfo li = mListenerInfo;
+            // 首先判断有没有设置OnTouchListener,
+            // 如果mOnTouchListener.onTouch(this, event)返回true，那么onTouchEvent()不会被调用
+            if (li != null &amp;&amp; li.mOnTouchListener != null
+                    &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED
+                    &amp;&amp; li.mOnTouchListener.onTouch(this, event)) {
+                result = true;
+            }
+
+            if (!result &amp;&amp; onTouchEvent(event)) {
+                result = true;
+            }
+        }
+
+        // ....
+
+
+        // Clean up after nested scrolls if this is the end of a gesture;
+        // also cancel it if we tried an ACTION_DOWN but we didn&#39;t want the rest
+        // of the gesture.
+        if (actionMasked == MotionEvent.ACTION_UP ||
+                actionMasked == MotionEvent.ACTION_CANCEL ||
+                (actionMasked == MotionEvent.ACTION_DOWN &amp;&amp; !result)) {
+            stopNestedScroll();
+        }
+
+        return result;
+    }
+</code></pre>
+<p>首先会判断有没有设置On-TouchListener，如果OnTouchListener中的onTouch方法返回true，那么onTouchEvent就不会被调用，可见OnTouchListener的优先级高于onTouchEvent，这样做的好处是方便在外界处理点击事件。</p>
+<h5 id="onTouchEvent"><a href="#onTouchEvent" class="headerlink" title="onTouchEvent"></a>onTouchEvent</h5><p>View#onTouchEvent</p>
+<pre><code class="java">   /**
+     * Implement this method to handle touch screen motion events.
+     * &lt;p&gt;
+     * If this method is used to detect click actions, it is recommended that
+     * the actions be performed by implementing and calling
+     * {@link #performClick()}. This will ensure consistent system behavior,
+     * including:
+     * &lt;ul&gt;
+     * &lt;li&gt;obeying click sound preferences
+     * &lt;li&gt;dispatching OnClickListener calls
+     * &lt;li&gt;handling {@link AccessibilityNodeInfo#ACTION_CLICK ACTION_CLICK} when
+     * accessibility features are enabled
+     * &lt;/ul&gt;
+     *
+     * @param event The motion event.
+     * @return True if the event was handled, false otherwise.
+     */
+    public boolean onTouchEvent(MotionEvent event) {
+        final float x = event.getX();
+        final float y = event.getY();
+        final int viewFlags = mViewFlags;
+        final int action = event.getAction();
+
+        // View不可用时
+        if ((viewFlags &amp; ENABLED_MASK) == DISABLED) {
+
+            // 点击事件消耗了，但是不可用
+            if (action == MotionEvent.ACTION_UP &amp;&amp; (mPrivateFlags &amp; PFLAG_PRESSED) != 0) {
+                setPressed(false);
+            }
+            // A disabled view that is clickable still consumes the touch
+            // events, it just doesn&#39;t respond to them.
+            return (((viewFlags &amp; CLICKABLE) == CLICKABLE
+                    || (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE)
+                    || (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE);
+        }
+
+        // 如果View设置有代理，那么还会执行TouchDelegate的onTouchEvent方法
+        if (mTouchDelegate != null) {
+            if (mTouchDelegate.onTouchEvent(event)) {
+                return true;
+            }
+        }
+
+        if (((viewFlags &amp; CLICKABLE) == CLICKABLE ||
+                (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE) ||
+                (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE) {
+            switch (action) {
+                case MotionEvent.ACTION_UP:
+                    boolean prepressed = (mPrivateFlags &amp; PFLAG_PREPRESSED) != 0;
+                    if ((mPrivateFlags &amp; PFLAG_PRESSED) != 0 || prepressed) {
+                        // take focus if we don&#39;t have it already and we should in
+                        // touch mode.
+                        boolean focusTaken = false;
+                        if (isFocusable() &amp;&amp; isFocusableInTouchMode() &amp;&amp; !isFocused()) {
+                            focusTaken = requestFocus();
+                        }
+
+                        if (prepressed) {
+                            // The button is being released before we actually
+                            // showed it as pressed.  Make it show the pressed
+                            // state now (before scheduling the click) to ensure
+                            // the user sees it.
+                            setPressed(true, x, y);
+                       }
+
+                        if (!mHasPerformedLongPress &amp;&amp; !mIgnoreNextUpEvent) {
+                            // This is a tap, so remove the longpress check
+                            removeLongPressCallback();
+
+                            // Only perform take click actions if we were in the pressed state
+                            if (!focusTaken) {
+                                // Use a Runnable and post this rather than calling
+                                // performClick directly. This lets other visual state
+                                // of the view update before click actions start.
+                                if (mPerformClick == null) {
+                                    mPerformClick = new PerformClick();
+                                }
+                                if (!post(mPerformClick)) {
+                                    // 执行点击
+                                    performClick();
+                                }
+                            }
+                        }
+
+                        if (mUnsetPressedState == null) {
+                            mUnsetPressedState = new UnsetPressedState();
+                        }
+
+                        if (prepressed) {
+                            postDelayed(mUnsetPressedState,
+                                    ViewConfiguration.getPressedStateDuration());
+                        } else if (!post(mUnsetPressedState)) {
+                            // If the post failed, unpress right now
+                            mUnsetPressedState.run();
+                        }
+
+                        removeTapCallback();
+                    }
+                    mIgnoreNextUpEvent = false;
+                    break;
+
+                case MotionEvent.ACTION_DOWN:
+                    // ...
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    // ...
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    // ...
+                    break;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+</code></pre>
+<p>View#performClick</p>
+<pre><code class="java">    /**
+     * Call this view&#39;s OnClickListener, if it is defined.  Performs all normal
+     * actions associated with clicking: reporting accessibility event, playing
+     * a sound, etc.
+     *
+     * @return True there was an assigned OnClickListener that was called, false
+     *         otherwise is returned.
+     */
+    public boolean performClick() {
+        final boolean result;
+        final ListenerInfo li = mListenerInfo;
+        if (li != null &amp;&amp; li.mOnClickListener != null) {
+            playSoundEffect(SoundEffectConstants.CLICK);
+            li.mOnClickListener.onClick(this);
+            result = true;
+        } else {
+            result = false;
+        }
+
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
+        return result;
+    }
+</code></pre>
+<p>只要View的<code>CLICKABLE``和LONG_CLICKABLE</code>或者<code>CONTEXT_CLICKABLE</code>有一个为true，那么它就会消耗这个事件，即onTouchEvent方法返回true，不管它是不是<code>DISABLE</code>状态。UP的时候会执行<code>performClick()</code>在里面调用mOnClickListener回调的onClick方法。</p>
+<h5 id="View的LONG-CLICKABLE和CLICKABLE"><a href="#View的LONG-CLICKABLE和CLICKABLE" class="headerlink" title="View的LONG_CLICKABLE和CLICKABLE"></a>View的LONG_CLICKABLE和CLICKABLE</h5><p>LONG_CLICKABLE属性默认为false。<br>而CLICKABLE属性是否为false和具体的View有关。   </p>
+<p>设置<code>setOnClickListener/setOnLongClickListener</code>时会自动把标记设置为true。</p>
+<pre><code class="java">    /**
+     * Register a callback to be invoked when this view is clicked. If this view is not
+     * clickable, it becomes clickable.
+     *
+     * @param l The callback that will run
+     *
+     * @see #setClickable(boolean)
+     */
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        if (!isClickable()) {
+            setClickable(true);
+        }
+        getListenerInfo().mOnClickListener = l;
+    }
+
+
+
+        /**
+     * Register a callback to be invoked when this view is clicked and held. If this view is not
+     * long clickable, it becomes long clickable.
+     *
+     * @param l The callback that will run
+     *
+     * @see #setLongClickable(boolean)
+     */
+    public void setOnLongClickListener(@Nullable OnLongClickListener l) {
+        if (!isLongClickable()) {
+            setLongClickable(true);
+        }
+        getListenerInfo().mOnLongClickListener = l;
+    }
+</code></pre>
+<h2 id="View的滑动冲突"><a href="#View的滑动冲突" class="headerlink" title="View的滑动冲突"></a>View的滑动冲突</h2><h3 id="常见冲突"><a href="#常见冲突" class="headerlink" title="常见冲突"></a>常见冲突</h3><ol>
+<li>外部滑动方向和内部滑动方向不一致；</li>
+<li>外部滑动方法和内部滑动方向一致</li>
+<li>1和2的嵌套  </li>
+</ol>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01X0V59hyJQ/8avNw8r26om3pC.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<h4 id="场景1"><a href="#场景1" class="headerlink" title="场景1"></a>场景1</h4><p>ViewPager的内容是ListView, ViewPager内部已经自动做了滑动处理。  </p>
+<p>如果是ScrollView，就必须手动处理。否则内外两层只有1个能滑动。  </p>
+<p>还有外部是上下滑动，内部是横向滑动，属于同一类。</p>
+<h4 id="场景2"><a href="#场景2" class="headerlink" title="场景2"></a>场景2</h4><p>ViewPager中一个左右滑动的ScrollView，我滑动ScrollView不希望切换Viewpager，滑动ScrollView以外的屏幕才切换。</p>
+<h4 id="场景3"><a href="#场景3" class="headerlink" title="场景3"></a>场景3</h4><p>1 和 2的叠加， 需要分别处理。</p>
+<h3 id="处理规则"><a href="#处理规则" class="headerlink" title="处理规则"></a>处理规则</h3><ul>
+<li><p>场景1：<br>  左右滑动时，让父View拦截点击事件，上下滑动时，让子View拦截事件。<br>根据滑动的距离，角度，速度等判断是水平滑动还是竖直滑动。</p>
+</li>
+<li><p>场景2<br>  比较特殊，比如ScrollView内部有一个ListView，ListView中的内容滑动到顶部和底部时，响应外部ScrollView的滑动，否则就自己处理上下滑动。</p>
+</li>
+<li><p>场景3<br>  具体根据业务来决定规则。</p>
+</li>
+</ul>
+<h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><h4 id="外部拦截法"><a href="#外部拦截法" class="headerlink" title="外部拦截法"></a>外部拦截法</h4><p>所有事件都经过父View来处理，父View需要自己处理就拦截，不需要就分发给子View。需要重写父View的<code>onInterceptTouchEvent</code>，在内部做相应的拦截。<br>伪代码：  </p>
+<pre><code class="java">public boolean onInterceptTouchEvent(MotionEvent ev){
+    boolean intercepted = false;
+    float x = event.getX();
+    float y = event.getY();
+    switch (ev.getAction()){
+        case MotionEvent.ACTION_DOWN:
+            // 这里不能拦截，一旦拦截，后续的事件都会被拦截。
+            intercepted = false;
+            break;
+
+        case MotionEvent.ACTION_MOVE:
+            if (父容器需要点击事件){
+                intercepted = true;
+            }else{
+                intercepted = false;
+            }
+            break;
+
+        case MotionEvent.ACTION_UP:
+            // 必须返回false，给子类处理。
+            // 如果返回true，子类无法收到点击事件。
+            // 父View如果拦截MOVE事件，后续的事件都会自动拦截。
+            intercepted = false;
+            break;
+        default:
+            break;
+    }
+
+    mLastX = x;
+    mLastY = y;
+    return intercepted;
+}
+</code></pre>
+<h4 id="内部拦截法"><a href="#内部拦截法" class="headerlink" title="内部拦截法"></a>内部拦截法</h4><p>将所有的事件都分发给子View处理，子View需要就处理，不需要就给父View处理。需要配合requestDisallowInterceptTouchEvent配合使用。<br>重写子View的dispatchTouchEvent。伪代码：  </p>
+<pre><code class="java"> @Override public boolean dispatchTouchEvent(MotionEvent event) {
+    float x = event.getX();
+    float y = event.getY();
+
+    switch (event.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        // 设置不拦截
+        mViewGroup.requestDisallowInterceptTouchEvent(true);
+        break;
+
+      case MotionEvent.ACTION_MOVE:
+          if (mViewGroup.isNeedEvent()){
+            mViewGroup.requestDisallowInterceptTouchEvent(false);
+          }
+
+        break;
+
+      case MotionEvent.ACTION_UP:
+        break;
+
+      default:
+        break;
+    }
+
+    mLastX = x;
+    mLastY = y;
+    return super.dispatchTouchEvent(event);
+  }
+</code></pre>
+<p>父View需要设置默认拦截除了DOWN事件以外的事件。 ACTION_DOWN事件并不受FLAG_DISALLOW_INTERCEPT这个标记位的控制，所以一旦父容器拦截AC-TION_DOWN事件，那么所有的事件都无法传递到子元素中去。</p>
+<pre><code class="java">  @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
+    return ev.getAction() != MotionEvent.ACTION_DOWN;
+  }
+</code></pre>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/16/deepInRetrofit/" rel="next" title="Retrofit 源码阅读笔记">
+                <i class="fa fa-chevron-left"></i> Retrofit 源码阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/31/Android开发艺术探索笔记第4章/" rel="prev" title="Android开发艺术探索笔记-第4章 View的工作原理">
+                Android开发艺术探索笔记-第4章 View的工作原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#View的基础知识"><span class="nav-number">1.</span> <span class="nav-text">View的基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#View-的位置参数"><span class="nav-number">1.1.</span> <span class="nav-text">View 的位置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MotionEvent和TouchSlop"><span class="nav-number">1.2.</span> <span class="nav-text">MotionEvent和TouchSlop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MotionEvent"><span class="nav-number">1.2.1.</span> <span class="nav-text">MotionEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TouchSlop"><span class="nav-number">1.2.2.</span> <span class="nav-text">TouchSlop</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VelocityTracker、GestureDetector和Scroller"><span class="nav-number">1.3.</span> <span class="nav-text">VelocityTracker、GestureDetector和Scroller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VelocityTracker"><span class="nav-number">1.3.1.</span> <span class="nav-text">VelocityTracker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GestureDetector"><span class="nav-number">1.3.2.</span> <span class="nav-text">GestureDetector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scroller"><span class="nav-number">1.3.3.</span> <span class="nav-text">Scroller</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的滑动"><span class="nav-number">2.</span> <span class="nav-text">View 的滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用scrollTo-scrollBy"><span class="nav-number">2.1.</span> <span class="nav-text">使用scrollTo/scrollBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用动画"><span class="nav-number">2.2.</span> <span class="nav-text">使用动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变布局参数"><span class="nav-number">2.3.</span> <span class="nav-text">改变布局参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各种滑动方式对比"><span class="nav-number">2.4.</span> <span class="nav-text">各种滑动方式对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#跟手滑动的例子"><span class="nav-number">2.5.</span> <span class="nav-text">跟手滑动的例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性滑动"><span class="nav-number">3.</span> <span class="nav-text">弹性滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scroller-1"><span class="nav-number">3.1.</span> <span class="nav-text">Scroller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动画"><span class="nav-number">3.2.</span> <span class="nav-text">动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟策略"><span class="nav-number">3.3.</span> <span class="nav-text">延迟策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的事件分发机制"><span class="nav-number">4.</span> <span class="nav-text">View的事件分发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onTouchListener"><span class="nav-number">4.1.</span> <span class="nav-text">onTouchListener</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件传递过程"><span class="nav-number">4.2.</span> <span class="nav-text">事件传递过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些结论"><span class="nav-number">4.3.</span> <span class="nav-text">一些结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码解析"><span class="nav-number">4.4.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity对点击事件的分发过程"><span class="nav-number">4.4.1.</span> <span class="nav-text">Activity对点击事件的分发过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#顶级View的分发"><span class="nav-number">4.4.2.</span> <span class="nav-text">顶级View的分发</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewGroup的拦截"><span class="nav-number">4.4.2.1.</span> <span class="nav-text">ViewGroup的拦截</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewGroup不拦截事件时，事件的分发过程"><span class="nav-number">4.4.2.2.</span> <span class="nav-text">ViewGroup不拦截事件时，事件的分发过程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#mFirstTouchTarget-的赋值过程"><span class="nav-number">4.4.2.2.1.</span> <span class="nav-text">mFirstTouchTarget 的赋值过程</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#遍历所有的子元素后事件都没有被合适地处理"><span class="nav-number">4.4.2.3.</span> <span class="nav-text">遍历所有的子元素后事件都没有被合适地处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#View对点击事件的处理过程"><span class="nav-number">4.4.3.</span> <span class="nav-text">View对点击事件的处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#分发dispatchTouchEvent"><span class="nav-number">4.4.3.1.</span> <span class="nav-text">分发dispatchTouchEvent</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onTouchEvent"><span class="nav-number">4.4.3.2.</span> <span class="nav-text">onTouchEvent</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#View的LONG-CLICKABLE和CLICKABLE"><span class="nav-number">4.4.3.3.</span> <span class="nav-text">View的LONG_CLICKABLE和CLICKABLE</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的滑动冲突"><span class="nav-number">5.</span> <span class="nav-text">View的滑动冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见冲突"><span class="nav-number">5.1.</span> <span class="nav-text">常见冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#场景1"><span class="nav-number">5.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景2"><span class="nav-number">5.1.2.</span> <span class="nav-text">场景2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景3"><span class="nav-number">5.1.3.</span> <span class="nav-text">场景3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理规则"><span class="nav-number">5.2.</span> <span class="nav-text">处理规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方式"><span class="nav-number">5.3.</span> <span class="nav-text">解决方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#外部拦截法"><span class="nav-number">5.3.1.</span> <span class="nav-text">外部拦截法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部拦截法"><span class="nav-number">5.3.2.</span> <span class="nav-text">内部拦截法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

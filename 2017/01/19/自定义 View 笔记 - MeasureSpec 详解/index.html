@@ -1,0 +1,942 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥着不可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义 View 笔记 2 - MeasureSpec 详解">
+<meta property="og:url" content="https://luwenjie.me/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥着不可">
+<meta property="og:image" content="http://cuntuku.com/images/2017/01/23/Jietu20170123-110631.jpg">
+<meta property="og:image" content="http://cuntuku.com/images/2017/01/17/QQ20170117-2140552x.png">
+<meta property="og:updated_time" content="2017-01-24T13:39:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义 View 笔记 2 - MeasureSpec 详解">
+<meta name="twitter:description" content="在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥着不可">
+<meta name="twitter:image" content="http://cuntuku.com/images/2017/01/23/Jietu20170123-110631.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/"/>
+
+
+
+
+
+  <title>自定义 View 笔记 2 - MeasureSpec 详解 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自定义 View 笔记 2 - MeasureSpec 详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T22:20:00+08:00">
+                2017-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自定义-View/" itemprop="url" rel="index">
+                    <span itemprop="name">自定义 View</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥着不可或缺的作用。所以，了解 View 的测量过程，最合适的切入点就是 MeasureSpec。于是我们从 MeasureSpec 着手去寻找上述问题的答案。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>MeasureSpec 是 View 类中的静态内部类。</p>
+<blockquote>
+<p> A MeasureSpec encapsulates the layout requirements passed from parent to child.<br>Each MeasureSpec represents a requirement for either the width or the height.<br> A MeasureSpec is comprised of a size and a mode. There are three possible</p>
+</blockquote>
+<p>翻译：<br>MeasureSpec (测量规格) 封装了从父节点传递给子节点的布局要求。每个 MeasureSpec 表示宽度或高度的要求。度量规格包括大小和模式。 有三种模式。</p>
+<p>这段话的重要信息：</p>
+<ol>
+<li>MeasureSpec封装了父布局传递给子View的布局要求</li>
+<li>MeasureSpec可以表示宽和高</li>
+<li>MeasureSpec由size和mode组成</li>
+</ol>
+<p>MeasureSpec 由 32 位 int 数据组成，其中高 2 位代表 mode，前 30 位代表 size。</p>
+<p>这样实现是为了减少对象分配，计算中使用位运算提高了效率。</p>
+<pre><code class="java">// 获取 mode
+int specMode = MeasureSpec.getMode(measureSpec);
+
+// 获取 size
+int specSize = MeasureSpec.getSize(measureSpec);
+
+// 生成 measureSpec
+int measureSpec = MeasureSpec.makeMeasureSpec(size, mode);
+</code></pre>
+<h2 id="三种模式"><a href="#三种模式" class="headerlink" title="三种模式"></a>三种模式</h2><p>一共有 3 种模式：</p>
+<ul>
+<li>MeasureSpec.UNSPECIFIED</li>
+<li>MeasureSpec.EXACTLY</li>
+<li>MeasureSpec.AT_MOST</li>
+</ul>
+<h3 id="MeasureSpec-UNSPECIFIED"><a href="#MeasureSpec-UNSPECIFIED" class="headerlink" title="MeasureSpec.UNSPECIFIED"></a>MeasureSpec.UNSPECIFIED</h3><blockquote>
+<p> Measure specification mode: The parent has not imposed any constraint on the child. It can be whatever size it wants.</p>
+</blockquote>
+<p>不指定大小，View 想多大就多大，通常情况下绘制自定义 View 时才会使用。</p>
+<h3 id="MeasureSpec-EXACTLY"><a href="#MeasureSpec-EXACTLY" class="headerlink" title="MeasureSpec.EXACTLY"></a>MeasureSpec.EXACTLY</h3><blockquote>
+<p>Measure specification mode: The parent has determined an exact size for the child. The child is going to be given those bounds regardless of how big it wants to be.</p>
+</blockquote>
+<p>精确值模式。<br>当我们设置控件的宽或高为具体的数值时即为此种模式。<br>例如  ：</p>
+<pre><code class="xml">android:layout_width = &quot;100dp&quot;
+</code></pre>
+<pre><code class="xml">android:layout_width = &quot;match_parent&quot;
+</code></pre>
+<p>父布局已经为自 View 决定了准确的尺寸。</p>
+<h3 id="MeasureSpec-AT-MOST"><a href="#MeasureSpec-AT-MOST" class="headerlink" title="MeasureSpec.AT_MOST"></a>MeasureSpec.AT_MOST</h3><blockquote>
+<p>Measure specification mode: The child can be as large as it wants up to the specified size.</p>
+</blockquote>
+<p>最大值模式。<br>控件的尺寸只要不超过父控件允许的最大尺寸即可。<br>例如：</p>
+<pre><code class="xml">android:layout_width = &quot;wrap_content&quot;
+</code></pre>
+<h2 id="从源码中分析-MesaureSpec-是如何形成的"><a href="#从源码中分析-MesaureSpec-是如何形成的" class="headerlink" title="从源码中分析 MesaureSpec 是如何形成的"></a>从源码中分析 MesaureSpec 是如何形成的</h2><p>父容器测量子 View 的过程如下：<br><img src="http://cuntuku.com/images/2017/01/23/Jietu20170123-110631.jpg" alt="ViewGroup 测量的调用过程"></p>
+<p>父类容器 ViewGroup 在测量子 View 时会调用<code>measureChildWidthMargins()</code> ，在<code>measureChildWidthMargins()</code> 中又会调用 <code>getChildMeasureSpec()</code>。</p>
+<p>通过这 2 个方法来了解这三个模式是如何生成的。</p>
+<p>先来看 ViewGroup 中的 measureChildWidthMargins(View, int, int, int, int) 源码：</p>
+<pre><code class="java">/**
+ * 请求此视图的一个孩子测量自身。
+ * 考虑到此视图的 MeasureSpec 要求和它有 padding 和 margins，孩子必须有 MarginLayoutParams。
+ * 计算 padding 和 margins 在 getChildMeasureSpec（） 中完成。
+ *
+ * @param child 需要测量的孩子
+ * @param parentWidthMeasureSpec 当前 ViewGroup 视图的宽的 MeasureSpec
+ * @param widthUsed 当前 ViewGroup 或者它的其他孩子在水平方向已经占用的空间
+ * @param parentHeightMeasureSpec 当前 ViewGroup 视图的高的 MeasureSpec
+ * @param heightUsed 当前 ViewGroup 或者它的其他孩子在垂直方向已经占用的空间
+ */
+protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed,
+    int parentHeightMeasureSpec, int heightUsed) {
+  // 获取孩子的 MarginLayoutParams
+  final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+
+  // 获得孩子的宽的 MeasureSpec
+  final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+      mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);
+
+  // 获得孩子的高的 MeasureSpec
+  final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+      mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed, lp.height);
+
+  // 调用孩子 View 的 measure()方法，传入刚刚得到的孩子的宽和高的 MeasureSpec
+  child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+}
+</code></pre>
+<p>注意这个方法传入的参数的含义。这四个参数</p>
+<ol>
+<li>当前 ViewGroup 视图的宽的 MeasureSpec</li>
+<li>当前 ViewGroup 或者它的其他孩子在水平方向已经占用的空间</li>
+<li>当前 ViewGroup 视图的高的 MeasureSpec</li>
+<li>当前 ViewGroup 或者它的其他孩子在垂直方向已经占用的空间</li>
+</ol>
+<p>从这四个参数其实可以看出父 View 影响着子 View 的 MeasureSpec 的生成。</p>
+<p>上述方法是通过 getChildMeasureSpec() 计算出子 View 宽和高的 MeasureSpec 的，我们来看看这个方法是如何计算的。</p>
+<p>ViewGroup 中的 getChildMeasureSpec(int, int, int) 源码：</p>
+<pre><code class="java">  /**
+   * 这个方法根据子 Veiw 的尺寸和父容器的 MeasureSpec 计算出子 View 的正确的 MeasureSpec
+   *
+   * @param spec 父容器的 MeasureSpec
+   * @param padding 当前父容器的 padding 和 margin
+   * @param childDimension 孩子想要在当前父容器上获取的尺寸
+   * @return 子 View 的 MeasureSpec
+   */
+  public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
+    // 获得父容器的测量模式和测量大小
+    int specMode = MeasureSpec.getMode(spec);
+    int specSize = MeasureSpec.getSize(spec);
+
+    // 取 0 和 父容器剩下大小的最大值
+    int size = Math.max(0, specSize - padding);
+
+    // 初始化子 View 的测量大小和测量模式
+    int resultSize = 0;
+    int resultMode = 0;
+
+    // 开始计算 MeasureSpec
+    switch (specMode) {
+      // 父容器为 EXACTLY 模式
+      case MeasureSpec.EXACTLY:
+
+        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
+        if (childDimension &gt;= 0) {
+          resultSize = childDimension;
+          resultMode = MeasureSpec.EXACTLY;
+        }
+
+        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，测量大小就为父容器剩余的大小。模式是 EXACTLY。
+        else if (childDimension == LayoutParams.MATCH_PARENT) {
+          resultSize = size;
+          resultMode = MeasureSpec.EXACTLY;
+        }
+
+        // 如果子类想要的大小时 WRAP_CONTENT，测量大小就为父容器剩余的大小。模式是 AT_MOST。
+        else if (childDimension == LayoutParams.WRAP_CONTENT) {
+          // Child wants to determine its own size. It can&#39;t be
+          // bigger than us.
+          resultSize = size;
+          resultMode = MeasureSpec.AT_MOST;
+        }
+        break;
+
+      // 父容器为 AT_MOST 模式
+      case MeasureSpec.AT_MOST:
+
+        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
+        if (childDimension &gt;= 0) {
+          // Child wants a specific size... so be it
+          resultSize = childDimension;
+          resultMode = MeasureSpec.EXACTLY;
+        }
+
+        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，但是父容器的大小是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。
+        else if (childDimension == LayoutParams.MATCH_PARENT) {
+          // Child wants to be our size, but our size is not fixed.
+          // Constrain child to not be bigger than us.
+          resultSize = size;
+          resultMode = MeasureSpec.AT_MOST;
+        }
+
+        // 如果子类想要的大小是 WRAP_CONTENT，子 View 大小不固定，父容器的大小也是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。
+        else if (childDimension == LayoutParams.WRAP_CONTENT) {
+          // Child wants to determine its own size. It can&#39;t be
+          // bigger than us.
+          resultSize = size;
+          resultMode = MeasureSpec.AT_MOST;
+        }
+        break;
+
+      // 父容器为 UNSPECIFIED 模式
+      case MeasureSpec.UNSPECIFIED:
+
+        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
+        if (childDimension &gt;= 0) {
+          // Child wants a specific size... let him have it
+          resultSize = childDimension;
+          resultMode = MeasureSpec.EXACTLY;
+        }
+
+        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。
+        else if (childDimension == LayoutParams.MATCH_PARENT) {
+          // Child wants to be our size... find out how big it should
+          // be
+          resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+          resultMode = MeasureSpec.UNSPECIFIED;
+        }
+
+        // 如果子类想要的大小是 WRAP_CONTENT，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。
+        else if (childDimension == LayoutParams.WRAP_CONTENT) {
+          // Child wants to determine its own size.... find out how
+          // big it should be
+          resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+          resultMode = MeasureSpec.UNSPECIFIED;
+        }
+        break;
+    }
+
+    // 根据上面得到的子 View 的测量大小和测量模式合成一个 MeasureSpec
+    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
+  }
+</code></pre>
+<p>看完这段源码我们可以清楚的发现：</p>
+<p><strong>子 View 的 MeasureSpec 由其父容器的 MeasureSpec 和该子 View 本身的布局参数 LayoutParams 共同决定。</strong></p>
+<p>根据上述源码可以总结出下面这张表：</p>
+<p><a href="http://img.blog.csdn.net/20160510112048981" target="_blank" rel="external"><img src="http://cuntuku.com/images/2017/01/17/QQ20170117-2140552x.png" alt=""></a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>看到这里，开头问题迎刃而解。</p>
+<ul>
+<li><p>比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？</p>
+<p>因为子 View 的 MeasureSpec 根据父 View 的 MeasureSpec 和子 View 的布局参数来计算的。</p>
+</li>
+<li><p>子 View 的 specMode 和 specSize 的生成依据又是什么？</p>
+<p>依据就是父 View 的 MeasureSpec 和子 View 的布局参数。</p>
+</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://blog.csdn.net/lfdfhl/article/details/51347818" target="_blank" rel="external"> 自定义View系列教程02–onMeasure源码详尽分析</a></p>
+<p>Android 群英传第三章</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/19/Mac Chrome 快捷键/" rel="next" title="Mac Chrome 快捷键">
+                <i class="fa fa-chevron-left"></i> Mac Chrome 快捷键
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/19/自定义 View onMeasure() 的过程/" rel="prev" title="自定义 View 笔记 3 - onMeasure() 的过程">
+                自定义 View 笔记 3 - onMeasure() 的过程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三种模式"><span class="nav-number">2.</span> <span class="nav-text">三种模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec-UNSPECIFIED"><span class="nav-number">2.1.</span> <span class="nav-text">MeasureSpec.UNSPECIFIED</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec-EXACTLY"><span class="nav-number">2.2.</span> <span class="nav-text">MeasureSpec.EXACTLY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec-AT-MOST"><span class="nav-number">2.3.</span> <span class="nav-text">MeasureSpec.AT_MOST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从源码中分析-MesaureSpec-是如何形成的"><span class="nav-number">3.</span> <span class="nav-text">从源码中分析 MesaureSpec 是如何形成的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

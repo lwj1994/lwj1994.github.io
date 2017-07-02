@@ -1,0 +1,908 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Drawable表示的是一种可以在Canvas上进行绘制的抽象的概念，它的种类有很多，最常见的颜色和图片都可以是一个Drawable。">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第6章 Android的Drawable">
+<meta property="og:url" content="https://luwenjie.me/2017/06/19/Android开发艺术探索笔记第6章/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="Drawable表示的是一种可以在Canvas上进行绘制的抽象的概念，它的种类有很多，最常见的颜色和图片都可以是一个Drawable。">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01arFlLJFcK/q8Z6HIJsNKupJV.jpg">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01uqb0xS5bu/STiTqRrUZ5hFsG.jpg">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01bRwCVTlcR/p7gc1rvP6BO8Sc.jpg">
+<meta property="og:updated_time" content="2017-06-19T04:14:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第6章 Android的Drawable">
+<meta name="twitter:description" content="Drawable表示的是一种可以在Canvas上进行绘制的抽象的概念，它的种类有很多，最常见的颜色和图片都可以是一个Drawable。">
+<meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01arFlLJFcK/q8Z6HIJsNKupJV.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/06/19/Android开发艺术探索笔记第6章/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第6章 Android的Drawable | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/06/19/Android开发艺术探索笔记第6章/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第6章 Android的Drawable</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-19T16:37:00+08:00">
+                2017-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/19/Android开发艺术探索笔记第6章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Drawable表示的是一种可以在Canvas上进行绘制的抽象的概念，它的种类有很多，最常见的颜色和图片都可以是一个Drawable。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><pre><code class="java">public abstract class Drawable
+</code></pre>
+<p>在Android的设计中，Drawable是一个抽象类，它是所有Drawable对象的基类，每个具体的Drawable都是它的子类，比如ShapeDrawable、BitmapDrawable等。  </p>
+<p>使用<code>getIntrinsicWidth</code> ，<code>getIntrinsicHeight</code> 获得宽和高，不是所有的 Drawable 都有宽高。</p>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01arFlLJFcK/q8Z6HIJsNKupJV.jpg" alt=""></p>
+<h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p>常见的有 BitmapDrawable, ShapeDrawable, LayerDrawable 以及 StateListDrawable。</p>
+<h2 id="BitmapDrawable"><a href="#BitmapDrawable" class="headerlink" title="BitmapDrawable"></a>BitmapDrawable</h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;bitmap xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    &lt;!--资源id--&gt;
+    android:src=&quot;@mipmap/ic_launcher&quot;
+    &lt;!--抗锯齿--&gt;
+    android:antialias=&quot;true&quot;
+    &lt;!--抖动--&gt;
+    android:dither=&quot;true&quot;
+    &lt;!--过滤--&gt;
+    android:filter=&quot;true&quot;
+    &lt;!--位置--&gt;
+    android:gravity=&quot;center&quot;
+    &lt;!--平铺模式--&gt;
+    android:tileMode=&quot;repeat&quot;
+    &gt;
+&lt;/bitmap&gt;
+</code></pre>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;nine-patch xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:src=&quot;@mipmap/ic_launcher&quot;&gt;
+    &lt;!--属性和bitmap一样--&gt;
+&lt;/nine-patch&gt;
+</code></pre>
+<h2 id="ShapeDrawable"><a href="#ShapeDrawable" class="headerlink" title="ShapeDrawable"></a>ShapeDrawable</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:innerRadius=&quot;2dp&quot;
+    android:innerRadiusRatio=&quot;1&quot;
+    android:shape=&quot;rectangle&quot;
+    &gt;
+  &lt;corners
+      android:bottomLeftRadius=&quot;2dp&quot;
+      android:bottomRightRadius=&quot;2dp&quot;
+      android:radius=&quot;3dp&quot;
+      android:topLeftRadius=&quot;2dp&quot;
+      android:topRightRadius=&quot;2dp&quot;
+      /&gt;
+
+  &lt;gradient
+      android:angle=&quot;2&quot;
+      android:centerColor=&quot;@color/colorAccent&quot;
+      android:centerX=&quot;23&quot;
+      android:centerY=&quot;22&quot;
+      android:endColor=&quot;@color/colorPrimaryDark&quot;
+      android:gradientRadius=&quot;23dp&quot;
+      android:startColor=&quot;@color/colorAccent&quot;
+      android:type=&quot;linear&quot;
+      android:useLevel=&quot;true&quot;
+      /&gt;
+
+  &lt;padding
+      android:bottom=&quot;2dp&quot;
+      android:left=&quot;2dp&quot;
+      android:right=&quot;2dp&quot;
+      android:top=&quot;2dp&quot;
+      /&gt;
+
+  &lt;size
+      android:height=&quot;100dp&quot;
+      android:width=&quot;200dp&quot;
+      /&gt;
+
+  &lt;solid
+      android:color=&quot;@color/colorPrimary&quot;
+      /&gt;
+
+  &lt;stroke
+      android:width=&quot;2dp&quot;
+      android:color=&quot;@color/colorPrimary&quot;
+      android:dashWidth=&quot;2dp&quot;
+      android:dashGap=&quot;2dp&quot;
+      /&gt;
+&lt;/shape&gt;
+</code></pre><ol>
+<li><p>android:shape</p>
+<blockquote>
+<p>表示形状，有四个选项：rectangle（矩形）、oval（椭圆）、line（横线）和ring（圆环）。它的默认值是矩形，另外line和ring这两个选项必须要通过<stroke>标签来指定线的宽度和颜色等。  </stroke></p>
+<p>针对ring这个形状，有5个特殊的属性：android:innerRadius、android:thickness、android:innerRadiusRatio、android:thicknessRatio和android:useLevel。<br> <img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01uqb0xS5bu/STiTqRrUZ5hFsG.jpg" alt=""></p>
+</blockquote>
+</li>
+<li><p>corner</p>
+<blockquote>
+<p>表示 shape 的四个角度，只适用于矩形的 shape。</p>
+</blockquote>
+</li>
+<li><p>gradient</p>
+<blockquote>
+<p>与 <solid> 标签是互相排斥的。表示渐变效果。</solid></p>
+</blockquote>
+</li>
+<li><p>solid</p>
+<blockquote>
+<p>纯色填充</p>
+</blockquote>
+</li>
+<li><p>stroke</p>
+<blockquote>
+<p>Shape 的描边。</p>
+</blockquote>
+</li>
+<li><p>padding</p>
+<blockquote>
+<p>表示包含 Shape 的 View 的空白</p>
+</blockquote>
+</li>
+<li><p>size</p>
+<blockquote>
+<p>大小。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="LayerDrawable"><a href="#LayerDrawable" class="headerlink" title="LayerDrawable"></a>LayerDrawable</h2><p>是一种层次化的 Drawable 集合，通过将不同的 Drawable 放置在不同的层上面达到一种叠加后的效果。</p>
+<pre><code class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+
+  &lt;item 
+      android:id=&quot;@+id/name&quot;
+      &lt;!--相对于View向下的偏移量--&gt;
+      android:bottom=&quot;23dp&quot;
+      android:drawable=&quot;@mipmap/ic_launcher&quot;
+      &lt;!--相对于View向左的偏移量--&gt;
+      android:left=&quot;23dp&quot;
+      &lt;!--相对于View向右的偏移量--&gt;
+      android:right=&quot;23dp&quot;
+      &lt;!--相对于View向上的偏移量--&gt;
+      android:top=&quot;23dp&quot;
+  /&gt;
+&lt;/layer-list&gt;
+</code></pre>
+<p>文本框输入背景</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+  &lt;item&gt;
+    &lt;shape android:shape=&quot;rectangle&quot;&gt;
+      &lt;solid android:color=&quot;#0ac39e&quot;/&gt;
+    &lt;/shape&gt;
+  &lt;/item&gt;
+  &lt;item android:bottom=&quot;6dp&quot;&gt;
+    &lt;shape android:shape=&quot;rectangle&quot;&gt;
+      &lt;solid android:color=&quot;#ffffff&quot;/&gt;
+    &lt;/shape&gt;
+  &lt;/item&gt;
+  &lt;item
+      android:bottom=&quot;1dp&quot;
+      android:left=&quot;1dp&quot;
+      android:right=&quot;1dp&quot;&gt;
+    &lt;shape android:shape=&quot;rectangle&quot;&gt;
+      &lt;solid android:color=&quot;@android:color/black&quot;/&gt;
+    &lt;/shape&gt;
+  &lt;/item&gt;
+&lt;/layer-list&gt;
+</code></pre>
+<h2 id="StateListDrawable"><a href="#StateListDrawable" class="headerlink" title="StateListDrawable"></a>StateListDrawable</h2><p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01bRwCVTlcR/p7gc1rvP6BO8Sc.jpg" alt=""></p>
+<h2 id="LevelListDrawable"><a href="#LevelListDrawable" class="headerlink" title="LevelListDrawable"></a>LevelListDrawable</h2><p>对于于 <level-list> 标签。它同样表示一个Drawable集合，集合中的每个Drawable都有一个等级（level）的概念。根据不同的等级，LevelListDrawable会切换为对应的Drawable。</level-list></p>
+<h2 id="TransitionDrawable"><a href="#TransitionDrawable" class="headerlink" title="TransitionDrawable"></a>TransitionDrawable</h2><p>TransitionDrawable对应于<transition>标签，它用于实现两个Drawable之间的淡入淡出效果</transition></p>
+<h2 id="InsetDrawable"><a href="#InsetDrawable" class="headerlink" title="InsetDrawable"></a>InsetDrawable</h2><p>InsetDrawable对应于<inset>标签，它可以将其他Drawable内嵌到自己当中，并可以在四周留出一定的间距。当一个View希望自己的背景比自己的实际区域小的时候，可以采用InsetDrawable来实现，同时我们知道，通过LayerDrawable也可以实现这种效果。</inset></p>
+<h2 id="ScaleDrawable"><a href="#ScaleDrawable" class="headerlink" title="ScaleDrawable"></a>ScaleDrawable</h2><p>ScaleDrawable对应于<scale>标签，它可以根据自己的等级（level）将指定的Drawable缩放到一定比例。</scale></p>
+<h2 id="ClipDrawable"><a href="#ClipDrawable" class="headerlink" title="ClipDrawable"></a>ClipDrawable</h2><p>ClipDrawable对应于<clip>标签，它可以根据自己当前的等级（level）来裁剪另一个Drawable，裁剪方向可以通过android:clipOrientation和an-droid:gravity这两个属性来共同控制</clip></p>
+<h2 id="自定义-Drawable"><a href="#自定义-Drawable" class="headerlink" title="自定义 Drawable"></a>自定义 Drawable</h2><p>Drawable的使用范围很单一，一个是作为Im-ageView中的图像来显示，另外一个就是作为View的背景，大多数情况下Drawable都是以View的背景这种形式出现的。Drawable的工作原理很简单，其核心就是draw方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/02/Android开发艺术探索笔记第10章/" rel="next" title="Android开发艺术探索笔记-第10章 Android的消息机制">
+                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第10章 Android的消息机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/28/AndroidArtChapter2/" rel="prev" title="Android开发艺术探索笔记-第2章 Android的IPC机制">
+                Android开发艺术探索笔记-第2章 Android的IPC机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分类"><span class="nav-number">2.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BitmapDrawable"><span class="nav-number">2.1.</span> <span class="nav-text">BitmapDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShapeDrawable"><span class="nav-number">2.2.</span> <span class="nav-text">ShapeDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LayerDrawable"><span class="nav-number">2.3.</span> <span class="nav-text">LayerDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StateListDrawable"><span class="nav-number">2.4.</span> <span class="nav-text">StateListDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LevelListDrawable"><span class="nav-number">2.5.</span> <span class="nav-text">LevelListDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TransitionDrawable"><span class="nav-number">2.6.</span> <span class="nav-text">TransitionDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InsetDrawable"><span class="nav-number">2.7.</span> <span class="nav-text">InsetDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ScaleDrawable"><span class="nav-number">2.8.</span> <span class="nav-text">ScaleDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ClipDrawable"><span class="nav-number">2.9.</span> <span class="nav-text">ClipDrawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-Drawable"><span class="nav-number">2.10.</span> <span class="nav-text">自定义 Drawable</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

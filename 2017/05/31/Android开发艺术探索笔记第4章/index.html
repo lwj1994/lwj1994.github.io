@@ -1,0 +1,2193 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第4章 View的工作原理">
+<meta property="og:url" content="https://luwenjie.me/2017/05/31/Android开发艺术探索笔记第4章/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01s50KI6XvJ/wPxRNtLOeLwo2E.jpg?thumb=1024x&scale=auto">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170526149576456552211.jpg">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/201705261495763990907.png">
+<meta property="og:image" content="http://img.blog.csdn.net/20160510112048981">
+<meta property="og:updated_time" content="2017-05-31T10:49:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第4章 View的工作原理">
+<meta name="twitter:description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
+<meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01s50KI6XvJ/wPxRNtLOeLwo2E.jpg?thumb=1024x&scale=auto">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/05/31/Android开发艺术探索笔记第4章/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第4章 View的工作原理 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/05/31/Android开发艺术探索笔记第4章/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第4章 View的工作原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-31T18:37:00+08:00">
+                2017-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/31/Android开发艺术探索笔记第4章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="ViewRoot-和-DecoreView"><a href="#ViewRoot-和-DecoreView" class="headerlink" title="ViewRoot 和 DecoreView"></a>ViewRoot 和 DecoreView</h2><h3 id="ViewRootImpl"><a href="#ViewRootImpl" class="headerlink" title="ViewRootImpl"></a>ViewRootImpl</h3><p>ViewRoot对应<code>android.view.ViewRootImpl</code>类，它是连接WindowManager和DecorView的纽带，View的三大流程均是通过ViewRoot来完成的。  </p>
+<p>在ActivityThread中，当Activity对象被创建完毕后，会将DecorView添加到Window中，同时创建ViewRooltImpl对象，并将ViewRootImpl对象和DecorView建立联系。  </p>
+<p>android.view.WindowManagerGlobal#addView()</p>
+<pre><code class="java">public void addView(View view, ViewGroup.LayoutParams params,
+        Display display, Window parentWindow) {
+
+   //...略...
+
+    ViewRootImpl root;
+    View panelParentView = null;
+
+    synchronized (mLock) {
+        // Start watching for system property changes.
+        //...略...
+                    root = new ViewRootImpl(view.getContext(), display);
+
+        view.setLayoutParams(wparams);
+
+        mViews.add(view);
+        mRoots.add(root);
+        mParams.add(wparams);
+    }
+
+    // do this last because it fires off messages to start doing things
+    try {
+        root.setView(view, wparams, panelParentView);
+    } catch (RuntimeException e) {
+        // BadTokenException or InvalidDisplayException, clean up.
+        synchronized (mLock) {
+            final int index = findViewLocked(view, false);
+            if (index &gt;= 0) {
+                removeViewLocked(index, true);
+            }
+        }
+        throw e;
+    }
+}
+</code></pre>
+<p>View的绘制流程是从ViewRoot的<code>performTraversals</code>开始的。流程图：<br><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01s50KI6XvJ/wPxRNtLOeLwo2E.jpg?thumb=1024x&amp;scale=auto" alt=""></p>
+<p>measure 过程决定了View的宽和高，getMeasuredWidth和getMeasuredHeight除了特殊情况都会等于View最终的宽和高。</p>
+<h4 id="DecorView"><a href="#DecorView" class="headerlink" title="DecorView"></a>DecorView</h4><p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170526149576456552211.jpg" alt=""></p>
+<p>DecorView下面有一个竖直的LineaLayout，上面是标题栏，下面是内容栏。</p>
+<p><img src="http://7xt4re.com1.z0.glb.clouddn.com/201705261495763990907.png" alt="">  </p>
+<h3 id="理解MeasureSpec"><a href="#理解MeasureSpec" class="headerlink" title="理解MeasureSpec"></a>理解MeasureSpec</h3><p>父容器的MeasureSpec 会影响子View的MeasureSpec的生成。</p>
+<h3 id="MeasureSpec"><a href="#MeasureSpec" class="headerlink" title="MeasureSpec"></a>MeasureSpec</h3><p>代表一个32位的int值，高2位代表SpecMode，低30位代表SpecSize。</p>
+<ul>
+<li>UNSPECIFIED</li>
+<li>EXACTLY</li>
+<li>AT_MOST</li>
+</ul>
+<h3 id="MeasureSpec和LayoutParams的对应关系"><a href="#MeasureSpec和LayoutParams的对应关系" class="headerlink" title="MeasureSpec和LayoutParams的对应关系"></a>MeasureSpec和LayoutParams的对应关系</h3><p>具体规则（图片来自@谷歌的小弟）：<br><img src="http://img.blog.csdn.net/20160510112048981" alt="">  </p>
+<p>在View测量的时候，系统会将LayoutParams在父容器的约束下转换成对应的MeasureSpec，再根据这个MeasureSpec来确定View测量后的宽/高。  </p>
+<ul>
+<li>顶级DecorView的MeasureSpec由窗口的尺寸和其自身的LayoutParam来共同决定。</li>
+<li>普通View的MeasureSpec由父View的MeasureSpec和自身的LayoutParam来共同决定。</li>
+</ul>
+<p>MeasureSpec 确定后，onMeasure中就可以确定View的测量的宽/高。</p>
+<h4 id="DecoreView"><a href="#DecoreView" class="headerlink" title="DecoreView"></a>DecoreView</h4><p>下面这个方法里的几行代码展示了DecoreView的MeasureSpec的创建过程：</p>
+<p>ViewRootImpl#measureHierarchy()</p>
+<pre><code class="java">private boolean measureHierarchy(final View host, final WindowManager.LayoutParams lp,
+            final Resources res, final int desiredWindowWidth, final int desiredWindowHeight) {
+    // ...
+
+    // desiredWindowWidth和desiredWindowHeight是屏幕的尺寸
+    childWidthMeasureSpec = getRootMeasureSpec(desiredWindowWidth, lp.width);
+    childHeightMeasureSpec = getRootMeasureSpec(desiredWindowHeight, lp.height);
+    performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);
+    // ...
+}
+</code></pre>
+<p>ViewRootImpl#getRootMeasureSpec()</p>
+<pre><code class="java">    /**
+     * Figures out the measure spec for the root view in a window based on it&#39;s
+     * layout params.
+     *
+     * @param windowSize
+     *            The available width or height of the window
+     *
+     * @param rootDimension
+     *            The layout params for one dimension (width or height) of the
+     *            window.
+     *
+     * @return The measure spec to use to measure the root view.
+     */
+    private static int getRootMeasureSpec(int windowSize, int rootDimension) {
+        int measureSpec;
+        switch (rootDimension) {
+
+        case ViewGroup.LayoutParams.MATCH_PARENT:
+            // Window can&#39;t resize. Force root view to be windowSize.
+            // match_parent Window强制转成window的size
+            measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.EXACTLY);
+            break;
+        case ViewGroup.LayoutParams.WRAP_CONTENT:
+            // Window can resize. Set max size for root view.
+
+            measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.AT_MOST);
+            break;
+        default:
+            // Window wants to be an exact size. Force root view to be that size.
+            measureSpec = MeasureSpec.makeMeasureSpec(rootDimension, MeasureSpec.EXACTLY);
+            break;
+        }
+        return measureSpec;
+    }
+</code></pre>
+<p>DecorView产生MeasureSpec的规则：  </p>
+<ul>
+<li>LayoutParams.MATCH_PARENT: EXACTLY, 大小为Window的大小。</li>
+<li>LayoutParams.WRAP_CONTENT: AT_MOST, 大小不确定，不超过window的大小</li>
+<li>固定大小: EXACTLY, 大小为LayoutParams指定的大小。</li>
+</ul>
+<h2 id="View的工作流程"><a href="#View的工作流程" class="headerlink" title="View的工作流程"></a>View的工作流程</h2><h3 id="measure的过程"><a href="#measure的过程" class="headerlink" title="measure的过程"></a>measure的过程</h3><h4 id="View的measure过程"><a href="#View的measure过程" class="headerlink" title="View的measure过程"></a>View的measure过程</h4><p>View#onMeasure()</p>
+<pre><code class="java">    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
+    }
+</code></pre>
+<p>View#getDefaultSize</p>
+<pre><code class="java">    public static int getDefaultSize(int size, int measureSpec) {
+        int result = size;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        switch (specMode) {
+        case MeasureSpec.UNSPECIFIED:
+            // 大小设置为 getSuggestedMinimum的返回值
+            result = size;
+            break;
+        case MeasureSpec.AT_MOST:
+        case MeasureSpec.EXACTLY:
+            // 大小就是MeasureSpec的测量值。
+            result = specSize;
+            break;
+        }
+        return result;
+    }
+</code></pre>
+<p>View#getSuggestedMinimumWidth/heitht</p>
+<pre><code class="java">protected int getSuggestedMinimumWidth() {
+    // 得到mMinWidth和背景的最小宽之间的最小值
+    return (mBackground == null) ? mMinWidth : max(mMinWidth, mBackground.getMinimumWidth());
+}
+
+protected int getSuggestedMinimumHeight() {
+    // 得到mMinHeight和背景的最小高之间的最小值
+    return (mBackground == null) ? mMinHeight : max(mMinHeight, mBackground.getMinimumHeight());
+
+}
+</code></pre>
+<p>mMinWidth和mWinHeight分别对应<code>android:minWidth</code>和<code>android:minHeight</code>，这个属性不指定时，默认是0。  </p>
+<p>Drawable#getMinimumWidth()：</p>
+<pre><code class="java">public int getMinimumHeight() {
+        final int intrinsicHeight = getIntrinsicHeight();
+        return intrinsicHeight &gt; 0 ? intrinsicHeight : 0;
+}
+</code></pre>
+<p>Drawable#getIntrinsicHeight()：</p>
+<pre><code class="java">    // 返回Drawable的高，如果是纯色没有高就返回-1.
+    // shapeDrawable就没有原始的宽高，BitmapDrawable有原始宽/高（图片的尺寸）
+    public int getIntrinsicHeight() {
+        return -1;
+    }
+
+
+    public int getIntrinsicWidth() {
+        return -1;
+    }
+</code></pre>
+<p>直接继承View的自定义控件需要重写onMeasure方法并设置wrap_content时的自身大小，否则在布局中使用<code>wrap_content</code>就相当于使用<code>match_parent</code>。   </p>
+<p>需要给模式为<code>AT_MOST</code>的情况设置默认值：</p>
+<pre><code class="java"> @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    int heightSize = MeasureSpec.getMode(heightMeasureSpec);
+
+    boolean wIsAT_MOST = widthMode == MeasureSpec.AT_MOST;
+    boolean hIsAT_MOST = heightMode == MeasureSpec.AT_MOST;
+
+    if (wIsAT_MOST &amp;&amp; hIsAT_MOST) {
+      setMeasuredDimension(mWidth, mHeight);
+    } else if (wIsAT_MOST) {
+      setMeasuredDimension(mWidth, heightSize);
+    } else if (hIsAT_MOST) {
+      setMeasuredDimension(widthSize, mHeight);
+    }else{
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+  }
+</code></pre>
+<p>TextView、ImageView等针对wrap_content情形，它们的onMeasure方法均做了特殊处理。</p>
+<h4 id="ViewGroup的measure过程"><a href="#ViewGroup的measure过程" class="headerlink" title="ViewGroup的measure过程"></a>ViewGroup的measure过程</h4><p>ViewGroup#measureChildren</p>
+<pre><code class="java"> protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+        final int size = mChildrenCount;
+        final View[] children = mChildren;
+        for (int i = 0; i &lt; size; ++i) {
+            final View child = children[i];
+            if ((child.mViewFlags &amp; VISIBILITY_MASK) != GONE) {
+                // 遍历测量
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            }
+        }
+    }
+</code></pre>
+<p>ViewGroup#measureChild</p>
+<pre><code class="java">    protected void measureChild(View child, int parentWidthMeasureSpec,
+            int parentHeightMeasureSpec) {
+
+        final LayoutParams lp = child.getLayoutParams();
+        // 根据View的lp和父View的MeasureSpec算出子View的MeasureSpec
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+                mPaddingLeft + mPaddingRight, lp.width);
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+                mPaddingTop + mPaddingBottom, lp.height);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+</code></pre>
+<p>ViewGroup是一个抽象类，测量过程<code>onMeasure()</code>需要子类去自行实现。不同的容器类测量细节不一样。  </p>
+<p>LinearLayout#onMeasure</p>
+<pre><code class="java">    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mOrientation == VERTICAL) {
+            measureVertical(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            measureHorizontal(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+</code></pre>
+<p>LinearLayout#measureVertical</p>
+<pre><code class="java">  void measureVertical(int widthMeasureSpec, int heightMeasureSpec) {
+
+        // ...
+
+        // See how tall everyone is. Also remember max width.
+
+        // 遍历子元素并对每个子元素执行 measureChildBeforeLayout
+        for (int i = 0; i &lt; count; ++i) {
+            final View child = getVirtualChildAt(i);
+            if (child == null) {
+                mTotalLength += measureNullChild(i);
+                continue;
+            }
+
+            if (child.getVisibility() == View.GONE) {
+               i += getChildrenSkipCount(child, i);
+               continue;
+            }
+
+            if (hasDividerBeforeChildAt(i)) {
+                mTotalLength += mDividerHeight;
+            }
+
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+            totalWeight += lp.weight;
+
+            final boolean useExcessSpace = lp.height == 0 &amp;&amp; lp.weight &gt; 0;
+            if (heightMode == MeasureSpec.EXACTLY &amp;&amp; useExcessSpace) {
+                // Optimization: don&#39;t bother measuring children who are only
+                // laid out using excess space. These views will get measured
+                // later if we have space to distribute.
+                final int totalLength = mTotalLength;
+                mTotalLength = Math.max(totalLength, totalLength + lp.topMargin + lp.bottomMargin);
+                skippedMeasure = true;
+            } else {
+                if (useExcessSpace) {
+                    // The heightMode is either UNSPECIFIED or AT_MOST, and
+                    // this child is only laid out using excess space. Measure
+                    // using WRAP_CONTENT so that we can find out the view&#39;s
+                    // optimal height. We&#39;ll restore the original height of 0
+                    // after measurement.
+                    lp.height = LayoutParams.WRAP_CONTENT;
+                }
+
+                // Determine how big this child would like to be. If this or
+                // previous children have given a weight, then we allow it to
+                // use all available space (and we will shrink things later
+                // if needed).
+                final int usedHeight = totalWeight == 0 ? mTotalLength : 0;
+                measureChildBeforeLayout(child, i, widthMeasureSpec, 0,
+                        heightMeasureSpec, usedHeight);
+
+                final int childHeight = child.getMeasuredHeight();
+                if (useExcessSpace) {
+                    // Restore the original height and record how much space
+                    // we&#39;ve allocated to excess-only children so that we can
+                    // match the behavior of EXACTLY measurement.
+                    lp.height = 0;
+                    consumedExcessSpace += childHeight;
+                }
+
+                final int totalLength = mTotalLength;
+                mTotalLength = Math.max(totalLength, totalLength + childHeight + lp.topMargin +
+                       lp.bottomMargin + getNextLocationOffset(child));
+
+                if (useLargestChild) {
+                    largestChildHeight = Math.max(childHeight, largestChildHeight);
+                }
+            }
+
+            /**
+             * If applicable, compute the additional offset to the child&#39;s baseline
+             * we&#39;ll need later when asked {@link #getBaseline}.
+             */
+            if ((baselineChildIndex &gt;= 0) &amp;&amp; (baselineChildIndex == i + 1)) {
+               mBaselineChildTop = mTotalLength;
+            }
+
+            // if we are trying to use a child index for our baseline, the above
+            // book keeping only works if there are no children above it with
+            // weight.  fail fast to aid the developer.
+            if (i &lt; baselineChildIndex &amp;&amp; lp.weight &gt; 0) {
+                throw new RuntimeException(&quot;A child of LinearLayout with index &quot;
+                        + &quot;less than mBaselineAlignedChildIndex has weight &gt; 0, which &quot;
+                        + &quot;won&#39;t work.  Either remove the weight, or don&#39;t set &quot;
+                        + &quot;mBaselineAlignedChildIndex.&quot;);
+            }
+
+            boolean matchWidthLocally = false;
+            if (widthMode != MeasureSpec.EXACTLY &amp;&amp; lp.width == LayoutParams.MATCH_PARENT) {
+                // The width of the linear layout will scale, and at least one
+                // child said it wanted to match our width. Set a flag
+                // indicating that we need to remeasure at least that view when
+                // we know our width.
+                matchWidth = true;
+                matchWidthLocally = true;
+            }
+
+            final int margin = lp.leftMargin + lp.rightMargin;
+            final int measuredWidth = child.getMeasuredWidth() + margin;
+            maxWidth = Math.max(maxWidth, measuredWidth);
+            childState = combineMeasuredStates(childState, child.getMeasuredState());
+
+            allFillParent = allFillParent &amp;&amp; lp.width == LayoutParams.MATCH_PARENT;
+            if (lp.weight &gt; 0) {
+                /*
+                 * Widths of weighted Views are bogus if we end up
+                 * remeasuring, so keep them separate.
+                 */
+                weightedMaxWidth = Math.max(weightedMaxWidth,
+                        matchWidthLocally ? margin : measuredWidth);
+            } else {
+                alternativeMaxWidth = Math.max(alternativeMaxWidth,
+                        matchWidthLocally ? margin : measuredWidth);
+            }
+
+            i += getChildrenSkipCount(child, i);
+        }
+
+        if (mTotalLength &gt; 0 &amp;&amp; hasDividerBeforeChildAt(count)) {
+            mTotalLength += mDividerHeight;
+        }
+
+        if (useLargestChild &amp;&amp;
+                (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.UNSPECIFIED)) {
+            mTotalLength = 0;
+
+            for (int i = 0; i &lt; count; ++i) {
+                final View child = getVirtualChildAt(i);
+                if (child == null) {
+                    mTotalLength += measureNullChild(i);
+                    continue;
+                }
+
+                if (child.getVisibility() == GONE) {
+                    i += getChildrenSkipCount(child, i);
+                    continue;
+                }
+
+                final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
+                        child.getLayoutParams();
+                // Account for negative margins
+                final int totalLength = mTotalLength;
+                mTotalLength = Math.max(totalLength, totalLength + largestChildHeight +
+                        lp.topMargin + lp.bottomMargin + getNextLocationOffset(child));
+            }
+        }
+
+        // Add in our padding
+        mTotalLength += mPaddingTop + mPaddingBottom;
+
+        int heightSize = mTotalLength;
+
+        // Check against our minimum height
+        heightSize = Math.max(heightSize, getSuggestedMinimumHeight());
+
+        // Reconcile our calculated size with the heightMeasureSpec
+        int heightSizeAndState = resolveSizeAndState(heightSize, heightMeasureSpec, 0);
+        heightSize = heightSizeAndState &amp; MEASURED_SIZE_MASK;
+
+        // Either expand children with weight to take up available space or
+        // shrink them if they extend beyond our current bounds. If we skipped
+        // measurement on any children, we need to measure them now.
+        int remainingExcess = heightSize - mTotalLength
+                + (mAllowInconsistentMeasurement ? 0 : consumedExcessSpace);
+        if (skippedMeasure || remainingExcess != 0 &amp;&amp; totalWeight &gt; 0.0f) {
+            float remainingWeightSum = mWeightSum &gt; 0.0f ? mWeightSum : totalWeight;
+
+            mTotalLength = 0;
+
+            for (int i = 0; i &lt; count; ++i) {
+                final View child = getVirtualChildAt(i);
+                if (child == null || child.getVisibility() == View.GONE) {
+                    continue;
+                }
+
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                final float childWeight = lp.weight;
+                if (childWeight &gt; 0) {
+                    final int share = (int) (childWeight * remainingExcess / remainingWeightSum);
+                    remainingExcess -= share;
+                    remainingWeightSum -= childWeight;
+
+                    final int childHeight;
+                    if (mUseLargestChild &amp;&amp; heightMode != MeasureSpec.EXACTLY) {
+                        childHeight = largestChildHeight;
+                    } else if (lp.height == 0 &amp;&amp; (!mAllowInconsistentMeasurement
+                            || heightMode == MeasureSpec.EXACTLY)) {
+                        // This child needs to be laid out from scratch using
+                        // only its share of excess space.
+                        childHeight = share;
+                    } else {
+                        // This child had some intrinsic height to which we
+                        // need to add its share of excess space.
+                        childHeight = child.getMeasuredHeight() + share;
+                    }
+
+                    final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                            Math.max(0, childHeight), MeasureSpec.EXACTLY);
+                    final int childWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                            mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin,
+                            lp.width);
+                    child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+
+                    // Child may now not fit in vertical dimension.
+                    childState = combineMeasuredStates(childState, child.getMeasuredState()
+                            &amp; (MEASURED_STATE_MASK&gt;&gt;MEASURED_HEIGHT_STATE_SHIFT));
+                }
+
+                final int margin =  lp.leftMargin + lp.rightMargin;
+                final int measuredWidth = child.getMeasuredWidth() + margin;
+                maxWidth = Math.max(maxWidth, measuredWidth);
+
+                boolean matchWidthLocally = widthMode != MeasureSpec.EXACTLY &amp;&amp;
+                        lp.width == LayoutParams.MATCH_PARENT;
+
+                alternativeMaxWidth = Math.max(alternativeMaxWidth,
+                        matchWidthLocally ? margin : measuredWidth);
+
+                allFillParent = allFillParent &amp;&amp; lp.width == LayoutParams.MATCH_PARENT;
+
+                final int totalLength = mTotalLength;
+                mTotalLength = Math.max(totalLength, totalLength + child.getMeasuredHeight() +
+                        lp.topMargin + lp.bottomMargin + getNextLocationOffset(child));
+            }
+
+            // 子元素测量完毕后，LinearLayout会测量自己的大小
+            // Add in our padding
+            mTotalLength += mPaddingTop + mPaddingBottom;
+            // TODO: Should we recompute the heightSpec based on the new total length?
+        } else {
+            alternativeMaxWidth = Math.max(alternativeMaxWidth,
+                                           weightedMaxWidth);
+
+
+            // We have no limit, so make all weighted views as tall as the largest child.
+            // Children will have already been measured once.
+            if (useLargestChild &amp;&amp; heightMode != MeasureSpec.EXACTLY) {
+                for (int i = 0; i &lt; count; i++) {
+                    final View child = getVirtualChildAt(i);
+                    if (child == null || child.getVisibility() == View.GONE) {
+                        continue;
+                    }
+
+                    final LinearLayout.LayoutParams lp =
+                            (LinearLayout.LayoutParams) child.getLayoutParams();
+
+                    float childExtra = lp.weight;
+                    if (childExtra &gt; 0) {
+                        child.measure(
+                                MeasureSpec.makeMeasureSpec(child.getMeasuredWidth(),
+                                        MeasureSpec.EXACTLY),
+                                MeasureSpec.makeMeasureSpec(largestChildHeight,
+                                        MeasureSpec.EXACTLY));
+                    }
+                }
+            }
+        }
+
+        if (!allFillParent &amp;&amp; widthMode != MeasureSpec.EXACTLY) {
+            maxWidth = alternativeMaxWidth;
+        }
+
+        maxWidth += mPaddingLeft + mPaddingRight;
+
+        // Check against our minimum width
+        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+
+        setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
+                heightSizeAndState);
+
+        if (matchWidth) {
+            forceUniformWidth(count, heightMeasureSpec);
+        }
+    }
+</code></pre>
+<p>LineaLayout#measureChildBeforeLayout</p>
+<pre><code class="java">    void measureChildBeforeLayout(View child, int childIndex,
+            int widthMeasureSpec, int totalWidth, int heightMeasureSpec,
+            int totalHeight) {
+        measureChildWithMargins(child, widthMeasureSpec, totalWidth,
+                heightMeasureSpec, totalHeight);
+    }
+
+protected void measureChildWithMargins(View child,
+            int parentWidthMeasureSpec, int widthUsed,
+            int parentHeightMeasureSpec, int heightUsed) {
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+                mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin
+                        + widthUsed, lp.width);
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+                mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin
+                        + heightUsed, lp.height);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+</code></pre>
+<h4 id="获取View的宽高"><a href="#获取View的宽高" class="headerlink" title="获取View的宽高"></a>获取View的宽高</h4><p>measure过程是最复杂的一步，measure完成后，通过getMeasuredWidth/Height可以正确的获取到View的测量宽/高。  </p>
+<p>在某些极端情况下，系统可能需要多次 measure 才能确定最终的测量宽/高，这时最好在onLayout()中去获取View的测量宽/高，或者最终宽/高。 </p>
+<h4 id="在Activity启动的时候获取宽高"><a href="#在Activity启动的时候获取宽高" class="headerlink" title="在Activity启动的时候获取宽高"></a>在Activity启动的时候获取宽高</h4><p>View的measure过程和Activity的生命周期不是同步的，无法保证在 onCreate() 或 onResume() 获取正确的宽高。  </p>
+<p>解决方法：  </p>
+<h5 id="Activity-View-onWindowFocusChanged"><a href="#Activity-View-onWindowFocusChanged" class="headerlink" title="Activity/View#onWindowFocusChanged"></a>Activity/View#onWindowFocusChanged</h5><p>表示View已经初始化完毕了，会被多次调用。可以设置一个flag只获取一次。  </p>
+<pre><code class="java">  @Override public void onWindowFocusChanged(boolean hasWindowFocus) {
+    super.onWindowFocusChanged(hasWindowFocus);
+    if (isFocused) {
+      int width = getMeasuredWidth();
+      int height = getMeasuredHeight();
+    }
+    isFocused = true;
+  }
+</code></pre>
+<h5 id="view-post-runnable"><a href="#view-post-runnable" class="headerlink" title="view.post(runnable)"></a>view.post(runnable)</h5><p>通过post可以将一个 runnable 投递到消息队列的尾部，然后等Looper调用它的时候，View已经初始化好了。</p>
+<pre><code class="java">  @Override protected void onStart() {
+    super.onStart();
+    mView.post(new Runnable() {
+      @Override public void run() {
+        int width = mView.getMeasuredWidth();
+        int height = mView.getMeasuredHeight();
+      }
+    });
+  }
+</code></pre>
+<h5 id="ViewTreeObserver"><a href="#ViewTreeObserver" class="headerlink" title="ViewTreeObserver"></a>ViewTreeObserver</h5><p>使用 ViewTreeObserver 的众多回调。<br>比如使用OnGlobalLayoutListener这个接口。当View数的状态发生改变或者View树内部的View的可见性发生改变时，OnGlobalLayoutListener会被回调。  </p>
+<pre><code class="java">  @Override protected void onStart() {
+    super.onStart();
+    mView.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override public void onGlobalLayout() {
+            mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            int width = mView.getMeasuredWidth();
+            int height = mView.getMeasuredHeight();
+          }
+        });
+  }
+</code></pre>
+<h5 id="view-measure-int-widthMeasureSpec-int-heightMeasureSpec-。"><a href="#view-measure-int-widthMeasureSpec-int-heightMeasureSpec-。" class="headerlink" title="view.measure(int widthMeasureSpec,int heightMeasureSpec)。"></a>view.measure(int widthMeasureSpec,int heightMeasureSpec)。</h5><p>手动measure来获取View的宽和高。<br>分情况处理，根据View的LayoutParams来分。  </p>
+<ol>
+<li>match_parent<br> 无法测量。构造这种必须要知道parensize（父容器的剩余时间）。</li>
+<li>具体的数值<pre><code class="java"> // 宽和高都是100dp
+ int widthMeasureSpec = MeasureSpec.makeMeasureSpec(100,MeasureSpec.EXACTLY);
+ int heightMeasureSpec = MeasureSpec.makeMeasureSpec(100,MeasureSpec.EXACTLY);
+ view.measure(widthMeasureSpec,heightMeasureSepc);
+</code></pre>
+</li>
+<li>wrap_content  <pre><code class="java"> // View的尺寸使用30位二进制表示，最大是(2^30-1)。
+ int widthMeasureSpec = MeasureSpec.makeMeasureSpec(1&gt;&gt;30-1, MeasureSpec.AT_MOST);
+ int heightMeasureSpec = MeasureSpec.makeMeasureSpec(1&gt;&gt;30-1, MeasureSpec.AT_MOST);
+ view.measure(widthMeasureSpec,heightMeasureSepc);
+</code></pre>
+</li>
+</ol>
+<p>有2个错误用法，他们违背了系统的内部实现规范（无法通过错误的MeasureSpec去得出合法的SpecMode），导致measure过程错误。不能一定得出measure的正确结果。</p>
+<ol>
+<li>第一种<pre><code class="java">int widthMeasureSpec = MeasureSpec.makeMeasureSpec(-1,MeasureSpec.UNSPECIFIED);
+int heightMeasureSpec = MeasureSpec.makeMeasureSpec(-1,MeasureSpec.UNSPECIFIED);
+view.measure(widthMeasureSpec,heightMeasureSpec);
+</code></pre>
+</li>
+<li>第二种<pre><code class="java">view.measure(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+</code></pre>
+</li>
+</ol>
+<h3 id="layout的过程"><a href="#layout的过程" class="headerlink" title="layout的过程"></a>layout的过程</h3><p>ViewGroup用来确定子元素的位置，当ViewGroup的位置确定后，会调用onLayout遍历子元素调用其layout，layout中onLayout会被调用。  </p>
+<p>layout确定View自身的位置，onLayout确定子元素的位置。</p>
+<p>View#layout()   </p>
+<pre><code class="java">    public void layout(int l, int t, int r, int b) {
+        if ((mPrivateFlags3 &amp; PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT) != 0) {
+            onMeasure(mOldWidthMeasureSpec, mOldHeightMeasureSpec);
+            mPrivateFlags3 &amp;= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;
+        }
+
+        int oldL = mLeft;
+        int oldT = mTop;
+        int oldB = mBottom;
+        int oldR = mRight;
+
+        // 首先会通过setFrame来设定View的四个顶点的位置。
+        // 即初始化mLeft、mRight、mTop和mBottom这四个值，View的四个顶点一旦确定，那么View在父容器中的位置也就确定了。
+        boolean changed = isLayoutModeOptical(mParent) ?
+                setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b);
+
+        if (changed || (mPrivateFlags &amp; PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
+            // 调用onLayout确定自子元素的位置
+            onLayout(changed, l, t, r, b);
+
+            if (shouldDrawRoundScrollbar()) {
+                if(mRoundScrollbarRenderer == null) {
+                    mRoundScrollbarRenderer = new RoundScrollbarRenderer(this);
+                }
+            } else {
+                mRoundScrollbarRenderer = null;
+            }
+
+            mPrivateFlags &amp;= ~PFLAG_LAYOUT_REQUIRED;
+
+            ListenerInfo li = mListenerInfo;
+            if (li != null &amp;&amp; li.mOnLayoutChangeListeners != null) {
+                ArrayList&lt;OnLayoutChangeListener&gt; listenersCopy =
+                        (ArrayList&lt;OnLayoutChangeListener&gt;)li.mOnLayoutChangeListeners.clone();
+                int numListeners = listenersCopy.size();
+                for (int i = 0; i &lt; numListeners; ++i) {
+                    listenersCopy.get(i).onLayoutChange(this, l, t, r, b, oldL, oldT, oldR, oldB);
+                }
+            }
+        }
+
+        mPrivateFlags &amp;= ~PFLAG_FORCE_LAYOUT;
+        mPrivateFlags3 |= PFLAG3_IS_LAID_OUT;
+    }
+</code></pre>
+<p>View#setFrame()</p>
+<pre><code class="java"> protected boolean setFrame(int left, int top, int right, int bottom) {
+        boolean changed = false;
+
+        if (DBG) {
+            Log.d(&quot;View&quot;, this + &quot; View.setFrame(&quot; + left + &quot;,&quot; + top + &quot;,&quot;
+                    + right + &quot;,&quot; + bottom + &quot;)&quot;);
+        }
+
+        if (mLeft != left || mRight != right || mTop != top || mBottom != bottom) {
+            changed = true;
+
+            // Remember our drawn bit
+            int drawn = mPrivateFlags &amp; PFLAG_DRAWN;
+
+            int oldWidth = mRight - mLeft;
+            int oldHeight = mBottom - mTop;
+            int newWidth = right - left;
+            int newHeight = bottom - top;
+            boolean sizeChanged = (newWidth != oldWidth) || (newHeight != oldHeight);
+
+            // Invalidate our old position
+            invalidate(sizeChanged);
+
+            mLeft = left;
+            mTop = top;
+            mRight = right;
+            mBottom = bottom;
+            mRenderNode.setLeftTopRightBottom(mLeft, mTop, mRight, mBottom);
+
+            mPrivateFlags |= PFLAG_HAS_BOUNDS;
+
+
+            if (sizeChanged) {
+                sizeChange(newWidth, newHeight, oldWidth, oldHeight);
+            }
+
+            if ((mViewFlags &amp; VISIBILITY_MASK) == VISIBLE || mGhostView != null) {
+                // If we are visible, force the DRAWN bit to on so that
+                // this invalidate will go through (at least to our parent).
+                // This is because someone may have invalidated this view
+                // before this call to setFrame came in, thereby clearing
+                // the DRAWN bit.
+                mPrivateFlags |= PFLAG_DRAWN;
+                invalidate(sizeChanged);
+                // parent display list may need to be recreated based on a change in the bounds
+                // of any child
+                invalidateParentCaches();
+            }
+
+            // Reset drawn bit to original value (invalidate turns it off)
+            mPrivateFlags |= drawn;
+
+            mBackgroundSizeChanged = true;
+            if (mForegroundInfo != null) {
+                mForegroundInfo.mBoundsChanged = true;
+            }
+
+            notifySubtreeAccessibilityStateChangedIfNeeded();
+        }
+        return changed;
+    }
+</code></pre>
+<h4 id="LinearLayout-的-onLayout"><a href="#LinearLayout-的-onLayout" class="headerlink" title="LinearLayout 的 onLayout"></a>LinearLayout 的 onLayout</h4><p>LinearLayout#onLayout()</p>
+<pre><code class="java">   @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (mOrientation == VERTICAL) {
+            layoutVertical(l, t, r, b);
+        } else {
+            layoutHorizontal(l, t, r, b);
+        }
+    }
+</code></pre>
+<p>LinearLayout#layoutVertical()</p>
+<pre><code class="java">   void layoutVertical(int left, int top, int right, int bottom) {
+        final int paddingLeft = mPaddingLeft;
+
+        int childTop;
+        int childLeft;
+
+        // Where right end of child should go
+        final int width = right - left;
+        int childRight = width - mPaddingRight;
+
+        // Space available for child
+        int childSpace = width - paddingLeft - mPaddingRight;
+
+        final int count = getVirtualChildCount();
+
+        final int majorGravity = mGravity &amp; Gravity.VERTICAL_GRAVITY_MASK;
+        final int minorGravity = mGravity &amp; Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
+
+        switch (majorGravity) {
+           case Gravity.BOTTOM:
+               // mTotalLength contains the padding already
+               childTop = mPaddingTop + bottom - top - mTotalLength;
+               break;
+
+               // mTotalLength contains the padding already
+           case Gravity.CENTER_VERTICAL:
+               childTop = mPaddingTop + (bottom - top - mTotalLength) / 2;
+               break;
+
+           case Gravity.TOP:
+           default:
+               childTop = mPaddingTop;
+               break;
+        }
+
+        for (int i = 0; i &lt; count; i++) {
+            final View child = getVirtualChildAt(i);
+            if (child == null) {
+                childTop += measureNullChild(i);
+            } else if (child.getVisibility() != GONE) {
+                final int childWidth = child.getMeasuredWidth();
+                final int childHeight = child.getMeasuredHeight();
+
+                final LinearLayout.LayoutParams lp =
+                        (LinearLayout.LayoutParams) child.getLayoutParams();
+
+                int gravity = lp.gravity;
+                if (gravity &lt; 0) {
+                    gravity = minorGravity;
+                }
+                final int layoutDirection = getLayoutDirection();
+                final int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
+                switch (absoluteGravity &amp; Gravity.HORIZONTAL_GRAVITY_MASK) {
+                    case Gravity.CENTER_HORIZONTAL:
+                        childLeft = paddingLeft + ((childSpace - childWidth) / 2)
+                                + lp.leftMargin - lp.rightMargin;
+                        break;
+
+                    case Gravity.RIGHT:
+                        childLeft = childRight - childWidth - lp.rightMargin;
+                        break;
+
+                    case Gravity.LEFT:
+                    default:
+                        childLeft = paddingLeft + lp.leftMargin;
+                        break;
+                }
+
+                if (hasDividerBeforeChildAt(i)) {
+                    childTop += mDividerHeight;
+                }
+
+                childTop += lp.topMargin;
+                setChildFrame(child, childLeft, childTop + getLocationOffset(child),
+                        childWidth, childHeight);
+                childTop += childHeight + lp.bottomMargin + getNextLocationOffset(child);
+
+                i += getChildrenSkipCount(child, i);
+            }
+        }
+    }
+</code></pre>
+<h4 id="View的getMeasuredWidth和getWidth这两个方法有什么区别"><a href="#View的getMeasuredWidth和getWidth这两个方法有什么区别" class="headerlink" title="View的getMeasuredWidth和getWidth这两个方法有什么区别"></a>View的getMeasuredWidth和getWidth这两个方法有什么区别</h4><pre><code class="java">public final int getMeasuredWidth() {
+        return mMeasuredWidth &amp; MEASURED_SIZE_MASK;
+}
+
+public final int getWidth() {
+        return mRight - mLeft;
+}
+</code></pre>
+<p>从getWidth和getHeight的源码再结合mLeft、mRight、mTop和mBottom这四个变量的赋值过程来看，getWidth方法的返回值刚好就是View的测量宽度。  </p>
+<p>在View的默认实现中，View的测量宽/高和最终宽/高是相等的，只不过测量宽/高形成于View的measure过程，而最终宽/高形成于View的layout过程，即两者的赋值时机不同，测量宽/高的赋值时机稍微早一些。</p>
+<h3 id="draw的过程"><a href="#draw的过程" class="headerlink" title="draw的过程"></a>draw的过程</h3><p>View的绘制过程遵循如下几步：</p>
+<ol>
+<li>绘制背景background.draw(canvas)。</li>
+<li>绘制自己（onDraw）。</li>
+<li>绘制children（dispatchDraw）。</li>
+<li>绘制装饰（onDrawScrollBars）。</li>
+</ol>
+<p>View#draw()</p>
+<pre><code class="java">    /**
+     * Manually render this view (and all of its children) to the given Canvas.
+     * The view must have already done a full layout before this function is
+     * called.  When implementing a view, implement
+     * {@link #onDraw(android.graphics.Canvas)} instead of overriding this method.
+     * If you do need to override this method, call the superclass version.
+     *
+     * @param canvas The Canvas to which the View is rendered.
+     */
+    @CallSuper
+    public void draw(Canvas canvas) {
+        final int privateFlags = mPrivateFlags;
+        final boolean dirtyOpaque = (privateFlags &amp; PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &amp;&amp;
+                (mAttachInfo == null || !mAttachInfo.mIgnoreDirtyState);
+        mPrivateFlags = (privateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DRAWN;
+
+        /*
+         * Draw traversal performs several drawing steps which must be executed
+         * in the appropriate order:
+         *
+         *      1. Draw the background
+         *      2. If necessary, save the canvas&#39; layers to prepare for fading
+         *      3. Draw view&#39;s content
+         *      4. Draw children
+         *      5. If necessary, draw the fading edges and restore layers
+         *      6. Draw decorations (scrollbars for instance)
+         */
+
+        // Step 1, draw the background, if needed
+        int saveCount;
+
+        if (!dirtyOpaque) {
+            drawBackground(canvas);
+        }
+
+        // skip step 2 &amp; 5 if possible (common case)
+        final int viewFlags = mViewFlags;
+        boolean horizontalEdges = (viewFlags &amp; FADING_EDGE_HORIZONTAL) != 0;
+        boolean verticalEdges = (viewFlags &amp; FADING_EDGE_VERTICAL) != 0;
+        if (!verticalEdges &amp;&amp; !horizontalEdges) {
+            // Step 3, draw the content
+            if (!dirtyOpaque) onDraw(canvas);
+
+            // Step 4, draw the children
+            dispatchDraw(canvas);
+
+            // Overlay is part of the content and draws beneath Foreground
+            if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) {
+                mOverlay.getOverlayView().dispatchDraw(canvas);
+            }
+
+            // Step 6, draw decorations (foreground, scrollbars)
+            onDrawForeground(canvas);
+
+            // we&#39;re done...
+            return;
+        }
+
+        /*
+         * Here we do the full fledged routine...
+         * (this is an uncommon case where speed matters less,
+         * this is why we repeat some of the tests that have been
+         * done above)
+         */
+
+        boolean drawTop = false;
+        boolean drawBottom = false;
+        boolean drawLeft = false;
+        boolean drawRight = false;
+
+        float topFadeStrength = 0.0f;
+        float bottomFadeStrength = 0.0f;
+        float leftFadeStrength = 0.0f;
+        float rightFadeStrength = 0.0f;
+
+        // Step 2, save the canvas&#39; layers
+        int paddingLeft = mPaddingLeft;
+
+        final boolean offsetRequired = isPaddingOffsetRequired();
+        if (offsetRequired) {
+            paddingLeft += getLeftPaddingOffset();
+        }
+
+        int left = mScrollX + paddingLeft;
+        int right = left + mRight - mLeft - mPaddingRight - paddingLeft;
+        int top = mScrollY + getFadeTop(offsetRequired);
+        int bottom = top + getFadeHeight(offsetRequired);
+
+        if (offsetRequired) {
+            right += getRightPaddingOffset();
+            bottom += getBottomPaddingOffset();
+        }
+
+        final ScrollabilityCache scrollabilityCache = mScrollCache;
+        final float fadeHeight = scrollabilityCache.fadingEdgeLength;
+        int length = (int) fadeHeight;
+
+        // clip the fade length if top and bottom fades overlap
+        // overlapping fades produce odd-looking artifacts
+        if (verticalEdges &amp;&amp; (top + length &gt; bottom - length)) {
+            length = (bottom - top) / 2;
+        }
+
+        // also clip horizontal fades if necessary
+        if (horizontalEdges &amp;&amp; (left + length &gt; right - length)) {
+            length = (right - left) / 2;
+        }
+
+        if (verticalEdges) {
+            topFadeStrength = Math.max(0.0f, Math.min(1.0f, getTopFadingEdgeStrength()));
+            drawTop = topFadeStrength * fadeHeight &gt; 1.0f;
+            bottomFadeStrength = Math.max(0.0f, Math.min(1.0f, getBottomFadingEdgeStrength()));
+            drawBottom = bottomFadeStrength * fadeHeight &gt; 1.0f;
+        }
+
+        if (horizontalEdges) {
+            leftFadeStrength = Math.max(0.0f, Math.min(1.0f, getLeftFadingEdgeStrength()));
+            drawLeft = leftFadeStrength * fadeHeight &gt; 1.0f;
+            rightFadeStrength = Math.max(0.0f, Math.min(1.0f, getRightFadingEdgeStrength()));
+            drawRight = rightFadeStrength * fadeHeight &gt; 1.0f;
+        }
+
+        saveCount = canvas.getSaveCount();
+
+        int solidColor = getSolidColor();
+        if (solidColor == 0) {
+            final int flags = Canvas.HAS_ALPHA_LAYER_SAVE_FLAG;
+
+            if (drawTop) {
+                canvas.saveLayer(left, top, right, top + length, null, flags);
+            }
+
+            if (drawBottom) {
+                canvas.saveLayer(left, bottom - length, right, bottom, null, flags);
+            }
+
+            if (drawLeft) {
+                canvas.saveLayer(left, top, left + length, bottom, null, flags);
+            }
+
+            if (drawRight) {
+                canvas.saveLayer(right - length, top, right, bottom, null, flags);
+            }
+        } else {
+            scrollabilityCache.setFadeColor(solidColor);
+        }
+
+        // Step 3, draw the content
+        if (!dirtyOpaque) onDraw(canvas);
+
+        // Step 4, draw the children
+        dispatchDraw(canvas);
+
+        // Step 5, draw the fade effect and restore layers
+        final Paint p = scrollabilityCache.paint;
+        final Matrix matrix = scrollabilityCache.matrix;
+        final Shader fade = scrollabilityCache.shader;
+
+        if (drawTop) {
+            matrix.setScale(1, fadeHeight * topFadeStrength);
+            matrix.postTranslate(left, top);
+            fade.setLocalMatrix(matrix);
+            p.setShader(fade);
+            canvas.drawRect(left, top, right, top + length, p);
+        }
+
+        if (drawBottom) {
+            matrix.setScale(1, fadeHeight * bottomFadeStrength);
+            matrix.postRotate(180);
+            matrix.postTranslate(left, bottom);
+            fade.setLocalMatrix(matrix);
+            p.setShader(fade);
+            canvas.drawRect(left, bottom - length, right, bottom, p);
+        }
+
+        if (drawLeft) {
+            matrix.setScale(1, fadeHeight * leftFadeStrength);
+            matrix.postRotate(-90);
+            matrix.postTranslate(left, top);
+            fade.setLocalMatrix(matrix);
+            p.setShader(fade);
+            canvas.drawRect(left, top, left + length, bottom, p);
+        }
+
+        if (drawRight) {
+            matrix.setScale(1, fadeHeight * rightFadeStrength);
+            matrix.postRotate(90);
+            matrix.postTranslate(right, top);
+            fade.setLocalMatrix(matrix);
+            p.setShader(fade);
+            canvas.drawRect(right - length, top, right, bottom, p);
+        }
+
+        canvas.restoreToCount(saveCount);
+
+        // Overlay is part of the content and draws beneath Foreground
+        if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) {
+            mOverlay.getOverlayView().dispatchDraw(canvas);
+        }
+
+        // Step 6, draw decorations (foreground, scrollbars)
+        onDrawForeground(canvas);
+    }
+</code></pre>
+<p>View绘制过程的传递是通过dispatchDraw来实现的，dis-patchDraw会遍历调用所有子元素的draw方法，如此draw事件就一层层地传递了下去。</p>
+<p>View#setWillNotDraw</p>
+<pre><code class="java">    /**
+     * If this view doesn&#39;t do any drawing on its own, set this flag to
+     * allow further optimizations. By default, this flag is not set on
+     * View, but could be set on some View subclasses such as ViewGroup.
+     *
+     * Typically, if you override {@link #onDraw(android.graphics.Canvas)}
+     * you should clear this flag.
+     *
+     * @param willNotDraw whether or not this View draw on its own
+     */
+    public void setWillNotDraw(boolean willNotDraw) {
+        setFlags(willNotDraw ? WILL_NOT_DRAW : 0, DRAW_MASK);
+    }
+</code></pre>
+<blockquote>
+<p>如果一个View不需要绘制任何内容，那么设置这个标记位为true以后，系统会进行相应的优化。默认情况下，View没有启用这个优化标记位，但是ViewGroup会默认启用这个优化标记位。这个标记位对实际开发的意义是：当我们的自定义控件继承于ViewGroup并且本身不具备绘制功能时，就可以开启这个标记位从而便于系统进行后续的优化。当然，当明确知道一个ViewGroup需要通过onDraw来绘制内容时，我们需要显式地关闭WILL_NOT_DRAW这个标记位。</p>
+</blockquote>
+<h2 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h2><h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ol>
+<li>继承View重写onDraw  <blockquote>
+<p>用于实现一些不规则的效果，不方便使用布局的组合方式来实现时使用。需要自己处理wrap_content和padding。</p>
+</blockquote>
+</li>
+<li>继承ViewGroup派生特殊的Layout  <blockquote>
+<p>用户实现自定义的布局。采用这种方式稍微复杂一些，需要合适地处理ViewGroup的测量、布局这两个过程，并同时处理子元素的测量和布局过程。</p>
+</blockquote>
+</li>
+<li>继承特定的View（比如TextView）  <blockquote>
+<p>用于扩展某种已有的View的功能，比如TextView，这种方法比较容易实现。这种方法不需要自己支持wrap_content和padding等。</p>
+</blockquote>
+</li>
+<li>继承特定的ViewGroup（比如LinearLayout）  <blockquote>
+<p>采用这种方法不需要自己处理ViewGroup的测量和布局这两个过程。需要注意这种方法和方法2的区别，一般来说方法2能实现的效果方法4也都能实现，两者的主要差别在于方法2更接近View的底层。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li><p>让View支持wrap_content  </p>
+</li>
+<li><p>如果有必要，让你的View支持padding</p>
+</li>
+<li>尽量不要在View中使用Handler，没必要</li>
+<li>View中如果有线程或者动画，需要及时停止，参考View#onDetachedFromWindow</li>
+<li>View带有滑动嵌套情形时，需要处理好滑动冲突</li>
+</ol>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><h4 id="继承View重写onDraw方法"><a href="#继承View重写onDraw方法" class="headerlink" title="继承View重写onDraw方法"></a>继承View重写onDraw方法</h4><pre><code class="java">public class CircleView extends View {
+  private int mColor = Color.RED;
+  private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+  public CircleView(Context context) {
+    super(context);
+    init();
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  private void init() {
+    mPaint.setColor(mColor);
+  }
+
+  @Override protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    int width = getWidth();
+    int height = getHeight();
+    int radius = Math.min(width, height) / 2;
+    canvas.drawCircle(width / 2, height / 2, radius, mPaint);
+  }
+}
+</code></pre>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;FrameLayout
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:background=&quot;#ffffff&quot;
+    tools:context=&quot;me.venjerlu.customviewdemo.MainActivity&quot;
+    &gt;
+  &lt;me.venjerlu.customviewdemo.CircleView
+      android:id=&quot;@+id/circleView1&quot;
+      android:layout_width=&quot;wrap_content&quot;
+      android:layout_height=&quot;100dp&quot;
+      android:layout_margin=&quot;10dp&quot;
+      android:padding=&quot;10dp&quot;
+      android:background=&quot;#000000&quot;
+      /&gt;
+
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>当设置为 <code>wrap_content</code> 时，效果和<code>match_parent</code>一样，我们需要对此设置一个默认值。另外设置了<code>padding</code>却没有效果，需要在onDraw里处理。</p>
+<p>修改后：</p>
+<pre><code class="java">public class CircleView extends View {
+  private int mColor = Color.RED;
+  private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+  public CircleView(Context context) {
+    super(context);
+    init();
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  private void init() {
+    mPaint.setColor(mColor);
+  }
+
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+    int defaultSize = 200;
+    boolean widthIsWrap = widthMode == MeasureSpec.AT_MOST;
+    boolean heightIsWrap = heightMode == MeasureSpec.AT_MOST;
+
+    if (widthIsWrap &amp;&amp; heightIsWrap) {
+      setMeasuredDimension(defaultSize, defaultSize);
+    } else if (widthIsWrap) {
+      setMeasuredDimension(defaultSize, heightSize);
+    } else if (heightIsWrap) {
+      setMeasuredDimension(widthSize, defaultSize);
+    } else {
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+  }
+
+  @Override protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    int paddingLeft = getPaddingLeft();
+    int paddingRight = getPaddingRight();
+    int paddingTop = getPaddingTop();
+    int paddingBottom = getPaddingBottom();
+
+    int width = getWidth() - paddingLeft - paddingRight;
+    int height = getHeight() - paddingTop - paddingBottom;
+    int radius = Math.min(width, height) / 2;
+
+    canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, mPaint);
+  }
+}
+</code></pre>
+<h5 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h5><ol>
+<li>在 values 目录下面创建自定义属性的 XML。</li>
+<li>在 View 的构造方法中解析处理对应的值。</li>
+<li>在布局文件中使用</li>
+</ol>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+  &lt;declare-styleable name=&quot;CircleView&quot;&gt;
+    &lt;attr format=&quot;color&quot; name=&quot;circle_color&quot;/&gt;
+  &lt;/declare-styleable&gt;
+
+&lt;/resources&gt;
+</code></pre>
+<pre><code class="java">  public CircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleView);
+    mColor = typedArray.getColor(R.styleable.CircleView_circle_color, Color.RED);
+    typedArray.recycle();
+    init();
+  }
+</code></pre>
+<pre><code class="xml">  &lt;me.venjerlu.customviewdemo.CircleView
+      android:id=&quot;@+id/circleView1&quot;
+      android:layout_width=&quot;wrap_content&quot;
+      android:layout_height=&quot;100dp&quot;
+      android:layout_margin=&quot;10dp&quot;
+      android:padding=&quot;10dp&quot;
+      android:background=&quot;#000000&quot;
+      app:circle_color=&quot;@color/colorPrimaryDark&quot;
+      /&gt;
+</code></pre>
+<h5 id="完整的规范的CircleView"><a href="#完整的规范的CircleView" class="headerlink" title="完整的规范的CircleView"></a>完整的规范的CircleView</h5><pre><code class="java">public class CircleView extends View {
+  private int mColor;
+  private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+  public CircleView(Context context) {
+    this(context, null);
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public CircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleView);
+    mColor = typedArray.getColor(R.styleable.CircleView_circle_color, Color.RED);
+    typedArray.recycle();
+    init();
+  }
+
+  private void init() {
+    mPaint.setColor(mColor);
+  }
+
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+    int defaultSize = 200;
+    boolean widthIsWrap = widthMode == MeasureSpec.AT_MOST;
+    boolean heightIsWrap = heightMode == MeasureSpec.AT_MOST;
+
+    if (widthIsWrap &amp;&amp; heightIsWrap) {
+      setMeasuredDimension(defaultSize, defaultSize);
+    } else if (widthIsWrap) {
+      setMeasuredDimension(defaultSize, heightSize);
+    } else if (heightIsWrap) {
+      setMeasuredDimension(widthSize, defaultSize);
+    } else {
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+  }
+
+  @Override protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    int paddingLeft = getPaddingLeft();
+    int paddingRight = getPaddingRight();
+    int paddingTop = getPaddingTop();
+    int paddingBottom = getPaddingBottom();
+
+    int width = getWidth() - paddingLeft - paddingRight;
+    int height = getHeight() - paddingTop - paddingBottom;
+    int radius = Math.min(width, height) / 2;
+
+    canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, mPaint);
+  }
+}
+</code></pre>
+<h4 id="继承ViewGroup派生特殊的Layout"><a href="#继承ViewGroup派生特殊的Layout" class="headerlink" title="继承ViewGroup派生特殊的Layout"></a>继承ViewGroup派生特殊的Layout</h4><pre><code class="java">public class HorizontalScrollViewEx extends ViewGroup {
+  static final String TAG = &quot;HorizontalScrollViewEx&quot;;
+  private int mChildrenSize;
+  private int mChildWidth;
+  private int mChildIndex;
+
+  // 上次滑动的坐标
+  private int mLastX = 0;
+  private int mLastY = 0;
+
+  // 上次滑动的坐标（onInterceptTouchEvent）
+  private int mLastXIntercept = 0;
+  private int mLastYIntercept = 0;
+
+  private Scroller mScroller;
+  private VelocityTracker mVelocityTracker;
+
+  public HorizontalScrollViewEx(Context context) {
+    this(context, null);
+  }
+
+  public HorizontalScrollViewEx(Context context, AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public HorizontalScrollViewEx(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  private void init() {
+    if (mScroller == null) mScroller = new Scroller(getContext());
+    if (mVelocityTracker == null) mVelocityTracker = VelocityTracker.obtain();
+  }
+
+  @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
+    boolean intercepted = false;
+    int x = (int) ev.getX();
+    int y = (int) ev.getY();
+
+    switch (ev.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        intercepted = false;
+        if (!mScroller.isFinished()) {
+          mScroller.abortAnimation();
+          intercepted = true;
+        }
+        break;
+      case MotionEvent.ACTION_MOVE:
+        int deltaX = x - mLastXIntercept;
+        int deltaY = y - mLastYIntercept;
+        intercepted = Math.abs(deltaX) &gt; Math.abs(deltaY);
+        break;
+      case MotionEvent.ACTION_UP:
+        intercepted = false;
+        break;
+      default:
+        break;
+    }
+    Log.d(TAG, &quot;intercepted=&quot; + intercepted);
+    mLastX = x;
+    mLastY = y;
+    mLastXIntercept = x;
+    mLastYIntercept = y;
+    return intercepted;
+  }
+
+  @Override public boolean onTouchEvent(MotionEvent event) {
+    mVelocityTracker.addMovement(event);
+    int x = (int) event.getX();
+    int y = (int) event.getY();
+
+    switch (event.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        if (!mScroller.isFinished()) {
+          mScroller.abortAnimation();
+        }
+        break;
+
+      case MotionEvent.ACTION_MOVE:
+        int deltaX = x - mLastXIntercept;
+        int deltaY = y - mLastYIntercept;
+        scrollBy(deltaX, 0);
+        break;
+
+      case MotionEvent.ACTION_UP:
+        int scrollX = getScrollX();
+        mVelocityTracker.computeCurrentVelocity(1000);
+        float xVelocity = mVelocityTracker.getXVelocity();
+        if (Math.abs(xVelocity) &gt;= 50) {
+          mChildIndex = xVelocity &gt; 0 ? mChildIndex - 1 : mChildIndex + 1;
+        } else {
+          mChildIndex = (scrollX + mChildWidth / 2) / mChildWidth;
+        }
+        mChildIndex = Math.max(0, Math.min(mChildIndex, mChildrenSize - 1));
+        int dx = mChildIndex * mChildWidth - scrollX;
+        smoothScrollBy(dx, 0);
+        mVelocityTracker.clear();
+        break;
+
+      default:
+        break;
+    }
+    mLastX = x;
+    mLastY = y;
+    return true;
+  }
+
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    int measuredWidth;
+    int measuredHeight;
+    final int childCount = getChildCount();
+    measureChildren(widthMeasureSpec, heightMeasureSpec);
+    int widthSpaceSize = MeasureSpec.getSize(widthMeasureSpec);
+    int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+    int heightSpaceSize = MeasureSpec.getSize(heightMeasureSpec);
+    int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+    // 没有子元素就把自己设置为0，0
+    if (childCount == 0) {
+      setMeasuredDimension(0, 0);
+    }
+    // 判断宽高为wrap_content的情况
+    else if (widthSpecMode == MeasureSpec.AT_MOST &amp;&amp; heightSpecMode == MeasureSpec.AT_MOST) {
+      final View childView = getChildAt(0);
+      measuredWidth = childView.getMeasuredWidth() * childCount;
+      measuredHeight = childView.getMeasuredHeight();
+      setMeasuredDimension(measuredWidth, measuredHeight);
+    } else if (heightSpecMode == MeasureSpec.AT_MOST) {
+      final View childView = getChildAt(0);
+      measuredHeight = childView.getMeasuredHeight();
+      setMeasuredDimension(widthSpaceSize, childView.getMeasuredHeight());
+    } else if (widthSpecMode == MeasureSpec.AT_MOST) {
+      final View childView = getChildAt(0);
+      measuredWidth = childView.getMeasuredWidth() * childCount;
+      setMeasuredDimension(measuredWidth, heightSpaceSize);
+    }
+  }
+
+  @Override protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    int childLeft = 0;
+    final int childCount = getChildCount();
+    mChildrenSize = childCount;
+
+    // 这里没有考虑自身的padding和子元素的margin
+    for (int i = 0; i &lt; childCount; i++) {
+      final View childView = getChildAt(i);
+      if (childView.getVisibility() != View.GONE) {
+        final int childWidth = childView.getMeasuredWidth();
+        mChildWidth = childWidth;
+        childView.layout(childLeft, 0, childLeft + childWidth,
+            childView.getMeasuredHeight());
+        childLeft += childWidth;
+      }
+    }
+  }
+
+  @Override public void computeScroll() {
+    super.computeScroll();
+    if (mScroller.computeScrollOffset()) {
+      scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+      postInvalidate();
+    }
+  }
+
+  @Override protected void onDetachedFromWindow() {
+    if (mVelocityTracker != null) mVelocityTracker.recycle();
+    super.onDetachedFromWindow();
+  }
+
+  private void smoothScrollBy(int dx, int dy) {
+    mScroller.startScroll(getScrollX(), 0, dx, 0, 500);
+    invalidate();
+  }
+}
+</code></pre>
+<p><a href="https://github.com/singwhatiwanna/PinnedHeaderExpandableListView" target="_blank" rel="external">https://github.com/singwhatiwanna/PinnedHeaderExpandableListView</a></p>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>首先要掌握基本功，比如View的弹性滑动、滑动冲突、绘制原理等，这些东西都是自定义View所必须的，尤其是那些看起来很炫的自定义View，它们往往对这些技术点的要求更高；熟练掌握基本功以后，在面对新的自定义View时，要能够对其分类并选择合适的实现思路，自定义View的实现方法的分类在4.4.1节中已经介绍过了；另外平时还需要多积累一些自定义View相关的经验，并逐渐做到融会贯通，通过这种思想慢慢地就可以提高自定义View的水平了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/24/yishuyansuo3/" rel="next" title="Android开发艺术探索笔记-第3章 View的事件体系">
+                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第3章 View的事件体系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/02/Android开发艺术探索笔记第10章/" rel="prev" title="Android开发艺术探索笔记-第10章 Android的消息机制">
+                Android开发艺术探索笔记-第10章 Android的消息机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewRoot-和-DecoreView"><span class="nav-number">1.</span> <span class="nav-text">ViewRoot 和 DecoreView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewRootImpl"><span class="nav-number">1.1.</span> <span class="nav-text">ViewRootImpl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecorView"><span class="nav-number">1.1.1.</span> <span class="nav-text">DecorView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解MeasureSpec"><span class="nav-number">1.2.</span> <span class="nav-text">理解MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec"><span class="nav-number">1.3.</span> <span class="nav-text">MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec和LayoutParams的对应关系"><span class="nav-number">1.4.</span> <span class="nav-text">MeasureSpec和LayoutParams的对应关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecoreView"><span class="nav-number">1.4.1.</span> <span class="nav-text">DecoreView</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的工作流程"><span class="nav-number">2.</span> <span class="nav-text">View的工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#measure的过程"><span class="nav-number">2.1.</span> <span class="nav-text">measure的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#View的measure过程"><span class="nav-number">2.1.1.</span> <span class="nav-text">View的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewGroup的measure过程"><span class="nav-number">2.1.2.</span> <span class="nav-text">ViewGroup的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取View的宽高"><span class="nav-number">2.1.3.</span> <span class="nav-text">获取View的宽高</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在Activity启动的时候获取宽高"><span class="nav-number">2.1.4.</span> <span class="nav-text">在Activity启动的时候获取宽高</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity-View-onWindowFocusChanged"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">Activity/View#onWindowFocusChanged</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-post-runnable"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">view.post(runnable)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewTreeObserver"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">ViewTreeObserver</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-measure-int-widthMeasureSpec-int-heightMeasureSpec-。"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">view.measure(int widthMeasureSpec,int heightMeasureSpec)。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#layout的过程"><span class="nav-number">2.2.</span> <span class="nav-text">layout的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinearLayout-的-onLayout"><span class="nav-number">2.2.1.</span> <span class="nav-text">LinearLayout 的 onLayout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#View的getMeasuredWidth和getWidth这两个方法有什么区别"><span class="nav-number">2.2.2.</span> <span class="nav-text">View的getMeasuredWidth和getWidth这两个方法有什么区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draw的过程"><span class="nav-number">2.3.</span> <span class="nav-text">draw的过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义View"><span class="nav-number">3.</span> <span class="nav-text">自定义View</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">3.1.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#继承View重写onDraw方法"><span class="nav-number">3.3.1.</span> <span class="nav-text">继承View重写onDraw方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义属性"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">自定义属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#完整的规范的CircleView"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">完整的规范的CircleView</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#继承ViewGroup派生特殊的Layout"><span class="nav-number">3.3.2.</span> <span class="nav-text">继承ViewGroup派生特殊的Layout</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思想"><span class="nav-number">3.4.</span> <span class="nav-text">思想</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,884 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本章主要介绍Activity相关的一些内容。Activity作为四大组件之首，是使用最为频繁的一种组件，中文直接翻译为“活动”，但是笔者认为这种翻译有些生硬，如果翻译成界面就会更好理解。正常情况下，除了Window、Dialog和Toast，我们能见到的界面的确只有Activity。Activity是如此重要，以至于本书开篇就不得不讲到它。当然，由于本书的定位为进阶书，所以不会介绍如何启动Act">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第1章 Activity的生命周期和启动模式">
+<meta property="og:url" content="https://luwenjie.me/2017/04/26/Android开发艺术探索笔记第1章/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="本章主要介绍Activity相关的一些内容。Activity作为四大组件之首，是使用最为频繁的一种组件，中文直接翻译为“活动”，但是笔者认为这种翻译有些生硬，如果翻译成界面就会更好理解。正常情况下，除了Window、Dialog和Toast，我们能见到的界面的确只有Activity。Activity是如此重要，以至于本书开篇就不得不讲到它。当然，由于本书的定位为进阶书，所以不会介绍如何启动Act">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/309bcc882be5d0d5540432d22449d4b7/xmlnote/WEBRESOURCE5d7d740cdfcddfef25df5bde2a32f1ee/2725">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/309bcc882be5d0d5540432d22449d4b7/xmlnote/093EFCE9487A4DB1B20AE90E22167D55/2730">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01HW5QAkuq2/1814vebiFomMIj.jpg?thumb=384x&scale=auto">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01XPyUclut2/Ev4xBdHqzNPi8s.jpg?thumb=384x&scale=auto">
+<meta property="og:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sRxV0ol4e/27EkvdZNATJxu9.jpg?thumb=384x&scale=auto">
+<meta property="og:updated_time" content="2017-05-24T08:10:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第1章 Activity的生命周期和启动模式">
+<meta name="twitter:description" content="本章主要介绍Activity相关的一些内容。Activity作为四大组件之首，是使用最为频繁的一种组件，中文直接翻译为“活动”，但是笔者认为这种翻译有些生硬，如果翻译成界面就会更好理解。正常情况下，除了Window、Dialog和Toast，我们能见到的界面的确只有Activity。Activity是如此重要，以至于本书开篇就不得不讲到它。当然，由于本书的定位为进阶书，所以不会介绍如何启动Act">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/309bcc882be5d0d5540432d22449d4b7/xmlnote/WEBRESOURCE5d7d740cdfcddfef25df5bde2a32f1ee/2725">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/04/26/Android开发艺术探索笔记第1章/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第1章 Activity的生命周期和启动模式 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/04/26/Android开发艺术探索笔记第1章/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第1章 Activity的生命周期和启动模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-26T16:37:00+08:00">
+                2017-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/04/26/Android开发艺术探索笔记第1章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本章主要介绍Activity相关的一些内容。Activity作为四大组件之首，是使用最为频繁的一种组件，中文直接翻译为“活动”，但是笔者认为这种翻译有些生硬，如果翻译成界面就会更好理解。正常情况下，除了Window、Dialog和Toast，我们能见到的界面的确只有Activity。Activity是如此重要，以至于本书开篇就不得不讲到它。当然，由于本书的定位为进阶书，所以不会介绍如何启动Activity这类入门知识，本章的侧重点是Activity在使用过程中的一些不容易搞清楚的概念，主要包括生命周期和启动模式以及IntentFilter的匹配规则分析。  </p>
+</blockquote>
+<a id="more"></a>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p><img src="http://note.youdao.com/yws/public/resource/309bcc882be5d0d5540432d22449d4b7/xmlnote/WEBRESOURCE5d7d740cdfcddfef25df5bde2a32f1ee/2725" alt=""></p>
+<p><img src="http://note.youdao.com/yws/public/resource/309bcc882be5d0d5540432d22449d4b7/xmlnote/093EFCE9487A4DB1B20AE90E22167D55/2730" alt=""></p>
+<h3 id="正常情况"><a href="#正常情况" class="headerlink" title="正常情况"></a>正常情况</h3><h4 id="onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？"><a href="#onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？" class="headerlink" title="onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？"></a>onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？</h4><p>onStart和onStop区分是否可见，onResume和onPause区分是否在前台。  </p>
+<h4 id="假设当前Activity为A，如果这时用户打开一个新Activity-B，那么B的onResume和A的onPause哪个先执行呢？"><a href="#假设当前Activity为A，如果这时用户打开一个新Activity-B，那么B的onResume和A的onPause哪个先执行呢？" class="headerlink" title="假设当前Activity为A，如果这时用户打开一个新Activity B，那么B的onResume和A的onPause哪个先执行呢？"></a>假设当前Activity为A，如果这时用户打开一个新Activity B，那么B的onResume和A的onPause哪个先执行呢？</h4><p>执行顺序为：  </p>
+<pre><code class="java">A-onPause
+B-onCreate
+B-onStart
+B-onResume
+A-onStop
+</code></pre>
+<p>onPause()和onStop()不能做耗时的操作，尽量在onStop中做一些保存操作，使得下一个Activity尽快显示出来。</p>
+<h3 id="异常情况"><a href="#异常情况" class="headerlink" title="异常情况"></a>异常情况</h3><p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01HW5QAkuq2/1814vebiFomMIj.jpg?thumb=384x&amp;scale=auto" alt=""> </p>
+<h4 id="情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建"><a href="#情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建" class="headerlink" title="情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建"></a>情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建</h4><p>当系统配置发生改变后，Activity会被销毁，其onPause、onStop、onDestroy均会被调用。<br>系统会调用onSaveInstanceState来保存当前Activity的状态。这个方法的调用时机是在onStop之前，它和onPause没有既定的时序关系，它既可能在on-Pause之前调用，也可能在onPause之后调用。需要强调的一点是，这个方法只会出现在Activity被异常终止的情况下，正常情况下系统不会回调这个方法。当Activity被重新创建后，系统会调用onRestoreInstanceState，并且把Activity销毁时on-SaveInstanceState方法所保存的Bundle对象作为参数同时传递给onRestoreInstanceState和onCreate方法。因此，我们可以通过onRestoreIn-stanceState和onCreate方法来判断Activity是否被重建了，如果被重建了，那么我们就可以取出之前保存的数据并恢复，从时序上来说，onRestoreInstanceState的调用时机在onStart之后。    </p>
+<p>如屏幕旋转会触发这种情况。  </p>
+<p>系统配置中有很多内容，如果当某项内容发生改变后，我们不想系统重新创建Activity，可以给Activity指定configChanges属性，然后我们自己在Activity的onConfigurationChanged方法中处理自己的逻辑。</p>
+<p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01XPyUclut2/Ev4xBdHqzNPi8s.jpg?thumb=384x&amp;scale=auto" alt="">  </p>
+<h4 id="情况2：资源内存不足导致低优先级的Activity被杀死"><a href="#情况2：资源内存不足导致低优先级的Activity被杀死" class="headerlink" title="情况2：资源内存不足导致低优先级的Activity被杀死"></a>情况2：资源内存不足导致低优先级的Activity被杀死</h4><p>Activity按照优先级从高到低，可以分为如下三种：  </p>
+<ol>
+<li>前台Activity——正在和用户交互的Activity，优先级最高。  </li>
+<li>可见但非前台Activity——比如Activity中弹出了一个对话框，导致Activity可见但是位于后台无法和用户直接交互。</li>
+<li>后台Activity——已经被暂停的Activity，比如执行了onStop，优先级最低。  </li>
+</ol>
+<p>当系统内存不足时，系统就会按照上述优先级去杀死目标Activity所在的进程，并在后续通过onSaveInstanceState和onRestoreInstanceState来存储和恢复数数据。如果一个进程中没有四大组件在执行，那么这个进程将很快被系统杀死，因此，一些后台工作不适合脱离四大组件而独自运行在后台中，这样进程很容易被杀死。比较好的方法是将后台工作放入Service中从而保证进程有一定的优先级，这样就不会轻易地被系统杀死。</p>
+<h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><h3 id="使用清单文件"><a href="#使用清单文件" class="headerlink" title="使用清单文件"></a>使用清单文件</h3><p>在清单文件中声明 Activity 时，您可以使用 <activity> 元素的 launchMode 属性指定 Activity 应该如何与任务关联。</activity></p>
+<p>launchMode 属性指定有关应如何将 Activity 启动到任务中的指令。您可以分配给 launchMode 属性的启动模式共有四种：</p>
+<ol>
+<li>“standard”（默认模式）</li>
+<li>“singleTop”</li>
+<li>“singleTask”</li>
+<li>“singleInstance”  </li>
+</ol>
+<h3 id="使用-Intent-标志"><a href="#使用-Intent-标志" class="headerlink" title="使用 Intent 标志"></a>使用 Intent 标志</h3><ol>
+<li><p>FLAG_ACTIVITY_NEW_TASK : </p>
+<blockquote>
+<p>指定singleTask模式  </p>
+</blockquote>
+</li>
+<li><p>FLAG_ACTIVITY_SINGLE_TOP : </p>
+<blockquote>
+<p>指定singleTop启动模式  </p>
+</blockquote>
+</li>
+<li><p>FLAG_ACTIVITY_CLEAR_TOP :   </p>
+<blockquote>
+<p>使其Activity之上的所有Activity都出栈。一般和 FLAG_ACTIVITY_NEW_TASK配合使用，如果Ativity实例已经存在，系统会调用他的onNewIntent。若和standard模式配合使用，那么它和它之上的所有Activity都要出栈，系统会创建新的实例放到栈顶。singleTask默认就有此标记的效果。  </p>
+</blockquote>
+</li>
+<li><p>FLAG_ACTIVITY_EXCLUDE_FROM_RE-CENTS :  </p>
+<blockquote>
+<p>具有这个标记的Activity不会出现在历史Ac-tivity的列表中，等同于<code>android:excludeFromRecents=&quot;true&quot;</code>。</p>
+</blockquote>
+</li>
+</ol>
+<p>使用方法：<br><code>intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);</code></p>
+<h3 id="任务栈关联"><a href="#任务栈关联" class="headerlink" title="任务栈关联"></a>任务栈关联</h3><h4 id="taskAffinity-与-allowTaskReparenting"><a href="#taskAffinity-与-allowTaskReparenting" class="headerlink" title="taskAffinity 与 allowTaskReparenting"></a>taskAffinity 与 allowTaskReparenting</h4><p>默认值是包名，需要和allowTaskReparenting或者singleTask配对使用。  </p>
+<p>当 taskAffinity 和 singleTask 配合使用时，待启动的Activity会运行在名字和TaskAffinity相同的任务栈中。  </p>
+<p>当 taskAffinity 和 allowTaskReparenting 配合使用时，如果allowTaskReparenting为true，应用A启动了应用B的Activty C，按Home键回到桌面，再单击B的桌面图标，显示的是Activity C，而不是显示B的主Activity，C从A的任务栈转移到了B的任务栈中。</p>
+<h4 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h4><p><img src="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sRxV0ol4e/27EkvdZNATJxu9.jpg?thumb=384x&amp;scale=auto" alt=""></p>
+<p>上图 B 启动 C ，情况会如何?    </p>
+<p>清单文件：  </p>
+<pre><code class="xml">&lt;application
+      android:allowBackup=&quot;true&quot;
+      android:icon=&quot;@mipmap/ic_launcher&quot;
+      android:label=&quot;@string/app_name&quot;
+      android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+      android:supportsRtl=&quot;true&quot;
+      android:theme=&quot;@style/AppTheme&quot;&gt;
+    &lt;activity
+        android:name=&quot;.ActivityC&quot;
+        android:launchMode=&quot;singleTask&quot;&gt;
+      &lt;intent-filter&gt;
+        &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+
+        &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+      &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+
+    &lt;activity
+        android:name=&quot;.ActivityD&quot;
+        android:launchMode=&quot;singleTask&quot;
+        /&gt;
+
+    &lt;activity
+        android:name=&quot;.ActivityA&quot;
+        android:launchMode=&quot;singleTask&quot;
+        android:taskAffinity=&quot;com.task&quot;
+        /&gt;
+    &lt;activity
+        android:name=&quot;.ActivityB&quot;
+        android:launchMode=&quot;singleTask&quot;
+        android:taskAffinity=&quot;com.task&quot;
+        /&gt;
+
+  &lt;/application&gt;
+</code></pre>
+<p>调用顺序 C-&gt;D-&gt;A-&gt;B-&gt;C  </p>
+<p>结果返回栈中是 A-&gt;B-&gt;C，D被直接出栈。  </p>
+<p>singleTask模式的Activity切换到栈顶会导致在它之上的栈内的Activity出栈。</p>
+<h2 id="IntentFilter-匹配规则"><a href="#IntentFilter-匹配规则" class="headerlink" title="IntentFilter 匹配规则"></a>IntentFilter 匹配规则</h2><p>启动Activity分为显示调用和隐式调用，隐式调用需要Intent去匹配IntentFilter中所设置的过滤信息。  </p>
+<p>例：</p>
+<pre><code class="xml"> &lt;activity
+        android:name=&quot;com.ryg.chapter_1.ThirdActivity&quot;
+        android:configChanges=&quot;screenLayout&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:launchMode=&quot;singleTask&quot;
+        android:taskAffinity=&quot;com.ryg.task1&quot;&gt;
+      &lt;intent-filter&gt;
+        &lt;action android:name=&quot;com.ryg.charpter_1.c&quot;/&gt;
+        &lt;action android:name=&quot;com.ryg.charpter_1.d&quot;/&gt;
+
+        &lt;category android:name=&quot;com.ryg.category.c&quot;/&gt;
+        &lt;category android:name=&quot;com.ryg.category.d&quot;/&gt;
+        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+
+        &lt;data android:mimeType=&quot;text/plain&quot;/&gt;
+      &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+</code></pre>
+<p>只有一个Intent同时匹配action类别、cat-egory类别、data类别才算完全匹配，只有完全匹配才能成功启动目标Activity。  </p>
+<p>一个Activity中可以有多个intent-filter，一个Intent只要能匹配任何一组intent-filter即可成功启动对应的Activity。</p>
+<h3 id="action-的匹配规则"><a href="#action-的匹配规则" class="headerlink" title="action 的匹配规则"></a>action 的匹配规则</h3><p>只要Intent中的action能够和过滤规则中的任何一个action相同即可匹配成功。</p>
+<h3 id="category-的匹配规则"><a href="#category-的匹配规则" class="headerlink" title="category 的匹配规则"></a>category 的匹配规则</h3><p>要求Intent中如果含有category，那么所有的category都必须和过滤规则中的其中一个category相同。</p>
+<h3 id="data-的匹配规则"><a href="#data-的匹配规则" class="headerlink" title="data 的匹配规则"></a>data 的匹配规则</h3><pre><code class="xml">
+    &lt;data
+        android:host=&quot;string&quot;
+        android:mimeType=&quot;string&quot;
+        android:path=&quot;string&quot;
+        android:pathPattern=&quot;string&quot;
+        android:pathPrefix=&quot;string&quot;
+        android:port=&quot;string&quot;
+        android:scheme=&quot;string&quot;/&gt;
+</code></pre>
+<p>URI结构：   <code>&lt;scheme&gt;://&lt;host&gt;:&lt;port&gt;/[&lt;path&gt;|&lt;pathPrefix&gt;|&lt;pathPattern&gt;</code>  </p>
+<p>例：<br><code>content://com.example.project:200/folder/subfolder/etc</code>       </p>
+<p>  <code>http://www.baidu.com:80/search/info</code></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>Android开发艺术探索  </p>
+<p><a href="https://developer.android.com/guide/components/activities.html" target="_blank" rel="external">Develop API Guides</a>    </p>
+<p><a href="https://developer.android.com/guide/components/intents-filters.html" target="_blank" rel="external">Intent 和 Intent 过滤器</a> </p>
+<p><a href="https://developer.android.com/guide/components/tasks-and-back-stack.html" target="_blank" rel="external">任务和返回栈</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/24/Java的注解/" rel="next" title="Java的注解">
+                <i class="fa fa-chevron-left"></i> Java的注解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/28/快速打包/" rel="prev" title="快速打包">
+                快速打包 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">1.</span> <span class="nav-text">生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正常情况"><span class="nav-number">1.1.</span> <span class="nav-text">正常情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？"><span class="nav-number">1.1.1.</span> <span class="nav-text">onStart和onResume、onPause和onStop从描述上来看差不多，对我们来说有什么实质的不同呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#假设当前Activity为A，如果这时用户打开一个新Activity-B，那么B的onResume和A的onPause哪个先执行呢？"><span class="nav-number">1.1.2.</span> <span class="nav-text">假设当前Activity为A，如果这时用户打开一个新Activity B，那么B的onResume和A的onPause哪个先执行呢？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常情况"><span class="nav-number">1.2.</span> <span class="nav-text">异常情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建"><span class="nav-number">1.2.1.</span> <span class="nav-text">情况1：资源相关的系统配置发生改变导致Activity被杀死并重新创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#情况2：资源内存不足导致低优先级的Activity被杀死"><span class="nav-number">1.2.2.</span> <span class="nav-text">情况2：资源内存不足导致低优先级的Activity被杀死</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动模式"><span class="nav-number">2.</span> <span class="nav-text">启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用清单文件"><span class="nav-number">2.1.</span> <span class="nav-text">使用清单文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Intent-标志"><span class="nav-number">2.2.</span> <span class="nav-text">使用 Intent 标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任务栈关联"><span class="nav-number">2.3.</span> <span class="nav-text">任务栈关联</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#taskAffinity-与-allowTaskReparenting"><span class="nav-number">2.3.1.</span> <span class="nav-text">taskAffinity 与 allowTaskReparenting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实践"><span class="nav-number">2.3.2.</span> <span class="nav-text">实践</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntentFilter-匹配规则"><span class="nav-number">3.</span> <span class="nav-text">IntentFilter 匹配规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#action-的匹配规则"><span class="nav-number">3.1.</span> <span class="nav-text">action 的匹配规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#category-的匹配规则"><span class="nav-number">3.2.</span> <span class="nav-text">category 的匹配规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-的匹配规则"><span class="nav-number">3.3.</span> <span class="nav-text">data 的匹配规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1165 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="学习笔记," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="结合Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern) 学习一下Java的动态代理机制。">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java的动态代理">
+<meta property="og:url" content="https://luwenjie.me/2017/04/19/Java_dynamicProxy/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="结合Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern) 学习一下Java的动态代理机制。">
+<meta property="og:updated_time" content="2017-04-19T03:56:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java的动态代理">
+<meta name="twitter:description" content="结合Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern) 学习一下Java的动态代理机制。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/04/19/Java_dynamicProxy/"/>
+
+
+
+
+
+  <title>Java的动态代理 | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/04/19/Java_dynamicProxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java的动态代理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-19T11:56:00+08:00">
+                2017-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/04/19/Java_dynamicProxy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>结合<a href="https://luwenjie.me/2017/01/01/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern)
+</a>学习一下Java的动态代理机制。 </p>
+<a id="more"></a>
+<h2 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h2><pre><code class="java">// 方法 1: 该方法用于获取指定代理对象所关联的调用处理器
+static InvocationHandler getInvocationHandler(Object proxy) 
+
+// 方法 2：该方法用于获取关联于指定类装载器和一组接口的动态代理类的类对象
+static Class getProxyClass(ClassLoader loader, Class[] interfaces) 
+
+// 方法 3：该方法用于判断指定类对象是否是一个动态代理类
+static boolean isProxyClass(Class cl) 
+
+// 方法 4：该方法用于为指定类装载器、一组接口及调用处理器生成动态代理类实例
+static Object newProxyInstance(ClassLoader loader, Class[] interfaces, 
+    InvocationHandler h)
+</code></pre>
+<h2 id="java-lang-ClassLoader"><a href="#java-lang-ClassLoader" class="headerlink" title="java.lang.ClassLoader"></a>java.lang.ClassLoader</h2><p>类装载器，负责将类的字节码装载到Java虚拟机中并为其定义对象，然后该类才能被使用。<br>Proxy 静态方法生成动态代理类同样需要通过类装载器来进行装载才能使用，它与普通类的唯一区别就是其字节码是由 JVM 在运行时动态生成的而非预存在于任何一个 .class 文件中。</p>
+<h2 id="接口的定义"><a href="#接口的定义" class="headerlink" title="接口的定义"></a>接口的定义</h2><pre><code class="java">public interface Subject {
+    void request(int id);
+}
+</code></pre>
+<pre><code class="java">public class Demo1 {
+    public static void main(String[] args) {
+        dynamicProxy();
+        System.getProperties().put(&quot;sun.misc.ProxyGenerator.saveGeneratedFiles&quot;, &quot;true&quot;);
+
+    }
+
+    private static void dynamicProxy() {
+        // TODO Auto-generated method stub
+        Subject realSubject = new RealSubject();
+        Subject proxy = (Subject) java.lang.reflect.Proxy
+                .newProxyInstance(realSubject.getClass().getClassLoader(), realSubject.getClass().getInterfaces(), 
+                        new InvocationSubject(realSubject));
+
+        proxy.request(1);
+    }
+
+
+    private static class RealSubject implements Subject{
+
+        @Override
+        public void request(int id) {
+            // TODO Auto-generated method stub
+            System.out.println(id);
+        }
+
+    }
+}
+</code></pre>
+<h2 id="实现InvocationHandler接口"><a href="#实现InvocationHandler接口" class="headerlink" title="实现InvocationHandler接口"></a>实现InvocationHandler接口</h2><pre><code class="java">// 负责集中处理动态代理类的所有方法调用。第一个参数是Proxy动态代理类实例,
+// 第二个参数是被调用的方法对象，第三个方法是调用参数。
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+</code></pre>
+<pre><code class="java">public class InvocationSubject implements InvocationHandler {
+    Subject subject;
+
+    public InvocationSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // TODO Auto-generated method stub
+        System.out.println(&quot;log : &quot; + method.getName() + &quot; invoked with &quot; + args);
+        return method.invoke(subject, args);
+    }
+}
+</code></pre>
+<h2 id="自动生成的Proxy代理类"><a href="#自动生成的Proxy代理类" class="headerlink" title="自动生成的Proxy代理类"></a>自动生成的Proxy代理类</h2><pre><code class="java">package com.sun.proxy;
+
+import cn.hinus.designpattern.proxy.Subject;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
+
+public final class $Proxy0 extends Proxy implements Subject {
+    private static Method m1;
+    private static Method m2;
+    private static Method m3;
+    private static Method m0;
+
+    public $Proxy0(InvocationHandler var1) throws  {
+        super(var1);
+    }
+
+    public final boolean equals(Object var1) throws  {
+        try {
+            return ((Boolean)super.h.invoke(this, m1, new Object[]{var1})).booleanValue();
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final String toString() throws  {
+        try {
+            return (String)super.h.invoke(this, m2, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    public final void request(int var1) throws  {
+        try {
+            super.h.invoke(this, m3, new Object[]{Integer.valueOf(var1)});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final int hashCode() throws  {
+        try {
+            return ((Integer)super.h.invoke(this, m0, (Object[])null)).intValue();
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    static {
+        try {
+            m1 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;equals&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m2 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;toString&quot;, new Class[0]);
+            m3 = Class.forName(&quot;cn.hinus.designpattern.proxy.Subject&quot;).getMethod(&quot;request&quot;, new Class[]{Integer.TYPE});
+            m0 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;hashCode&quot;, new Class[0]);
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+}
+</code></pre>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
+<li>实现InvocationHandler接口实现自己的调用处理器</li>
+<li>调用<code>Prox.newProxyInstance</code>创建动态代理类</li>
+<li>通过反射机制获得动态代理类的构造函数，其唯一参数类型是调用处理器接口类型</li>
+<li>通过构造函数创建动态代理类实例，构造时调用处理器对象作为参数被传入</li>
+</ol>
+<pre><code class="java">// InvocationHandlerImpl 实现了 InvocationHandler 接口，并能实现方法调用从代理类到委托类的分派转发
+// 其内部通常包含指向委托类实例的引用，用于真正执行分派转发过来的方法调用
+InvocationHandler handler = new InvocationHandlerImpl(..); 
+
+// 通过 Proxy 为包括 Interface 接口在内的一组接口动态创建代理类的类对象
+Class clazz = Proxy.getProxyClass(classLoader, new Class[] { Interface.class, ... }); 
+
+// 通过反射从生成的类对象获得构造函数对象
+Constructor constructor = clazz.getConstructor(new Class[] { InvocationHandler.class }); 
+
+// 通过构造函数对象创建动态代理类实例
+Interface Proxy = (Interface)constructor.newInstance(new Object[] { handler });
+</code></pre>
+<h3 id="简化的动态代理对象创建过程"><a href="#简化的动态代理对象创建过程" class="headerlink" title="简化的动态代理对象创建过程"></a>简化的动态代理对象创建过程</h3><pre><code class="java">// InvocationHandlerImpl 实现了 InvocationHandler 接口，并能实现方法调用从代理类到委托类的分派转发
+InvocationHandler handler = new InvocationHandlerImpl(..); 
+
+// 通过 Proxy 直接创建动态代理类实例
+Interface proxy = (Interface)Proxy.newProxyInstance( classLoader, 
+     new Class[] { Interface.class }, 
+     handler );
+</code></pre>
+<h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><ol>
+<li><p>通过 InvocationHandler 实现一个功能：拦截某个函数调用，如果发现调用的函数是一个名为“protectGetName” 的方法时，就打印一行语句，提示不能调用。</p>
+</li>
+<li><p>检查参数是否合法，如果不合法，打印不合法，退出调用。</p>
+</li>
+</ol>
+<pre><code class="java">
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+
+/**
+ * Created by venjerLu on 2017/3/24.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+        System.getProperties().put(&quot;sun.misc.ProxyGenerator.saveGeneratedFiles&quot;, &quot;true&quot;);
+
+        RealSubject realSubject = new RealSubject();
+        Class&lt;?&gt;[] interfaces = realSubject.getClass().getInterfaces();
+        Utils.print(&quot;&quot; + interfaces.length);
+        for (Class s : interfaces) {
+            Utils.print(s.getName());
+        }
+        Subject subject = (Subject) Proxy.newProxyInstance(realSubject.getClass().getClassLoader()
+                , interfaces, new Handler(realSubject));
+
+        String name = subject.getClass().getName();
+        Utils.print(name);
+
+//        subject.protectGetName(1);
+//        subject.protectGetName2(1);
+//        subject.protectGetName3(1);
+        subject.protectGetName3(&quot;fsdfsdf&quot;);
+    }
+
+    public interface Subject {
+        void protectGetName(Object a);
+
+        void protectGetName2(Object a);
+
+        void protectGetName3(Object a);
+    }
+
+    public interface Subject2 {
+        void protectGetNameB(Object a);
+
+        void protectGetName2B(Object a);
+
+        void protectGetName3B(Object a);
+    }
+
+    private static class RealSubject implements Subject, Subject2 {
+
+        @Override
+        public void protectGetName(Object a) {
+            Utils.print(&quot;protectGetName&quot;);
+        }
+
+        @Override
+        public void protectGetName2(Object a) {
+            Utils.print(&quot;protectGetName2&quot;);
+
+        }
+
+        @Override
+        public void protectGetName3(Object a) {
+            Utils.print(&quot;protectGetName3&quot;);
+        }
+
+        @Override
+        public void protectGetNameB(Object a) {
+
+        }
+
+        @Override
+        public void protectGetName2B(Object a) {
+
+        }
+
+        @Override
+        public void protectGetName3B(Object a) {
+
+        }
+    }
+
+
+    private static class Handler implements InvocationHandler {
+        Subject target;
+
+        Handler(Subject target) {
+            this.target = target;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Utils.print(proxy.getClass().getName());
+
+            if (method.getName().equals(&quot;protectGetName&quot;)) {
+                Utils.print(&quot;函数是一个名为“protectGetName” 的方法，不能调用&quot;);
+                return null;
+            }
+
+            for (Object o : args) {
+                Utils.print(o.getClass().getName());
+                Utils.print(Integer.class.getName());
+                if (!o.getClass().getName().equals(Integer.class.getName())) {
+                    Utils.print(&quot;参数不合法，必须为int&quot;);
+                    return null;
+                }
+            }
+            return method.invoke(target, args);
+        }
+    }
+
+}
+</code></pre>
+<h3 id="生成的-Proxy0类"><a href="#生成的-Proxy0类" class="headerlink" title="生成的$Proxy0类"></a>生成的$Proxy0类</h3><pre><code class="java">//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.sun.proxy;
+
+import Main.Subject;
+import Main.Subject2;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
+
+public final class $Proxy0 extends Proxy implements Subject, Subject2 {
+    private static Method m1;
+    private static Method m4;
+    private static Method m3;
+    private static Method m8;
+    private static Method m6;
+    private static Method m2;
+    private static Method m7;
+    private static Method m5;
+    private static Method m0;
+
+    public $Proxy0(InvocationHandler var1) throws  {
+        super(var1);
+    }
+
+    public final boolean equals(Object var1) throws  {
+        try {
+            return ((Boolean)super.h.invoke(this, m1, new Object[]{var1})).booleanValue();
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void protectGetName(Object var1) throws  {
+        try {
+            super.h.invoke(this, m4, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void protectGetName2(Object var1) throws  {
+        try {
+            super.h.invoke(this, m3, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void protectGetName3B(Object var1) throws  {
+        try {
+            super.h.invoke(this, m8, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void protectGetNameB(Object var1) throws  {
+        try {
+            super.h.invoke(this, m6, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final String toString() throws  {
+        try {
+            return (String)super.h.invoke(this, m2, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    public final void protectGetName2B(Object var1) throws  {
+        try {
+            super.h.invoke(this, m7, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void protectGetName3(Object var1) throws  {
+        try {
+            super.h.invoke(this, m5, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final int hashCode() throws  {
+        try {
+            return ((Integer)super.h.invoke(this, m0, (Object[])null)).intValue();
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    static {
+        try {
+            m1 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;equals&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m4 = Class.forName(&quot;Main$Subject&quot;).getMethod(&quot;protectGetName&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m3 = Class.forName(&quot;Main$Subject&quot;).getMethod(&quot;protectGetName2&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m8 = Class.forName(&quot;Main$Subject2&quot;).getMethod(&quot;protectGetName3B&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m6 = Class.forName(&quot;Main$Subject2&quot;).getMethod(&quot;protectGetNameB&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m2 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;toString&quot;, new Class[0]);
+            m7 = Class.forName(&quot;Main$Subject2&quot;).getMethod(&quot;protectGetName2B&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m5 = Class.forName(&quot;Main$Subject&quot;).getMethod(&quot;protectGetName3&quot;, new Class[]{Class.forName(&quot;java.lang.Object&quot;)});
+            m0 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;hashCode&quot;, new Class[0]);
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+}
+</code></pre>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.ibm.com/developerworks/cn/java/j-lo-proxy1/" target="_blank" rel="external">Java 动态代理机制分析及扩展，第 1 部分
+</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/26193963" target="_blank" rel="external">进击的Java新人-动态代理</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/26141688" target="_blank" rel="external">进击的Java新人-代理模式</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/05/自定义 View onDraw()/" rel="next" title="自定义 View 笔记 3 - onDraw() 的过程">
+                <i class="fa fa-chevron-left"></i> 自定义 View 笔记 3 - onDraw() 的过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/21/Fragmnet的懒加载/" rel="prev" title="Fragment的懒加载">
+                Fragment的懒加载 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Proxy"><span class="nav-number">1.</span> <span class="nav-text">Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-lang-ClassLoader"><span class="nav-number">2.</span> <span class="nav-text">java.lang.ClassLoader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口的定义"><span class="nav-number">3.</span> <span class="nav-text">接口的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现InvocationHandler接口"><span class="nav-number">4.</span> <span class="nav-text">实现InvocationHandler接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动生成的Proxy代理类"><span class="nav-number">5.</span> <span class="nav-text">自动生成的Proxy代理类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">6.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简化的动态代理对象创建过程"><span class="nav-number">6.1.</span> <span class="nav-text">简化的动态代理对象创建过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#练习"><span class="nav-number">7.</span> <span class="nav-text">练习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成的-Proxy0类"><span class="nav-number">7.1.</span> <span class="nav-text">生成的$Proxy0类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

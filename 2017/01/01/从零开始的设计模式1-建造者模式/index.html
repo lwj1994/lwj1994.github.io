@@ -1,0 +1,893 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next muse" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="新年第一天，从零开始系列计划开始启动，今年的时光决定都花在写博客上，反正不写也没事干，时间还是啪啪啪的流逝了。虽然文笔很烂，尽量把自己的理解写出来，也方便日后复习。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Re：从零开始的设计模式 1 - 建造者模式(Builder Pattern)">
+<meta property="og:url" content="https://luwenjie.me/2017/01/01/从零开始的设计模式1-建造者模式/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="新年第一天，从零开始系列计划开始启动，今年的时光决定都花在写博客上，反正不写也没事干，时间还是啪啪啪的流逝了。虽然文笔很烂，尽量把自己的理解写出来，也方便日后复习。">
+<meta property="og:image" content="http://cuntuku.com/images/2017/01/02/p2403250387.jpg">
+<meta property="og:updated_time" content="2017-01-21T09:50:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Re：从零开始的设计模式 1 - 建造者模式(Builder Pattern)">
+<meta name="twitter:description" content="新年第一天，从零开始系列计划开始启动，今年的时光决定都花在写博客上，反正不写也没事干，时间还是啪啪啪的流逝了。虽然文笔很烂，尽量把自己的理解写出来，也方便日后复习。">
+<meta name="twitter:image" content="http://cuntuku.com/images/2017/01/02/p2403250387.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2017/01/01/从零开始的设计模式1-建造者模式/"/>
+
+
+
+
+
+  <title>Re：从零开始的设计模式 1 - 建造者模式(Builder Pattern) | luwenjie's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/01/01/从零开始的设计模式1-建造者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Re：从零开始的设计模式 1 - 建造者模式(Builder Pattern)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-01T23:39:00+08:00">
+                2017-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/从零开始的设计模式系列/" itemprop="url" rel="index">
+                    <span itemprop="name">从零开始的设计模式系列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/01/01/从零开始的设计模式1-建造者模式/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>新年第一天，从零开始系列计划开始启动，今年的时光决定都花在写博客上，反正不写也没事干，时间还是啪啪啪的流逝了。虽然文笔很烂，尽量把自己的理解写出来，也方便日后复习。<br><a id="more"></a><br><img src="http://cuntuku.com/images/2017/01/02/p2403250387.jpg" alt=""></p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
+<p>建造者模式将一个复杂对象的构建与表示分离，使得同样的构建过程可以创建不同的表示。</p>
+</blockquote>
+<p>顾名思义，建造者模式，就是有一个建造者专门负责设置一些参数。</p>
+<h3 id="它有什么好处？"><a href="#它有什么好处？" class="headerlink" title="它有什么好处？"></a>它有什么好处？</h3><p>建造者模式构建复杂对象就像造汽车一样，是一个一个组件一个一个步骤创建出来的，它允许用户通过制定的对象类型和内容来创建他们，但是用户并不需要知道这个复杂对象是如何构建的，它只需要明白通过这样做我可以得到一个完整的复杂对象实例。</p>
+<h3 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h3><p>有 4 个角色来完成这种模式，他们分别是：</p>
+<ol>
+<li>抽象建造者：给出模板方法来建造一类东西</li>
+<li>具体建造者：根据模板建造具体的型号，具体的配置</li>
+<li>实施者：操作建造者对象</li>
+<li>要建造的对象：最终建造的对象</li>
+</ol>
+<h2 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h2><p>我们要生产一部 Mac，Mac 有很多零件。<br>我们的抽象建造者就是电脑的设计图，<br>具体建造者就是 Mac 独有的一些设计，比如视网膜屏幕，macOS 系统，type-c 接口。<br>实施者就是工人，一个开关流水线机器人就运作了。<br>最后要建造的对象当然是 Mac 了。</p>
+<pre><code class="java">public class MacBookPro extends Computer{
+  int part1;
+  int part2;
+  int part3;
+
+  public void setPart1(int part1) {
+    this.part1 = part1;
+  }
+
+  public void setPart2(int part2) {
+    this.part2 = part2;
+  }
+
+  public void setPart3(int part3) {
+    this.part3 = part3;
+  }
+
+  public static class Builder {
+    MacBookPro mMacBookPro;
+
+    public Builder() {
+      mMacBookPro = new MacBookPro();
+    }
+
+    public Builder setPart1(int part1) {
+      mMacBookPro.setPart1(part1);
+      return this;
+    }
+
+    public Builder setPart2(int part2) {
+      mMacBookPro.setPart2(part2);
+      return this;
+    }
+
+    public Builder setPart3(int part3) {
+      mMacBookPro.setPart2(part3);
+      return this;
+    }
+
+    public MacBookPro build() {
+      return mMacBookPro;
+    }
+  }
+
+/*工人*/
+public static class Worker {
+    private Builder mBuilder;
+
+    public Worker() {
+      mBuilder = new Builder();
+    }
+
+    public MacBookPro buildMac() {
+      return mBuilder.setPart1(1).setPart2(2).setPart3(3).build();
+    }
+  }
+}
+</code></pre>
+<p>调用的时候这样写：</p>
+<pre><code class="java">// 让工人去工作生产一部 mac
+MacBookPro.Worker worker = new MacBookPro.Worker();
+MacBookPro macBookPro = worker.buildMac();
+</code></pre>
+<p>在实际开发中一般会省去实施者这个角色。</p>
+<h2 id="源码中的例子"><a href="#源码中的例子" class="headerlink" title="源码中的例子"></a>源码中的例子</h2><p>比如在 Android 的源码中，创建一个 Dialog 的时候是这样的：</p>
+<pre><code class="java">AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setCustomTitle();
+    builder.setIcon();
+    builder.setItems();
+    AlertDialog show = builder.show();
+</code></pre>
+<p>还有我们 Android 日常开发常用的 OkHttp 和 Retrofit，在初始化的时候都会 new 一个 Builder 来设置一些参数。</p>
+<p>Retrofit 示例：</p>
+<pre><code class="java">mRetrofit = new Retrofit.Builder().client(okHttpClient)
+        .baseUrl(Constants.BASE_URL)
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .build();
+</code></pre>
+<p>这种链式的写法特别方便。 要满足链式调用每个方法都要返回 Builder 对象。</p>
+<p> 简单贴一下 <code>Retrofit.Builder</code> 的源码：</p>
+<pre><code class="java">
+// 省去了若干代码
+public static final class Builder {
+    private Platform platform;
+    private okhttp3.Call.Factory callFactory;
+    private HttpUrl baseUrl;
+    private List&lt;Converter.Factory&gt; converterFactories = new ArrayList&lt;&gt;();
+    private List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;();
+    private Executor callbackExecutor;
+    private boolean validateEagerly;
+
+    /* 构造方法初始化一些参数 */
+    Builder(Platform platform) {
+      this.platform = platform;
+      consume all types.
+      converterFactories.add(new BuiltInConverters());
+    }
+
+    public Builder() {
+      this(Platform.get());
+    }
+
+
+    public Builder client(OkHttpClient client) {
+      return callFactory(checkNotNull(client, &quot;client == null&quot;));
+    }
+
+    public Builder baseUrl(String baseUrl) {
+          // 省去若干代码。。。
+
+      return baseUrl(httpUrl);
+    }
+
+    public Builder addConverterFactory(Converter.Factory factory) {
+      converterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
+      return this;
+    }
+
+    public Builder addCallAdapterFactory(CallAdapter.Factory factory) {
+      adapterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
+      return this;
+    }
+
+    public Retrofit build() {
+
+    // 省去若干代码。。。
+      return new Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,
+          callbackExecutor, validateEagerly);
+    }
+  }
+</code></pre>
+<p>对比我们生产 Mac 的例子，其实大同小异。</p>
+<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><ol>
+<li>优点：开头已经说了，也就是将复杂产品的创建步骤分解在不同的方法中，使得创建过程更加清晰。</li>
+<li>缺点：只适合生成共同的较多的对象。而且不适合内部过于庞大和复杂的产品。</li>
+</ol>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>当一个对象拥有复杂的内部结构，比如上面的 Retrofit，生存过程有很多细节，需要设置<code>baseUrl</code>，设置<code>okHttpClient</code>, 设置各种自定义的<code>XxxFactory()</code>。每个建造者都是独立的，可以按需设置，不设置的内部一般会有一个默认值。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>建造者模式将创建过程与产品本身隔离。外部不需要关心内部的生成过程。我买一台 Mac，我不需要关心 Mac 是咋造出来的。我有钱就可以买到一台 Mac，就这么简单。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://blog.csdn.net/chenssy/article/details/11354661" target="_blank" rel="external">设计模式读书笔记—–建造者模式</a></p>
+<p><a href="http://www.jayfeng.com/2016/04/08/%E7%90%86%E8%A7%A3%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E3%80%81%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" target="_blank" rel="external">理解设计模式之原型模式、建造者模式</a></p>
+<p><a href="https://book.douban.com/subject/26644935/" target="_blank" rel="external">Android 源码设计模式解析与实战</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/31/Scroller 学习笔记/" rel="next" title="Scroller 学习笔记">
+                <i class="fa fa-chevron-left"></i> Scroller 学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/01/从零开始的设计模式2-代理模式/" rel="prev" title="Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern)">
+                Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="luwenjie" />
+          <p class="site-author-name" itemprop="name">luwenjie</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#它有什么好处？"><span class="nav-number">1.1.</span> <span class="nav-text">它有什么好处？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式结构"><span class="nav-number">1.2.</span> <span class="nav-text">模式结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举个栗子"><span class="nav-number">2.</span> <span class="nav-text">举个栗子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码中的例子"><span class="nav-number">3.</span> <span class="nav-text">源码中的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">4.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适用场景"><span class="nav-number">5.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "2ab4175d0069412cbcb722431b663013",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
