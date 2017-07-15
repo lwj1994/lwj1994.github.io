@@ -362,20 +362,7 @@
 
       
         <p>冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局<br>  <a id="more"></a></p>
-<h2 id="冷启动优化"><a href="#冷启动优化" class="headerlink" title="冷启动优化"></a>冷启动优化</h2><p><code>windowBackground</code> 这个属性只能指定一个颜色, 或者 <code>drawable</code> 文件, 但是图片是全屏的, 无法居中.  我们可以用<code>&lt;layer-list&gt;</code>  标签来设置一个 <code>bitmap</code> 让图片居中 .</p>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;layer-list
-    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    android:opacity=&quot;opaque&quot;&gt;
-
-    &lt;item android:drawable=&quot;@color/grey&quot;/&gt;
-    &lt;item&gt;
-        &lt;bitmap
-            android:gravity=&quot;center&quot;
-            android:src=&quot;@drawable/img_pizza&quot;/&gt;
-    &lt;/item&gt;
-&lt;/layer-list&gt;
-</code></pre>
+<h2 id="冷启动优化"><a href="#冷启动优化" class="headerlink" title="冷启动优化"></a>冷启动优化</h2><p><code>windowBackground</code> 这个属性只能指定一个颜色, 或者 <code>drawable</code> 文件, 但是图片是全屏的, 无法居中.  我们可以用<code>&lt;layer-list&gt;</code>  标签来设置一个 <code>bitmap</code> 让图片居中 .<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">layer-list</span></span></div><div class="line">	<span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">	<span class="attr">android:opacity</span>=<span class="string">"opaque"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/grey"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">bitmap</span></span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/img_pizza"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">layer-list</span>&gt;</span></div></pre></td></tr></table></figure></p>
 <p>为了避免出现问题, <code>&lt;layer-list&gt;</code> 必须设置为不透明的, <code>android:opacity=&quot;opaque&quot;</code>.</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p> <a href="http://saulmm.github.io/avoding-android-cold-starts" target="_blank" rel="external">avoding-android-cold-starts</a><br> <a href="http://blog.waynell.com/2015/11/17/android-cold-start/" target="_blank" rel="external">Android 冷启动时间优化</a></p>
 

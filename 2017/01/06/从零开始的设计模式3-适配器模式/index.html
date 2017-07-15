@@ -380,91 +380,11 @@
 <h2 id="UML"><a href="#UML" class="headerlink" title="UML"></a>UML</h2><p>对象适配器：<br>  <img src="http://design-patterns.readthedocs.io/zh_CN/latest/_images/Adapter.jpg" alt=""></p>
 <p>类适配器：<br><img src="http://design-patterns.readthedocs.io/zh_CN/latest/_images/Adapter_classModel.jpg" alt=""></p>
 <h2 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h2><p><img src="http://design-patterns.readthedocs.io/zh_CN/latest/_images/seq_Adapter.jpg" alt=""></p>
-<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="类适配器"><a href="#类适配器" class="headerlink" title="类适配器"></a>类适配器</h3><pre><code class="java">  /**
-   * 客户端调用类适配器
-   */
-  void testClassAdapter() {
-    VAdapter adapter = new VAdapter();
-    Log.d(TAG, &quot;输出电压 = &quot; + adapter.get5V());
-  }
-
-  /**
-   * Target
-   * 5v 电压
-   */
-  interface V5 {
-    int get5V();
-  }
-
-  /**
-   * Adaptee
-   * 220V 电压
-   */
-  class V220 {
-    int getV() {
-      return 220;
-    }
-  }
-
-  /**
-   * 电源适配器
-   */
-  class VAdapter extends V220 implements V5 {
-
-    @Override public int get5V() {
-      return 5;
-    }
-  }
-</code></pre>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="类适配器"><a href="#类适配器" class="headerlink" title="类适配器"></a>类适配器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 客户端调用类适配器</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testClassAdapter</span><span class="params">()</span> </span>&#123;</div><div class="line">  VAdapter adapter = <span class="keyword">new</span> VAdapter();</div><div class="line">  Log.d(TAG, <span class="string">"输出电压 = "</span> + adapter.get5V());</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Target</div><div class="line"> * 5v 电压</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">V5</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">int</span> <span class="title">get5V</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Adaptee</div><div class="line"> * 220V 电压</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">V220</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">int</span> <span class="title">getV</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">220</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 电源适配器</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">VAdapter</span> <span class="keyword">extends</span> <span class="title">V220</span> <span class="keyword">implements</span> <span class="title">V5</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get5V</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">5</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="对象适配器"><a href="#对象适配器" class="headerlink" title="对象适配器"></a>对象适配器</h3><blockquote>
 <p>对象的适配器不是使用继承关系连接到 Adaptee 对象，而是使用代理关系。</p>
 </blockquote>
-<pre><code class="java">  /**
-   * 对象适配器模式
-   */
-  class VObjectAdapter implements V5 {
-    V220 mV220;
-
-    public VObjectAdapter(V220 v220) {
-      mV220 = v220;
-    }
-
-    public int getvV220() {
-      return mV220.getV();
-    }
-
-    @Override public int get5V() {
-      return 5;
-    }
-  }
-
-
-  /**
-   * Target
-   * 5v 电压
-   */
-  interface V5 {
-    int get5V();
-  }
-
-  /**
-   * Adaptee
-   * 220V 电压
-   */
-  class V220 {
-    int getV() {
-      return 220;
-    }
-  }
-  /**
-   * 客户端调用对象适配器
-   */
-  void testObjectAdapter() {
-    V220 v220 = new V220();
-    VObjectAdapter objectAdapter = new VObjectAdapter(v220);
-    Log.d(TAG, &quot;输出电压 = &quot; + objectAdapter.get5V())
-  }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 对象适配器模式</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">VObjectAdapter</span> <span class="keyword">implements</span> <span class="title">V5</span> </span>&#123;</div><div class="line">  V220 mV220;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">VObjectAdapter</span><span class="params">(V220 v220)</span> </span>&#123;</div><div class="line">    mV220 = v220;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getvV220</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mV220.getV();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get5V</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">5</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Target</div><div class="line"> * 5v 电压</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">V5</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">int</span> <span class="title">get5V</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Adaptee</div><div class="line"> * 220V 电压</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">V220</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">int</span> <span class="title">getV</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">220</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * 客户端调用对象适配器</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testObjectAdapter</span><span class="params">()</span> </span>&#123;</div><div class="line">  V220 v220 = <span class="keyword">new</span> V220();</div><div class="line">  VObjectAdapter objectAdapter = <span class="keyword">new</span> VObjectAdapter(v220);</div><div class="line">  Log.d(TAG, <span class="string">"输出电压 = "</span> + objectAdapter.get5V())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="类适配器模式和对象适配器模式的区别"><a href="#类适配器模式和对象适配器模式的区别" class="headerlink" title="类适配器模式和对象适配器模式的区别"></a>类适配器模式和对象适配器模式的区别</h2><p>对象适配器将要适配的对象传到 Adapter 中，使用组合的形式实现接口兼容的效果，比类适配器更加灵活。</p>
 <p>类适配器由于继承了被适配的对象，可以调用被适配的对象的所有暴露的方法，使用起来比较混乱。</p>
 

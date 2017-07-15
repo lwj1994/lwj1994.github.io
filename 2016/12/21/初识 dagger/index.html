@@ -365,35 +365,9 @@
 <p><a href="http://google.github.io/dagger/users-guide" target="_blank" rel="external">Dagger2 官方文档</a></p>
 <p>参考资料：<br><a href="http://www.jianshu.com/p/cd2c1c9f68d4" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-基础依赖注入框架篇</a><br><a href="http://www.jianshu.com/p/1d42d2e6f4a5" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-重点概念讲解、融合篇</a><br><a href="http://www.jianshu.com/p/65737ac39c44" target="_blank" rel="external">滴滴牛小伟 dagger2让你爱不释手-终结篇</a></p>
 <h2 id="声明依赖"><a href="#声明依赖" class="headerlink" title="声明依赖"></a>声明依赖</h2><p>用 <code>@Inject</code> 声明你需要注入的类的构造，并声明你在哪个地方需要一个这个实例。</p>
-<pre><code class="java">
-class Thermosiphon implements Pump {
-    private final Heater heater;
-
-    @Inject
-    Thermosiphon(Heater heater) {
-      this.heater = heater;
-    }
-
-    ...
-}
-/*--------------------------------------*/
-class CoffeeMaker {
-    @Inject Heater heater;
-    @Inject Pump pump;
-
-    ...
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Thermosiphon</span> <span class="keyword">implements</span> <span class="title">Pump</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Heater heater;</div><div class="line"></div><div class="line">	<span class="meta">@Inject</span></div><div class="line">	Thermosiphon(Heater heater) &#123;</div><div class="line">	  <span class="keyword">this</span>.heater = heater;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	...</div><div class="line">&#125;</div><div class="line"><span class="comment">/*--------------------------------------*/</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoffeeMaker</span> </span>&#123;</div><div class="line">	<span class="meta">@Inject</span> Heater heater;</div><div class="line">	<span class="meta">@Inject</span> Pump pump;</div><div class="line"></div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如果你注明了你在哪需要注入一个实例，但是没有注明构造函数：</p>
-<pre><code class="java">class A {
-    @Inject
-    B b;
-}
-
-class B {
-    public B(){}
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">	<span class="meta">@Inject</span></div><div class="line">	B b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">B</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>Dagger2 会注入那些字段，但是不会创建新的实例。</p>
 <p>用 <code>@Inject</code> 注解一个无参构造函数，Dagger2 可以创建实例。</p>
 <p>Dagger2 还支持方法注入， 一般优先考虑字段和构造器注入。</p>
@@ -405,99 +379,29 @@ class B {
 <li>必须配置可配置对象！</li>
 </ul>
 <p>所以我们使用 <code>@Module</code> 和 <code>@Provide</code> 来代替。</p>
-<pre><code class="java">@Module
-class DripCoffeeModule {
-    @Provides static Heater provideHeater() {
-        return new ElectricHeater();
-    }
-
-    @Provides static Pump providePump(Thermosiphon pump) {
-        return pump;
-    }
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DripCoffeeModule</span> </span>&#123;</div><div class="line">	<span class="meta">@Provides</span> <span class="function"><span class="keyword">static</span> Heater <span class="title">provideHeater</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ElectricHeater();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Provides</span> <span class="function"><span class="keyword">static</span> Pump <span class="title">providePump</span><span class="params">(Thermosiphon pump)</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> pump;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>按照惯例，<code>@Provides</code> 注解的方法用<code>provideXxx()</code> 命名，而 <code>@Module</code> 注解的类用 <code>class XxxModule</code>命名。</p>
 <h2 id="Building-Graph-构建组件"><a href="#Building-Graph-构建组件" class="headerlink" title="Building Graph (构建组件)"></a>Building Graph (构建组件)</h2><p><code>@Inject</code>注解的字段和 <code>@Provide</code>注解的类构成一个对象的映射图，通过依赖关系链接。</p>
 <p>在应用程序的主方法中通过明确定义好的根集来访问该映射图形。</p>
 <p>在 Dagger 2 中，该集合由具有没有参数的方法的 <code>interface</code> 定义，并返回所需的类型。 用 <code>@Component</code> 注释这样的接口</p>
-<pre><code class="java">@Component(modules = DripCoffeeModule.class)
-interface CoffeeShop {
-    CoffeeMaker maker();
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(modules = DripCoffeeModule.class)</div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">CoffeeShop</span> </span>&#123;</div><div class="line">	<span class="function">CoffeeMaker <span class="title">maker</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>rebuild 一下，Dagger2 会自动生成该接口的实现类，形如 <code>DaggerCoffeeShop</code> 以 Dagger 为前缀，后面和接口名称一样。<br>调用该实现的 <code>builder()</code> 方法来得到一个建造者实例。</p>
 <p>使用这个建造者设置依赖关系，并 <code>build()</code>一个实例。</p>
-<pre><code class="java">CoffeeShop coffeeShop = DaggerCoffeeShop.builder()
-                    .dripCoffeeModule(new DripCoffeeModule())
-                    .build();
-</code></pre>
-<p>如果 <code>@Componet</code> 注解的不是一个顶级类型，也就是一个内部接口。  那么生成的实现的命名会包含外部类。</p>
-<pre><code class="java">    class Foo {
-      static class Bar {
-        @Component
-        interface BazComponent {}
-      }
-    }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CoffeeShop coffeeShop = DaggerCoffeeShop.builder()</div><div class="line">					.dripCoffeeModule(<span class="keyword">new</span> DripCoffeeModule())</div><div class="line">					.build();</div></pre></td></tr></table></figure>
+<p>如果 <code>@Componet</code> 注解的不是一个顶级类型，也就是一个内部接口。  那么生成的实现的命名会包含外部类。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Bar</span> </span>&#123;</div><div class="line">    <span class="meta">@Component</span></div><div class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">BazComponent</span> </span>&#123;&#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>如上所示，会生成 <code>DaggerFoo_Bar_BazCoponent</code></p>
 <p>对于任何@Provides方法都是静态的模块，实现根本不需要一个实例。 如果所有依赖关系都可以在用户没有创建依赖关系实例的情况下构建，那么生成的实现也将有一个create（）方法，可用于获取一个新实例，而无需处理构建器。</p>
 <p>如果 <code>@Provides</code>注解的方法是静态的，实现不需要一个实例，</p>
-<p>生成的实现类有一个<code>create()</code>方法，用于获取一个实例，而不需要构造器。</p>
-<pre><code class="java">CoffeeShop coffeeShop = DaggerCoffeeShop.create();
-
-public class CoffeeApp {
-    public static void main(String[] args) {
-        CoffeeShop coffeeShop = DaggerCoffeeShop.create();
-        coffeeShop.maker().brew();
-      }
-    }
-</code></pre>
+<p>生成的实现类有一个<code>create()</code>方法，用于获取一个实例，而不需要构造器。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">CoffeeShop coffeeShop = DaggerCoffeeShop.create();</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CoffeeApp</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">	    CoffeeShop coffeeShop = DaggerCoffeeShop.create();</div><div class="line">	    coffeeShop.maker().brew();</div><div class="line">	  &#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="Bindings-in-the-graph"><a href="#Bindings-in-the-graph" class="headerlink" title="Bindings in the graph"></a>Bindings in the graph</h3><h2 id="Singletons-and-Scoped-Bindings"><a href="#Singletons-and-Scoped-Bindings" class="headerlink" title="Singletons and Scoped Bindings"></a>Singletons and Scoped Bindings</h2><p>用 <code>@Singleton</code> 注解一个注解了<code>@Provides</code>的方法或者可注入的类。该组件将提供一个单例给需要注入的地方。</p>
-<pre><code class="java">    @Provides @Singleton static Heater provideHeater() {
-      return new ElectricHeater();
-    }
-</code></pre>
-<p>可注入类上的<code>@Singleton</code>注释也用作文档。 它提醒这个类可以被多个线程共享。</p>
-<pre><code class="java">    @Singleton
-    class CoffeeMaker {
-      ...
-    }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Provides</span> <span class="meta">@Singleton</span> <span class="function"><span class="keyword">static</span> Heater <span class="title">provideHeater</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> ElectricHeater();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可注入类上的<code>@Singleton</code>注释也用作文档。 它提醒这个类可以被多个线程共享。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Singleton</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoffeeMaker</span> </span>&#123;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>声明的相同的 <code>scoped</code>注解， 具有相同的生命周期。</p>
-<pre><code class="java">    @Component(modules = DripCoffeeModule.class)
-    @Singleton
-    interface CoffeeShop {
-      CoffeeMaker maker();
-    }
-</code></pre>
-<h2 id="Reusable-scope"><a href="#Reusable-scope" class="headerlink" title="Reusable scope"></a>Reusable scope</h2><h2 id="Lazy-injections"><a href="#Lazy-injections" class="headerlink" title="Lazy injections"></a>Lazy injections</h2><p>懒注入，需要的时候再注入。<br>用<code>Lazy&lt;T&gt;</code>的形式包裹需要懒加载的对象。<br>需要加载的时候调用 <code>Lazy&lt;T&gt;.get()</code>。</p>
-<pre><code class="java">    class GridingCoffeeMaker {
-      @Inject Lazy&lt;Grinder&gt; lazyGrinder;
-
-      public void brew() {
-        while (needsGrinding()) {
-          // Grinder created once on first call to .get() and cached.
-          lazyGrinder.get().grind();
-        }
-      }
-    }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(modules = DripCoffeeModule.class)</div><div class="line"><span class="meta">@Singleton</span></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">CoffeeShop</span> </span>&#123;</div><div class="line">  <span class="function">CoffeeMaker <span class="title">maker</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Reusable-scope"><a href="#Reusable-scope" class="headerlink" title="Reusable scope"></a>Reusable scope</h2><h2 id="Lazy-injections"><a href="#Lazy-injections" class="headerlink" title="Lazy injections"></a>Lazy injections</h2><p>懒注入，需要的时候再注入。<br>用<code>Lazy&lt;T&gt;</code>的形式包裹需要懒加载的对象。<br>需要加载的时候调用 <code>Lazy&lt;T&gt;.get()</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridingCoffeeMaker</span> </span>&#123;</div><div class="line">  <span class="meta">@Inject</span> Lazy&lt;Grinder&gt; lazyGrinder;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">while</span> (needsGrinding()) &#123;</div><div class="line">      <span class="comment">// Grinder created once on first call to .get() and cached.</span></div><div class="line">      lazyGrinder.get().grind();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="Provider-injections"><a href="#Provider-injections" class="headerlink" title="Provider injections"></a>Provider injections</h2><p>有时你需要返回多个实例，而不是仅仅注入单个值。<br>虽然可以用工厂模式，建造者模式，还有一个选择是注入一个 <code>Provider&lt;T&gt;</code>，而不是一个 <code>T</code>。</p>
 <p><code>Provider&lt;T&gt;</code>每次调用 <code>get()</code>时，会调用 <code>T</code> 的绑定逻辑。 如果这个绑定逻辑是一个 <code>@Inject</code> 构造器，会创建一个新的实例。<br>但是如果你用 <code>@Provider</code> 方法不会有这样的保证。</p>
-<pre><code class="java">    class BigCoffeeMaker {
-      @Inject Provider&lt;Filter&gt; filterProvider;
-
-      public void brew(int numberOfPots) {
-      ...
-        for (int p = 0; p &lt; numberOfPots; p++) {
-          maker.addFilter(filterProvider.get()); //new filter every time.
-          maker.addCoffee(...);
-          maker.percolate();
-          ...
-        }
-      }
-    }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BigCoffeeMaker</span> </span>&#123;</div><div class="line">  <span class="meta">@Inject</span> Provider&lt;Filter&gt; filterProvider;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">(<span class="keyword">int</span> numberOfPots)</span> </span>&#123;</div><div class="line">  ...</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> p = <span class="number">0</span>; p &lt; numberOfPots; p++) &#123;</div><div class="line">      maker.addFilter(filterProvider.get()); <span class="comment">//new filter every time.</span></div><div class="line">      maker.addCoffee(...);</div><div class="line">      maker.percolate();</div><div class="line">      ...</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>note： 注入<code>@Provider&lt;T&gt;</code> 有可能创建混乱的代码。</p>
 <h2 id="Qualifiers"><a href="#Qualifiers" class="headerlink" title="Qualifiers"></a>Qualifiers</h2><p><code>Component</code> 创建一个类实例有2种方法。</p>
 <ol>
@@ -507,22 +411,7 @@ public class CoffeeApp {
 <p>这2个维度是有优先级之分的，<code>Component</code>会首先从<code>Module维度</code>中查找类实例，若找到就用<code>Module维度</code>创建类实例，并停止查找<code>Inject维度</code>。否则才是从<code>Inject维度</code>查找类实例。所以创建类实例级别<code>Module维度</code>要高于<code>Inject维度</code>。</p>
 <p>现在有个问题，基于同一个维度条件下，若一个类的实例有多种方法可以创建出来，那注入器（Component）应该选择哪种方法来创建该类的实例呢？</p>
 <p>我把上面遇到的问题起个名字叫<code>依赖注入迷失</code>。</p>
-<p>Qualifier（限定符）就是解决依赖注入迷失问题的。</p>
-<pre><code class="java">    class ExpensiveCoffeeMaker {
-      @Inject @Named(&quot;water&quot;) Heater waterHeater;
-      @Inject @Named(&quot;hot plate&quot;) Heater hotPlateHeater;
-      ...
-    }
-
----
-    Provides @Named(&quot;hot plate&quot;) static Heater provideHotPlateHeater() {
-      return new ElectricHeater(70);
-    }
-
-    @Provides @Named(&quot;water&quot;) static Heater provideWaterHeater() {
-      return new ElectricHeater(93);
-    }
-</code></pre>
+<p>Qualifier（限定符）就是解决依赖注入迷失问题的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">	<span class="class"><span class="keyword">class</span> <span class="title">ExpensiveCoffeeMaker</span> </span>&#123;</div><div class="line">	  <span class="meta">@Inject</span> <span class="meta">@Named</span>(<span class="string">"water"</span>) Heater waterHeater;</div><div class="line">	  <span class="meta">@Inject</span> <span class="meta">@Named</span>(<span class="string">"hot plate"</span>) Heater hotPlateHeater;</div><div class="line">	  ...</div><div class="line">	&#125;</div><div class="line"></div><div class="line">---</div><div class="line">	Provides <span class="meta">@Named</span>(<span class="string">"hot plate"</span>) <span class="function"><span class="keyword">static</span> Heater <span class="title">provideHotPlateHeater</span><span class="params">()</span> </span>&#123;</div><div class="line">	  <span class="keyword">return</span> <span class="keyword">new</span> ElectricHeater(<span class="number">70</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Provides</span> <span class="meta">@Named</span>(<span class="string">"water"</span>) <span class="function"><span class="keyword">static</span> Heater <span class="title">provideWaterHeater</span><span class="params">()</span> </span>&#123;</div><div class="line">	  <span class="keyword">return</span> <span class="keyword">new</span> ElectricHeater(<span class="number">93</span>);</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
 
       
     </div>

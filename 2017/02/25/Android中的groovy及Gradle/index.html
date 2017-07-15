@@ -370,13 +370,7 @@
 </blockquote>
 <h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><p>每一行可以不用分号结尾。  </p>
 <p>支持动态类型，定义变量可以写成：<code>def xxx</code>，或者省略def直接写<code>xxx</code>。</p>
-<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>基础类型区分不明显。 双引号会对内部计算，单引号直接显示内容。</p>
-<pre><code class="groovy">task Demo&lt;&lt;{
-    def name = &quot;Demo&quot;
-    println &#39;单引号：${name}&#39;
-    println &quot;双引号：${name}&quot;   
-}
-</code></pre>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>基础类型区分不明显。 双引号会对内部计算，单引号直接显示内容。<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">task Demo&lt;&lt;&#123;</div><div class="line">	<span class="keyword">def</span> name = <span class="string">"Demo"</span></div><div class="line">	println <span class="string">'单引号：$&#123;name&#125;'</span></div><div class="line">	println <span class="string">"双引号：$&#123;name&#125;"</span>   </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>输出内容：<code>单引号：${name}</code> 和 <code>双引号：Demo</code></p>
 <p>3种容器类型：</p>
 <ol>
@@ -384,68 +378,18 @@
 <li>Map 键-值对应表</li>
 <li>Range 基于List的一种扩展</li>
 </ol>
-<pre><code class="groovy">// list的定义
-def demo_list = [&#39;a&#39;,&#39;b&#39;,&#39;c&#39;]
-
-// 访问元素不会越界，list会自动扩展
-demo_list[-1] = 100;
-
-// 迭代
-demo_list.each{
-    println it
-}
-</code></pre>
-<pre><code class="groovy">// map的定义
-def demo_map = [&#39;key1&#39;:a,&#39;key2&#39;:b,&#39;key3&#39;:c]
-
-// 访问
-println demo_map[&#39;key1&#39;]
-println demo_map.key2
-
-// 迭代
-demo_map.each{
-    println &quot;key = ${it.key}, value =  ${it.value}&quot;
-}
-</code></pre>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// list的定义</span></div><div class="line"><span class="keyword">def</span> demo_list = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>]</div><div class="line"></div><div class="line"><span class="comment">// 访问元素不会越界，list会自动扩展</span></div><div class="line">demo_list[<span class="number">-1</span>] = <span class="number">100</span>;</div><div class="line"></div><div class="line"><span class="comment">// 迭代</span></div><div class="line">demo_list.each&#123;</div><div class="line">	println it</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// map的定义</span></div><div class="line"><span class="keyword">def</span> demo_map = [<span class="string">'key1'</span>:a,<span class="string">'key2'</span>:b,<span class="string">'key3'</span>:c]</div><div class="line"></div><div class="line"><span class="comment">// 访问</span></div><div class="line">println demo_map[<span class="string">'key1'</span>]</div><div class="line">println demo_map.key2</div><div class="line"></div><div class="line"><span class="comment">// 迭代</span></div><div class="line">demo_map.each&#123;</div><div class="line">	println <span class="string">"key = $&#123;it.key&#125;, value =  $&#123;it.value&#125;"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="函数-方法"><a href="#函数-方法" class="headerlink" title="函数/方法"></a>函数/方法</h3><ol>
 <li>可以不写返回类型，但是必须加上<code>def</code></li>
 <li>可以省略<code>return</code>，此时最后一行代码的执行结果就是返回值</li>
 <li>函数参数的类型可以不指定，可以是代码块(闭包)</li>
 </ol>
-<pre><code class="groovy">// 基础写法
-def String demo_function(String s){
-    s = &quot;demo&quot;
-    retun s
-}
-
-// 简洁写法
-String demo_function(s){
-    s = &quot;demo&quot;
-}
-
-def demo_function(s){
-    s = &quot;demo&quot;
-}
-
-// 将闭包作为参数传给函数
-object.fun({
-    println it
-})
-
-// 如果函数的最后一个参数是闭包，也可以把这个闭包放在外面，括号可以省略
-object.fun{
-    println it
-}
-</code></pre>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 基础写法</span></div><div class="line"><span class="keyword">def</span> String demo_function(String s)&#123;</div><div class="line">	s = <span class="string">"demo"</span></div><div class="line">	retun s</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 简洁写法</span></div><div class="line">String demo_function(s)&#123;</div><div class="line">	s = <span class="string">"demo"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">def</span> demo_function(s)&#123;</div><div class="line">	s = <span class="string">"demo"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 将闭包作为参数传给函数</span></div><div class="line">object.fun(&#123;</div><div class="line">	println it</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment">// 如果函数的最后一个参数是闭包，也可以把这个闭包放在外面，括号可以省略</span></div><div class="line">object.fun&#123;</div><div class="line">	println it</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><blockquote>
 <p>闭包（closure），是一种数据结构，包含了一段代码，在写法上与函数有相似之处。</p>
 </blockquote>
-<pre><code class="groovy">def demo_closure{
-    String param-&gt;
-    println param
-    return param
-}
-</code></pre>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">def</span> demo_closure&#123;</div><div class="line">	String param-&gt;</div><div class="line">	println param</div><div class="line">	<span class="keyword">return</span> param</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
 <li>定义闭包时，需要用花括号把要处理的代码块包起来</li>
 <li>定义参数需要在参数后加上<code>-&gt;</code> 例如：    <code>String param-&gt;</code>，否则直接在花括号内写代码</li>
@@ -455,15 +399,8 @@ object.fun{
 </ol>
 <h3 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h3><p> groovy和Java一样都有类的概念，和Java一样：<br><code>package me.amaze</code>  </p>
 <p>可以用public/private修饰，用import引用其他类  </p>
-<pre><code class="groovy">class Demo{
-    String param1
-    String param2 
-}
-</code></pre>
-<pre><code class="groovy">import com.levent_j.groovy.Demo1
-
-def demo=new Demo(&quot;a&quot;,&quot;b&quot;)
-</code></pre>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Demo</span>&#123;</span></div><div class="line">	String param1</div><div class="line">	String param2 </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.levent_j.groovy.Demo1</div><div class="line"></div><div class="line"><span class="keyword">def</span> demo=<span class="keyword">new</span> Demo(<span class="string">"a"</span>,<span class="string">"b"</span>)</div></pre></td></tr></table></figure>
 <ol>
 <li>groovy不需每个类都写<code>class</code>或<code>interface</code>等</li>
 <li>groovy文件中若出现<code>class</code>，它是一个类似于Java中的类</li>
@@ -482,37 +419,13 @@ def demo=new Demo(&quot;a&quot;,&quot;b&quot;)
 <li>创建file对象</li>
 <li>调用各种方法操作文件</li>
 </ol>
-<pre><code class="groovy">def demo_file = new File(&quot;fileName&quot;)
-</code></pre>
-<pre><code class="groovy">demo_file.eachLine{
-    // 对每一行进行操作
-}
-
-// 一次性读取整个文件内容并以byte[]格式储存
-demo_dile.getBytes()
-
-// 使用inputstream操作，结束后需要手动close
-def ism = demo_file.newInputStream() 
-ism.close()
-
-// 使用闭包操作inputstream,操作结束不必手动close，groovy会自动帮我们close
-demo_file.withInputStream{
-    ism-&gt;
-}
-</code></pre>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">def</span> demo_file = <span class="keyword">new</span> File(<span class="string">"fileName"</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">demo_file.eachLine&#123;</div><div class="line">	<span class="comment">// 对每一行进行操作</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 一次性读取整个文件内容并以byte[]格式储存</span></div><div class="line">demo_dile.getBytes()</div><div class="line"></div><div class="line"><span class="comment">// 使用inputstream操作，结束后需要手动close</span></div><div class="line"><span class="keyword">def</span> ism = demo_file.newInputStream() </div><div class="line">ism.close()</div><div class="line"></div><div class="line"><span class="comment">// 使用闭包操作inputstream,操作结束不必手动close，groovy会自动帮我们close</span></div><div class="line">demo_file.withInputStream&#123;</div><div class="line">	ism-&gt;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h2><h3 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h3><p>比较简单，略。<br>配置完执行<code>gradle -v</code>查看版本看看是否成功。</p>
 <h3 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h3><h4 id="Project"><a href="#Project" class="headerlink" title="Project"></a>Project</h4><blockquote>
 <p>每个用Gradle构建的工程都叫    一个Project，每个Project会包含很多Task，在构建过程中，不同的Task各司其职。每个Task相当于一个Project对象的函数，专门用来干一件事，比如Android项目的构建过程就包括了Java的编译、资源的编译、打包过程、签名等Task。</p>
 </blockquote>
-<pre><code class="gradle">// Task的原型为create(String name,Closure configureClosure)
-// 第一个参数为任务名，第二个为闭包，所以可以省略()。
-task demo_task{
-    doFirst{
-    }
-    doLast{
-    }
-}
-</code></pre>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Task的原型为create(String name,Closure configureClosure)</span></div><div class="line"><span class="comment">// 第一个参数为任务名，第二个为闭包，所以可以省略()。</span></div><div class="line"><span class="keyword">task</span> demo_task&#123;</div><div class="line">	<span class="keyword">doFirst</span>&#123;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">doLast</span>&#123;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
 <li>Task A 可以依赖 Task B，执行A之前会先执行B，可以依赖多个Task</li>
 <li>在每一个Project中都必须有一个build.gradle文件，这是一个构建脚本，类似于makefile，这个文件是整个Project构建的入口，可以在其中做一些配置，比如版本、插件、依赖等</li>
@@ -525,151 +438,17 @@ task demo_task{
 <li>gradle-wrapper.properties</li>
 <li>setting.gradle</li>
 </ol>
-<p>gradle-wrapper.properties：</p>
-<pre><code class="gradle">
-#Mon Dec 28 10:00:20 PST 2015
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-
-// 这个uri表明本工程使用gradle是要从https://services.gradle.org/distributions/gradle-2.10-all.zip下载的gradle2.10版本
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
-</code></pre>
-<p>setting.gradle：</p>
-<pre><code class="gradle">// 每构建一个module就要在这里配置一下，AS会自动配置。
-include &#39;:app&#39;
-
-// 增加一个demo module
-include &#39;:app&#39;,&#39;:demo&#39;
-</code></pre>
+<p>gradle-wrapper.properties：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#Mon Dec 28 10:00:20 PST 2015</div><div class="line">distributionBase=GRADLE_USER_HOME</div><div class="line">distributionPath=wrapper/dists</div><div class="line">zipStoreBase=GRADLE_USER_HOME</div><div class="line">zipStorePath=wrapper/dists</div><div class="line"></div><div class="line">// 这个uri表明本工程使用gradle是要从https://services.gradle.org/distributions/gradle-2.10-all.zip下载的gradle2.10版本</div><div class="line">distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip</div></pre></td></tr></table></figure></p>
+<p>setting.gradle：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 每构建一个module就要在这里配置一下，AS会自动配置。</span></div><div class="line"><span class="keyword">include</span> <span class="string">':app'</span></div><div class="line"></div><div class="line"><span class="comment">// 增加一个demo module</span></div><div class="line"><span class="keyword">include</span> <span class="string">':app'</span>,<span class="string">':demo'</span></div></pre></td></tr></table></figure></p>
 <p>根目录下的build.gradle:</p>
-<pre><code class="gradle">// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-buildscript {
-    // 声明仓库源
-    repositories {
-        jcenter()
-    }
-    // 声明依赖的gradle版本
-    dependencies {
-        classpath &#39;com.android.tools.build:gradle:2.1.0&#39;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre>
-<p>module的build.gradle:</p>
-<pre><code class="gradle">// 声明用的android构建插件
-apply plugin: &#39;com.android.application&#39;
-
-android {
-    // SDK 版本
-    compileSdkVersion 22
-    // build tools 版本
-    buildToolsVersion &#39;22.0.1&#39;
-
-    // 默认设置
-    defaultConfig {
-        // 应用包名
-        applicationId &quot;com.zzr&quot;
-        // SDK设置
-        minSdkVersion 14
-        targetSdkVersion 22
-        // 版本设置
-        versionCode 10
-        versionName &quot;1.2.4&quot;
-    }
-
-    // 构建设置
-    buildTypes {
-        release {
-            // 是否混淆
-            minifyEnabled false
-            // 混淆文件的位置
-            proguardFiles getDefaultProguardFile(&#39;proguard-android.txt&#39;), &#39;proguard-rules.pro&#39;
-            // 打包优化
-            zipAlignEnabled true
-
-        }
-    }
-
-    // 资源目录的配置
-    sourceSets {
-        main {
-          manifest.srcFile &#39;AndroidManifest.xml&#39;
-          java.srcDirs = [&#39;src&#39;]
-          resources.srcDirs = [&#39;src&#39;]
-          aidl.srcDirs = [&#39;src&#39;]
-          renderscript.srcDirs = [&#39;src&#39;]
-          res.srcDirs = [&#39;res&#39;]
-          assets.srcDirs = [&#39;assets&#39;]
-      }
-      androidTest.setRoot(&#39;tests&#39;)
-    }
-
-    //配置keystore签名
-    signingConfigs {
-        debug {
-            storeFile file(&quot;XXX.jks&quot;)
-            storePassword &quot;xxxxxx&quot;
-            keyAlias &quot;xxx&quot;
-            keyPassword &quot;xxxxxx&quot;
-        }
-        release {
-            storeFile file(&quot;xxxxxx.jks&quot;)
-            storePassword &quot;xxxxxx&quot;
-            keyAlias &quot;xxxxxx&quot;
-            keyPassword &quot;xxxxxx&quot;
-        }
-    }
-}
-
-dependencies {
-    // 依赖lib文件夹里面所有的jar包
-    compile fileTree(include: [&#39;*.jar&#39;], dir: &#39;libs&#39;)
-    testCompile &#39;junit:junit:4.12&#39;
-    compile &#39;com.android.support:appcompat-v7:22.2.1&#39;
-    compile &#39;com.android.support:support-v4:22.2.1&#39;
-}
-</code></pre>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Top-level build file where you can add configuration options common to all sub-projects/modules.</span></div><div class="line"></div><div class="line"><span class="keyword">buildscript</span> &#123;</div><div class="line">	<span class="comment">// 声明仓库源</span></div><div class="line">    <span class="keyword">repositories</span> &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">	<span class="comment">// 声明依赖的gradle版本</span></div><div class="line">    <span class="keyword">dependencies</span> &#123;</div><div class="line">        <span class="keyword">classpath</span> <span class="string">'com.android.tools.build:gradle:2.1.0'</span></div><div class="line"></div><div class="line">        <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></div><div class="line">        <span class="comment">// in the individual module build.gradle files</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">allprojects</span> &#123;</div><div class="line">    <span class="keyword">repositories</span> &#123;</div><div class="line">        jcenter()</div><div class="line">        mavenCentral()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">task</span> clean(type: <span class="keyword">Delete</span>) &#123;</div><div class="line">    <span class="keyword">delete</span> rootProject.buildDir</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>module的build.gradle:<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明用的android构建插件</span></div><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">	<span class="comment">// SDK 版本</span></div><div class="line">    compileSdkVersion <span class="number">22</span></div><div class="line">	<span class="comment">// build tools 版本</span></div><div class="line">    buildToolsVersion <span class="string">'22.0.1'</span></div><div class="line">	</div><div class="line">	<span class="comment">// 默认设置</span></div><div class="line">    defaultConfig &#123;</div><div class="line">	    <span class="comment">// 应用包名</span></div><div class="line">        applicationId <span class="string">"com.zzr"</span></div><div class="line">        <span class="comment">// SDK设置</span></div><div class="line">        minSdkVersion <span class="number">14</span></div><div class="line">        targetSdkVersion <span class="number">22</span></div><div class="line">        <span class="comment">// 版本设置</span></div><div class="line">        versionCode <span class="number">10</span></div><div class="line">        versionName <span class="string">"1.2.4"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="comment">// 构建设置</span></div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">	        <span class="comment">// 是否混淆</span></div><div class="line">            minifyEnabled <span class="keyword">false</span></div><div class="line">            <span class="comment">// 混淆文件的位置</span></div><div class="line">            proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></div><div class="line">            <span class="comment">// 打包优化</span></div><div class="line">            zipAlignEnabled <span class="keyword">true</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 资源目录的配置</span></div><div class="line">    <span class="keyword">sourceSets</span> &#123;</div><div class="line">        main &#123;</div><div class="line">          manifest.srcFile <span class="string">'AndroidManifest.xml'</span></div><div class="line">          java.srcDirs = [<span class="string">'src'</span>]</div><div class="line">          resources.srcDirs = [<span class="string">'src'</span>]</div><div class="line">          aidl.srcDirs = [<span class="string">'src'</span>]</div><div class="line">          renderscript.srcDirs = [<span class="string">'src'</span>]</div><div class="line">          res.srcDirs = [<span class="string">'res'</span>]</div><div class="line">          assets.srcDirs = [<span class="string">'assets'</span>]</div><div class="line">      &#125;</div><div class="line">      androidTest.setRoot(<span class="string">'tests'</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//配置keystore签名</span></div><div class="line">    signingConfigs &#123;</div><div class="line">        debug &#123;</div><div class="line">            storeFile <span class="keyword">file</span>(<span class="string">"XXX.jks"</span>)</div><div class="line">            storePassword <span class="string">"xxxxxx"</span></div><div class="line">            keyAlias <span class="string">"xxx"</span></div><div class="line">            keyPassword <span class="string">"xxxxxx"</span></div><div class="line">        &#125;</div><div class="line">        release &#123;</div><div class="line">            storeFile <span class="keyword">file</span>(<span class="string">"xxxxxx.jks"</span>)</div><div class="line">            storePassword <span class="string">"xxxxxx"</span></div><div class="line">            keyAlias <span class="string">"xxxxxx"</span></div><div class="line">            keyPassword <span class="string">"xxxxxx"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">	<span class="comment">// 依赖lib文件夹里面所有的jar包</span></div><div class="line">    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(<span class="keyword">include</span>: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)</div><div class="line">    testCompile <span class="string">'junit:junit:4.12'</span></div><div class="line">    <span class="keyword">compile</span> <span class="string">'com.android.support:appcompat-v7:22.2.1'</span></div><div class="line">    <span class="keyword">compile</span> <span class="string">'com.android.support:support-v4:22.2.1'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="统一管理"><a href="#统一管理" class="headerlink" title="统一管理"></a>统一管理</h3><p>在根目录新建<code>config.gradle</code></p>
-<pre><code class="java">ext {
-  android = [compileSdkVersion: 22,
-               buildToolsVersion: &quot;22.0.1&quot;,
-               applicationId    : &quot;com.zzr&quot;,
-               minSdkVersion    : 14,
-               targetSdkVersion : 22,
-               versionCode      : 10,
-               versionName      : &quot;1.2.4&quot;,]
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ext &#123;</div><div class="line">  android = [compileSdkVersion: <span class="number">22</span>,</div><div class="line">               buildToolsVersion: <span class="string">"22.0.1"</span>,</div><div class="line">               applicationId    : <span class="string">"com.zzr"</span>,</div><div class="line">               minSdkVersion    : <span class="number">14</span>,</div><div class="line">               targetSdkVersion : <span class="number">22</span>,</div><div class="line">               versionCode      : <span class="number">10</span>,</div><div class="line">               versionName      : <span class="string">"1.2.4"</span>,]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在根目录<code>build.gradle</code>应用</p>
 <p><code>apply from: &quot;config.gradle&quot;</code></p>
 <p>在app目录下的<code>build.gradle</code>配置</p>
-<pre><code class="java"> compileSdkVersion config.compileSdkVersion
-  buildToolsVersion config.buildToolsVersion
-  // useLibrary&quot;org.apache.http.legacy&quot;
-  defaultConfig {
-    applicationId config.applicationId
-    minSdkVersion config.minSdkVersion
-    targetSdkVersion config.targetSdkVersion
-    versionCode config.versionCode
-    versionName config.versionName
-  }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion config.compileSdkVersion</div><div class="line"> buildToolsVersion config.buildToolsVersion</div><div class="line"> <span class="comment">// useLibrary"org.apache.http.legacy"</span></div><div class="line"> defaultConfig &#123;</div><div class="line">   applicationId config.applicationId</div><div class="line">   minSdkVersion config.minSdkVersion</div><div class="line">   targetSdkVersion config.targetSdkVersion</div><div class="line">   versionCode config.versionCode</div><div class="line">   versionName config.versionName</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://levent-j.github.io/android/2016/09/27/gradle%281%29" target="_blank" rel="external">Gradle：从入门到放弃（一）</a>  </p>
 <p><a href="https://levent-j.github.io/android/2016/09/28/gradle(2" target="_blank" rel="external">Gradle：从入门到放弃（二）</a>)  </p>
 <p><a href="https://levent-j.github.io/android/2016/09/28/gradle(3" target="_blank" rel="external">Gradle：从入门到放弃（三）</a>)</p>

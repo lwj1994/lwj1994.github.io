@@ -378,15 +378,7 @@
 </ol>
 <p>MeasureSpec 由 32 位 int 数据组成，其中高 2 位代表 mode，前 30 位代表 size。</p>
 <p>这样实现是为了减少对象分配，计算中使用位运算提高了效率。</p>
-<pre><code class="java">// 获取 mode
-int specMode = MeasureSpec.getMode(measureSpec);
-
-// 获取 size
-int specSize = MeasureSpec.getSize(measureSpec);
-
-// 生成 measureSpec
-int measureSpec = MeasureSpec.makeMeasureSpec(size, mode);
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取 mode</span></div><div class="line"><span class="keyword">int</span> specMode = MeasureSpec.getMode(measureSpec);</div><div class="line"></div><div class="line"><span class="comment">// 获取 size</span></div><div class="line"><span class="keyword">int</span> specSize = MeasureSpec.getSize(measureSpec);</div><div class="line"></div><div class="line"><span class="comment">// 生成 measureSpec</span></div><div class="line"><span class="keyword">int</span> measureSpec = MeasureSpec.makeMeasureSpec(size, mode);</div></pre></td></tr></table></figure>
 <h2 id="三种模式"><a href="#三种模式" class="headerlink" title="三种模式"></a>三种模式</h2><p>一共有 3 种模式：</p>
 <ul>
 <li>MeasureSpec.UNSPECIFIED</li>
@@ -400,50 +392,18 @@ int measureSpec = MeasureSpec.makeMeasureSpec(size, mode);
 <h3 id="MeasureSpec-EXACTLY"><a href="#MeasureSpec-EXACTLY" class="headerlink" title="MeasureSpec.EXACTLY"></a>MeasureSpec.EXACTLY</h3><blockquote>
 <p>Measure specification mode: The parent has determined an exact size for the child. The child is going to be given those bounds regardless of how big it wants to be.</p>
 </blockquote>
-<p>精确值模式。<br>当我们设置控件的宽或高为具体的数值时即为此种模式。<br>例如  ：</p>
-<pre><code class="xml">android:layout_width = &quot;100dp&quot;
-</code></pre>
-<pre><code class="xml">android:layout_width = &quot;match_parent&quot;
-</code></pre>
+<p>精确值模式。<br>当我们设置控件的宽或高为具体的数值时即为此种模式。<br>例如  ：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:layout_width = "100dp"</div></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:layout_width = "match_parent"</div></pre></td></tr></table></figure>
 <p>父布局已经为自 View 决定了准确的尺寸。</p>
 <h3 id="MeasureSpec-AT-MOST"><a href="#MeasureSpec-AT-MOST" class="headerlink" title="MeasureSpec.AT_MOST"></a>MeasureSpec.AT_MOST</h3><blockquote>
 <p>Measure specification mode: The child can be as large as it wants up to the specified size.</p>
 </blockquote>
-<p>最大值模式。<br>控件的尺寸只要不超过父控件允许的最大尺寸即可。<br>例如：</p>
-<pre><code class="xml">android:layout_width = &quot;wrap_content&quot;
-</code></pre>
+<p>最大值模式。<br>控件的尺寸只要不超过父控件允许的最大尺寸即可。<br>例如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:layout_width = "wrap_content"</div></pre></td></tr></table></figure></p>
 <h2 id="从源码中分析-MesaureSpec-是如何形成的"><a href="#从源码中分析-MesaureSpec-是如何形成的" class="headerlink" title="从源码中分析 MesaureSpec 是如何形成的"></a>从源码中分析 MesaureSpec 是如何形成的</h2><p>父容器测量子 View 的过程如下：<br><img src="http://cuntuku.com/images/2017/01/23/Jietu20170123-110631.jpg" alt="ViewGroup 测量的调用过程"></p>
 <p>父类容器 ViewGroup 在测量子 View 时会调用<code>measureChildWidthMargins()</code> ，在<code>measureChildWidthMargins()</code> 中又会调用 <code>getChildMeasureSpec()</code>。</p>
 <p>通过这 2 个方法来了解这三个模式是如何生成的。</p>
 <p>先来看 ViewGroup 中的 measureChildWidthMargins(View, int, int, int, int) 源码：</p>
-<pre><code class="java">/**
- * 请求此视图的一个孩子测量自身。
- * 考虑到此视图的 MeasureSpec 要求和它有 padding 和 margins，孩子必须有 MarginLayoutParams。
- * 计算 padding 和 margins 在 getChildMeasureSpec（） 中完成。
- *
- * @param child 需要测量的孩子
- * @param parentWidthMeasureSpec 当前 ViewGroup 视图的宽的 MeasureSpec
- * @param widthUsed 当前 ViewGroup 或者它的其他孩子在水平方向已经占用的空间
- * @param parentHeightMeasureSpec 当前 ViewGroup 视图的高的 MeasureSpec
- * @param heightUsed 当前 ViewGroup 或者它的其他孩子在垂直方向已经占用的空间
- */
-protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed,
-    int parentHeightMeasureSpec, int heightUsed) {
-  // 获取孩子的 MarginLayoutParams
-  final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-
-  // 获得孩子的宽的 MeasureSpec
-  final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
-      mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);
-
-  // 获得孩子的高的 MeasureSpec
-  final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
-      mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed, lp.height);
-
-  // 调用孩子 View 的 measure()方法，传入刚刚得到的孩子的宽和高的 MeasureSpec
-  child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 请求此视图的一个孩子测量自身。</div><div class="line"> * 考虑到此视图的 MeasureSpec 要求和它有 padding 和 margins，孩子必须有 MarginLayoutParams。</div><div class="line"> * 计算 padding 和 margins 在 getChildMeasureSpec（） 中完成。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> child 需要测量的孩子</div><div class="line"> * <span class="doctag">@param</span> parentWidthMeasureSpec 当前 ViewGroup 视图的宽的 MeasureSpec</div><div class="line"> * <span class="doctag">@param</span> widthUsed 当前 ViewGroup 或者它的其他孩子在水平方向已经占用的空间</div><div class="line"> * <span class="doctag">@param</span> parentHeightMeasureSpec 当前 ViewGroup 视图的高的 MeasureSpec</div><div class="line"> * <span class="doctag">@param</span> heightUsed 当前 ViewGroup 或者它的其他孩子在垂直方向已经占用的空间</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">measureChildWithMargins</span><span class="params">(View child, <span class="keyword">int</span> parentWidthMeasureSpec, <span class="keyword">int</span> widthUsed,</span></span></div><div class="line">    <span class="keyword">int</span> parentHeightMeasureSpec, <span class="keyword">int</span> heightUsed) &#123;</div><div class="line">  <span class="comment">// 获取孩子的 MarginLayoutParams</span></div><div class="line">  <span class="keyword">final</span> MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();</div><div class="line"></div><div class="line">  <span class="comment">// 获得孩子的宽的 MeasureSpec</span></div><div class="line">  <span class="keyword">final</span> <span class="keyword">int</span> childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,</div><div class="line">      mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);</div><div class="line"></div><div class="line">  <span class="comment">// 获得孩子的高的 MeasureSpec</span></div><div class="line">  <span class="keyword">final</span> <span class="keyword">int</span> childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,</div><div class="line">      mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed, lp.height);</div><div class="line"></div><div class="line">  <span class="comment">// 调用孩子 View 的 measure()方法，传入刚刚得到的孩子的宽和高的 MeasureSpec</span></div><div class="line">  child.measure(childWidthMeasureSpec, childHeightMeasureSpec);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>注意这个方法传入的参数的含义。这四个参数</p>
 <ol>
 <li>当前 ViewGroup 视图的宽的 MeasureSpec</li>
@@ -454,111 +414,7 @@ protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, i
 <p>从这四个参数其实可以看出父 View 影响着子 View 的 MeasureSpec 的生成。</p>
 <p>上述方法是通过 getChildMeasureSpec() 计算出子 View 宽和高的 MeasureSpec 的，我们来看看这个方法是如何计算的。</p>
 <p>ViewGroup 中的 getChildMeasureSpec(int, int, int) 源码：</p>
-<pre><code class="java">  /**
-   * 这个方法根据子 Veiw 的尺寸和父容器的 MeasureSpec 计算出子 View 的正确的 MeasureSpec
-   *
-   * @param spec 父容器的 MeasureSpec
-   * @param padding 当前父容器的 padding 和 margin
-   * @param childDimension 孩子想要在当前父容器上获取的尺寸
-   * @return 子 View 的 MeasureSpec
-   */
-  public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
-    // 获得父容器的测量模式和测量大小
-    int specMode = MeasureSpec.getMode(spec);
-    int specSize = MeasureSpec.getSize(spec);
-
-    // 取 0 和 父容器剩下大小的最大值
-    int size = Math.max(0, specSize - padding);
-
-    // 初始化子 View 的测量大小和测量模式
-    int resultSize = 0;
-    int resultMode = 0;
-
-    // 开始计算 MeasureSpec
-    switch (specMode) {
-      // 父容器为 EXACTLY 模式
-      case MeasureSpec.EXACTLY:
-
-        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
-        if (childDimension &gt;= 0) {
-          resultSize = childDimension;
-          resultMode = MeasureSpec.EXACTLY;
-        }
-
-        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，测量大小就为父容器剩余的大小。模式是 EXACTLY。
-        else if (childDimension == LayoutParams.MATCH_PARENT) {
-          resultSize = size;
-          resultMode = MeasureSpec.EXACTLY;
-        }
-
-        // 如果子类想要的大小时 WRAP_CONTENT，测量大小就为父容器剩余的大小。模式是 AT_MOST。
-        else if (childDimension == LayoutParams.WRAP_CONTENT) {
-          // Child wants to determine its own size. It can&#39;t be
-          // bigger than us.
-          resultSize = size;
-          resultMode = MeasureSpec.AT_MOST;
-        }
-        break;
-
-      // 父容器为 AT_MOST 模式
-      case MeasureSpec.AT_MOST:
-
-        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
-        if (childDimension &gt;= 0) {
-          // Child wants a specific size... so be it
-          resultSize = childDimension;
-          resultMode = MeasureSpec.EXACTLY;
-        }
-
-        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，但是父容器的大小是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。
-        else if (childDimension == LayoutParams.MATCH_PARENT) {
-          // Child wants to be our size, but our size is not fixed.
-          // Constrain child to not be bigger than us.
-          resultSize = size;
-          resultMode = MeasureSpec.AT_MOST;
-        }
-
-        // 如果子类想要的大小是 WRAP_CONTENT，子 View 大小不固定，父容器的大小也是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。
-        else if (childDimension == LayoutParams.WRAP_CONTENT) {
-          // Child wants to determine its own size. It can&#39;t be
-          // bigger than us.
-          resultSize = size;
-          resultMode = MeasureSpec.AT_MOST;
-        }
-        break;
-
-      // 父容器为 UNSPECIFIED 模式
-      case MeasureSpec.UNSPECIFIED:
-
-        // 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。
-        if (childDimension &gt;= 0) {
-          // Child wants a specific size... let him have it
-          resultSize = childDimension;
-          resultMode = MeasureSpec.EXACTLY;
-        }
-
-        // 如果子类想要的大小是 MATCH_PARENT，即充满父容器，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。
-        else if (childDimension == LayoutParams.MATCH_PARENT) {
-          // Child wants to be our size... find out how big it should
-          // be
-          resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
-          resultMode = MeasureSpec.UNSPECIFIED;
-        }
-
-        // 如果子类想要的大小是 WRAP_CONTENT，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。
-        else if (childDimension == LayoutParams.WRAP_CONTENT) {
-          // Child wants to determine its own size.... find out how
-          // big it should be
-          resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
-          resultMode = MeasureSpec.UNSPECIFIED;
-        }
-        break;
-    }
-
-    // 根据上面得到的子 View 的测量大小和测量模式合成一个 MeasureSpec
-    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
-  }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 这个方法根据子 Veiw 的尺寸和父容器的 MeasureSpec 计算出子 View 的正确的 MeasureSpec</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> spec 父容器的 MeasureSpec</div><div class="line"> * <span class="doctag">@param</span> padding 当前父容器的 padding 和 margin</div><div class="line"> * <span class="doctag">@param</span> childDimension 孩子想要在当前父容器上获取的尺寸</div><div class="line"> * <span class="doctag">@return</span> 子 View 的 MeasureSpec</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getChildMeasureSpec</span><span class="params">(<span class="keyword">int</span> spec, <span class="keyword">int</span> padding, <span class="keyword">int</span> childDimension)</span> </span>&#123;</div><div class="line">  <span class="comment">// 获得父容器的测量模式和测量大小</span></div><div class="line">  <span class="keyword">int</span> specMode = MeasureSpec.getMode(spec);</div><div class="line">  <span class="keyword">int</span> specSize = MeasureSpec.getSize(spec);</div><div class="line"></div><div class="line">  <span class="comment">// 取 0 和 父容器剩下大小的最大值</span></div><div class="line">  <span class="keyword">int</span> size = Math.max(<span class="number">0</span>, specSize - padding);</div><div class="line"></div><div class="line">  <span class="comment">// 初始化子 View 的测量大小和测量模式</span></div><div class="line">  <span class="keyword">int</span> resultSize = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> resultMode = <span class="number">0</span>;</div><div class="line"></div><div class="line">  <span class="comment">// 开始计算 MeasureSpec</span></div><div class="line">  <span class="keyword">switch</span> (specMode) &#123;</div><div class="line">    <span class="comment">// 父容器为 EXACTLY 模式</span></div><div class="line">    <span class="keyword">case</span> MeasureSpec.EXACTLY:</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。</span></div><div class="line">      <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">        resultSize = childDimension;</div><div class="line">        resultMode = MeasureSpec.EXACTLY;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小是 MATCH_PARENT，即充满父容器，测量大小就为父容器剩余的大小。模式是 EXACTLY。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">        resultSize = size;</div><div class="line">        resultMode = MeasureSpec.EXACTLY;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小时 WRAP_CONTENT，测量大小就为父容器剩余的大小。模式是 AT_MOST。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">        <span class="comment">// Child wants to determine its own size. It can't be</span></div><div class="line">        <span class="comment">// bigger than us.</span></div><div class="line">        resultSize = size;</div><div class="line">        resultMode = MeasureSpec.AT_MOST;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 父容器为 AT_MOST 模式</span></div><div class="line">    <span class="keyword">case</span> MeasureSpec.AT_MOST:</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。</span></div><div class="line">      <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// Child wants a specific size... so be it</span></div><div class="line">        resultSize = childDimension;</div><div class="line">        resultMode = MeasureSpec.EXACTLY;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小是 MATCH_PARENT，即充满父容器，但是父容器的大小是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">        <span class="comment">// Child wants to be our size, but our size is not fixed.</span></div><div class="line">        <span class="comment">// Constrain child to not be bigger than us.</span></div><div class="line">        resultSize = size;</div><div class="line">        resultMode = MeasureSpec.AT_MOST;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小是 WRAP_CONTENT，子 View 大小不固定，父容器的大小也是不固定的，那么子 View 测量大小就为父容器剩余的大小。模式也是 AT_MOST。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">        <span class="comment">// Child wants to determine its own size. It can't be</span></div><div class="line">        <span class="comment">// bigger than us.</span></div><div class="line">        resultSize = size;</div><div class="line">        resultMode = MeasureSpec.AT_MOST;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 父容器为 UNSPECIFIED 模式</span></div><div class="line">    <span class="keyword">case</span> MeasureSpec.UNSPECIFIED:</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类已经指定了准确的大小，孩子测量大小就是子类想要的大小，测量模式就是 EXACTLY。</span></div><div class="line">      <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// Child wants a specific size... let him have it</span></div><div class="line">        resultSize = childDimension;</div><div class="line">        resultMode = MeasureSpec.EXACTLY;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小是 MATCH_PARENT，即充满父容器，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">        <span class="comment">// Child wants to be our size... find out how big it should</span></div><div class="line">        <span class="comment">// be</span></div><div class="line">        resultSize = View.sUseZeroUnspecifiedMeasureSpec ? <span class="number">0</span> : size;</div><div class="line">        resultMode = MeasureSpec.UNSPECIFIED;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 如果子类想要的大小是 WRAP_CONTENT，那么子 View 测量大小就为父容器剩余的大小。模式也是 UNSPECIFIED。</span></div><div class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">        <span class="comment">// Child wants to determine its own size.... find out how</span></div><div class="line">        <span class="comment">// big it should be</span></div><div class="line">        resultSize = View.sUseZeroUnspecifiedMeasureSpec ? <span class="number">0</span> : size;</div><div class="line">        resultMode = MeasureSpec.UNSPECIFIED;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 根据上面得到的子 View 的测量大小和测量模式合成一个 MeasureSpec</span></div><div class="line">  <span class="keyword">return</span> MeasureSpec.makeMeasureSpec(resultSize, resultMode);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>看完这段源码我们可以清楚的发现：</p>
 <p><strong>子 View 的 MeasureSpec 由其父容器的 MeasureSpec 和该子 View 本身的布局参数 LayoutParams 共同决定。</strong></p>
 <p>根据上述源码可以总结出下面这张表：</p>

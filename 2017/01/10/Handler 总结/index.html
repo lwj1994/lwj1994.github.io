@@ -385,17 +385,7 @@
 </li>
 </ol>
 <h2 id="消息的发送和处理"><a href="#消息的发送和处理" class="headerlink" title="消息的发送和处理"></a>消息的发送和处理</h2><h3 id="消息入队"><a href="#消息入队" class="headerlink" title="消息入队"></a>消息入队</h3><p>发送消息最终都会走  <code>Handler</code>的<code>sendMessageAtTime(Message msg, long uptimeMillis)</code>   这个方法</p>
-<pre><code class="java">    //Handler
-    /**
-     ** queue:
-     ** msg:
-     ** uptimeMills: 根据这个时间判断消息执行顺序, 如果是 0 就是第一个执行。
-     **/
-    boolean enqueueMessage(MessageQueue queue，Message msg，long uptimeMillis){
-        //  这个 target 赋值为 this， 就是 Handler。
-        msg.target = this;
-    }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Handler</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> ** queue:</div><div class="line"> ** msg:</div><div class="line"> ** uptimeMills: 根据这个时间判断消息执行顺序, 如果是 0 就是第一个执行。</div><div class="line"> **/</div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">enqueueMessage</span><span class="params">(MessageQueue queue，Message msg，<span class="keyword">long</span> uptimeMillis)</span></span>&#123;</div><div class="line">	<span class="comment">//  这个 target 赋值为 this， 就是 Handler。</span></div><div class="line">	msg.target = <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="消息出队"><a href="#消息出队" class="headerlink" title="消息出队"></a>消息出队</h3><p>Looper.prepare() 之后，需要调用loop() 方法轮询消息 ,<br>首先从threadLocal 取出 Looper，再取出 looper 中的消息队列<br>进入循环，没有消息就阻塞。<br>有消息就   <code>msg.target.dispatchMessage(msg)</code><br>这里的 <code>msg.target</code> 正是 Handler</p>
 <h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><ol>
 <li>判断消息的回调，这里的回调就是 <code>handler.post(Runnable callback)</code> 中的 <code>Runnable</code></li>
@@ -409,18 +399,7 @@
 <li>Looper：负责轮询消息队列</li>
 </ol>
 <h2 id="使用Handler的错误姿势及其潜在风险"><a href="#使用Handler的错误姿势及其潜在风险" class="headerlink" title="使用Handler的错误姿势及其潜在风险"></a>使用Handler的错误姿势及其潜在风险</h2><p><code>Hanler</code> 在哪个线程就在那个线程执行<br><code>#View.post(rnnable)</code> 在主线程执行<br><code>#Activity.runOnUiThread()</code>在主线程执行</p>
-<h3 id="匿名内部内引发内存泄露"><a href="#匿名内部内引发内存泄露" class="headerlink" title="匿名内部内引发内存泄露"></a>匿名内部内引发内存泄露</h3><pre><code class="java">    privite void init(){
-        mHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg){
-                // handler msg
-            }
-        }
-        mhandler.postDelay(new Runnable(){
-            //do something
-        },1000 * 20);
-    }
-</code></pre>
+<h3 id="匿名内部内引发内存泄露"><a href="#匿名内部内引发内存泄露" class="headerlink" title="匿名内部内引发内存泄露"></a>匿名内部内引发内存泄露</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function">privite <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</div><div class="line">	mHandler = <span class="keyword">new</span> Handler()&#123;</div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span></span>&#123;</div><div class="line">			<span class="comment">// handler msg</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	mhandler.postDelay(<span class="keyword">new</span> Runnable()&#123;</div><div class="line">		<span class="comment">//do something</span></div><div class="line">	&#125;,<span class="number">1000</span> * <span class="number">20</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如上代码匿名内部类 <code>new Runnable()</code> 持有外部 Activity 的引用，如果旋转屏幕当前 Activity 不会被释放。</p>
 <p>解决方式: 弱引用 Handler</p>
 

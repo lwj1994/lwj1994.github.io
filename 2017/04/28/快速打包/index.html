@@ -377,12 +377,7 @@
 <p>除此之外，如果是根据已有基础包生成多渠道包，那么对应的Task则是reBuildChannel</p>
 </blockquote>
 <p>例子：<br> <code>./gradlew channelZZRRelease</code>  </p>
-<h2 id="给umeng设置渠道号"><a href="#给umeng设置渠道号" class="headerlink" title="给umeng设置渠道号"></a>给umeng设置渠道号</h2><p>使用这种方式后就要手动给umeng设置一下渠道号了。</p>
-<pre><code class="java">MobclickAgent.UMAnalyticsConfig umAnalyticsConfig =
-        new MobclickAgent.UMAnalyticsConfig(this, &quot;appkey&quot;,
-           ChannelReaderUtil.getChannel(App.getContext()));
-MobclickAgent.startWithConfigure(umAnalyticsConfig);
-</code></pre>
+<h2 id="给umeng设置渠道号"><a href="#给umeng设置渠道号" class="headerlink" title="给umeng设置渠道号"></a>给umeng设置渠道号</h2><p>使用这种方式后就要手动给umeng设置一下渠道号了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">MobclickAgent.UMAnalyticsConfig umAnalyticsConfig =</div><div class="line">        <span class="keyword">new</span> MobclickAgent.UMAnalyticsConfig(<span class="keyword">this</span>, <span class="string">"appkey"</span>,</div><div class="line">           ChannelReaderUtil.getChannel(App.getContext()));</div><div class="line">MobclickAgent.startWithConfigure(umAnalyticsConfig);</div></pre></td></tr></table></figure></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3NTYzODYzMg==&amp;mid=2653578978&amp;idx=1&amp;sn=3cd4bd0b12557e5416715b4b4a33bea8&amp;chksm=84b3b4e5b3c43df3ff04401e08e7aa934657b4baf3f3c73f3d893a77b3af584ce796d115bf59&amp;mpshare=1&amp;scene=24&amp;srcid=0428SmciylZYnnkS7lwBeLTZ&amp;key=d96819ed7aeab1eb474964a1d92cb57c2013a7b7749f28d32569b685d9cbc18eb7f0de72ce17a773a3fceaf5c2d14fd8788fbb77a5c77640c06709c417d9f8d72b697efdcda2ee255d38697a15eb49e3&amp;ascene=0&amp;uin=MTk2MTM4NTUyMQ%3D%3D&amp;devicetype=iMac+MacBookPro11%2C5+OSX+OSX+10.12.4+build(16E195" target="_blank" rel="external">Android 新一代多渠道打包神器</a>&amp;version=12020110&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=osqliNw7NZr%2FkzVkQFkW1JhJxgxaGGmDh8Mp9VsM%2FhlVe0yLjm2kidJuYX%2FL%2FSbj)  </p>
 <p><a href="https://github.com/ltlovezh/ApkChannelPackage" target="_blank" rel="external">ApkChannelPackage</a>  </p>
 <p><a href="http://ltlovezh.com/2017/04/09/ApkChannelPackage%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%85%A5%E6%96%87%E6%A1%A3/" target="_blank" rel="external">ApkChannelPackage插件接入文档</a></p>

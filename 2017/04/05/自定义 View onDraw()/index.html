@@ -377,60 +377,9 @@
 <li>一个画笔，用来描述绘图的颜色和样式</li>
 </ol>
 <p>view中的draw方法不需要我们自己创建一个bitmap，系统已经为我们创建好了。</p>
-<h3 id="给ImageView设置bitmap"><a href="#给ImageView设置bitmap" class="headerlink" title="给ImageView设置bitmap"></a>给ImageView设置bitmap</h3><pre><code class="java">private void drawBitmap(){
-    Bitmap bitmap = Bitmap.createBitmap(800, 400, Bitmap.Config.ARGB_8888);
-    Canvas canvas = new Canvas(bitmap);
-    canvas.drawColor(Color.GREEN);
-    Paint paint = new Paint();
-    paint.setColor(Color.RED);
-    paint.setTextSize(60);
-    canvas.drawText(&quot;hello, everyone&quot;,150,200,paint);
-    mImageView.setImageBitmap(bitmap);
-  }
-</code></pre>
+<h3 id="给ImageView设置bitmap"><a href="#给ImageView设置bitmap" class="headerlink" title="给ImageView设置bitmap"></a>给ImageView设置bitmap</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawBitmap</span><span class="params">()</span></span>&#123;</div><div class="line">    Bitmap bitmap = Bitmap.createBitmap(<span class="number">800</span>, <span class="number">400</span>, Bitmap.Config.ARGB_8888);</div><div class="line">    Canvas canvas = <span class="keyword">new</span> Canvas(bitmap);</div><div class="line">    canvas.drawColor(Color.GREEN);</div><div class="line">    Paint paint = <span class="keyword">new</span> Paint();</div><div class="line">    paint.setColor(Color.RED);</div><div class="line">    paint.setTextSize(<span class="number">60</span>);</div><div class="line">    canvas.drawText(<span class="string">"hello, everyone"</span>,<span class="number">150</span>,<span class="number">200</span>,paint);</div><div class="line">    mImageView.setImageBitmap(bitmap);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
 <p>在此处为canvas设置一个Bitmap，然后利用canvas画了一小段文字，最后使用ImageView显示了Bitmap。</p>
-<h3 id="在onDraw里面绘制不同的图形"><a href="#在onDraw里面绘制不同的图形" class="headerlink" title="在onDraw里面绘制不同的图形"></a>在onDraw里面绘制不同的图形</h3><pre><code class="java">@Override protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-
-    // 绘制白色矩形
-    mPaint.reset();
-    mPaint.setColor(Color.WHITE);
-    canvas.drawRect(0, 0, 800, 800, mPaint);
-
-    // 绘制直线
-    mPaint.reset();
-    mPaint.setColor(Color.RED);
-    mPaint.setStrokeWidth(10);
-    canvas.drawLine(450, 30, 570, 170, mPaint);
-
-    //--------&gt;绘制带边框的矩形
-    mPaint.reset();
-    mPaint.setStrokeWidth(10);
-    mPaint.setARGB(150, 90, 255, 0);
-    mPaint.setStyle(Paint.Style.STROKE);
-    @SuppressLint(&quot;DrawAllocation&quot;) RectF rectF1 = new RectF(30, 60, 350, 350);
-    canvas.drawRect(rectF1, mPaint);
-    //--------&gt;绘制实心圆
-    mPaint.reset();
-    mPaint.setStrokeWidth(14);
-    mPaint.setColor(Color.GREEN);
-    mPaint.setAntiAlias(true);
-    canvas.drawCircle(670, 300, 70, mPaint);
-
-    //--------&gt;绘制椭圆
-    mPaint.reset();
-    mPaint.setColor(Color.YELLOW);
-    RectF rectF2 = new RectF(200, 430, 600, 600);
-    canvas.drawOval(rectF2, mPaint);
-
-    //--------&gt;绘制文字
-    mPaint.reset();
-    mPaint.setColor(Color.BLACK);
-    mPaint.setTextSize(60);
-    mPaint.setUnderlineText(true);
-    canvas.drawText(&quot;Hello Android&quot;, 150, 720, mPaint);
-  }
-</code></pre>
+<h3 id="在onDraw里面绘制不同的图形"><a href="#在onDraw里面绘制不同的图形" class="headerlink" title="在onDraw里面绘制不同的图形"></a>在onDraw里面绘制不同的图形</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onDraw(canvas);</div><div class="line"></div><div class="line">    <span class="comment">// 绘制白色矩形</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setColor(Color.WHITE);</div><div class="line">    canvas.drawRect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">800</span>, <span class="number">800</span>, mPaint);</div><div class="line"></div><div class="line">    <span class="comment">// 绘制直线</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setColor(Color.RED);</div><div class="line">    mPaint.setStrokeWidth(<span class="number">10</span>);</div><div class="line">    canvas.drawLine(<span class="number">450</span>, <span class="number">30</span>, <span class="number">570</span>, <span class="number">170</span>, mPaint);</div><div class="line"></div><div class="line">    <span class="comment">//--------&gt;绘制带边框的矩形</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setStrokeWidth(<span class="number">10</span>);</div><div class="line">    mPaint.setARGB(<span class="number">150</span>, <span class="number">90</span>, <span class="number">255</span>, <span class="number">0</span>);</div><div class="line">    mPaint.setStyle(Paint.Style.STROKE);</div><div class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"DrawAllocation"</span>) RectF rectF1 = <span class="keyword">new</span> RectF(<span class="number">30</span>, <span class="number">60</span>, <span class="number">350</span>, <span class="number">350</span>);</div><div class="line">    canvas.drawRect(rectF1, mPaint);</div><div class="line">    <span class="comment">//--------&gt;绘制实心圆</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setStrokeWidth(<span class="number">14</span>);</div><div class="line">    mPaint.setColor(Color.GREEN);</div><div class="line">    mPaint.setAntiAlias(<span class="keyword">true</span>);</div><div class="line">    canvas.drawCircle(<span class="number">670</span>, <span class="number">300</span>, <span class="number">70</span>, mPaint);</div><div class="line"></div><div class="line">    <span class="comment">//--------&gt;绘制椭圆</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setColor(Color.YELLOW);</div><div class="line">    RectF rectF2 = <span class="keyword">new</span> RectF(<span class="number">200</span>, <span class="number">430</span>, <span class="number">600</span>, <span class="number">600</span>);</div><div class="line">    canvas.drawOval(rectF2, mPaint);</div><div class="line"></div><div class="line">    <span class="comment">//--------&gt;绘制文字</span></div><div class="line">    mPaint.reset();</div><div class="line">    mPaint.setColor(Color.BLACK);</div><div class="line">    mPaint.setTextSize(<span class="number">60</span>);</div><div class="line">    mPaint.setUnderlineText(<span class="keyword">true</span>);</div><div class="line">    canvas.drawText(<span class="string">"Hello Android"</span>, <span class="number">150</span>, <span class="number">720</span>, mPaint);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
 <h3 id="对canvas的操作"><a href="#对canvas的操作" class="headerlink" title="对canvas的操作"></a>对canvas的操作</h3><ol>
 <li>canvas.translate</li>
 <li>canvas.rotate</li>
@@ -441,28 +390,7 @@
 <li>Shader</li>
 <li>PathEffect</li>
 </ol>
-<h4 id="显示圆角图片"><a href="#显示圆角图片" class="headerlink" title="显示圆角图片"></a>显示圆角图片</h4><pre><code class="java">   /**
-     * @param bitmap 原图
-     * @param pixels 角度
-     * @return 带圆角的图
-     */
-    public Bitmap getRoundCornerBitmap(Bitmap bitmap, float pixels) {
-        int width=bitmap.getWidth();
-        int height=bitmap.getHeight();
-        Bitmap roundCornerBitmap = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(roundCornerBitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setAntiAlias(true);
-        Rect rect = new Rect(0, 0, width, height);
-        RectF rectF = new RectF(rect);
-        canvas.drawRoundRect(rectF, pixels, pixels, paint);
-        PorterDuffXfermode xfermode=new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
-        paint.setXfermode(xfermode);
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        return roundCornerBitmap;
-    }
-</code></pre>
+<h4 id="显示圆角图片"><a href="#显示圆角图片" class="headerlink" title="显示圆角图片"></a>显示圆角图片</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * <span class="doctag">@param</span> bitmap 原图</div><div class="line">  * <span class="doctag">@param</span> pixels 角度</div><div class="line">  * <span class="doctag">@return</span> 带圆角的图</div><div class="line">  */</div><div class="line"> <span class="function"><span class="keyword">public</span> Bitmap <span class="title">getRoundCornerBitmap</span><span class="params">(Bitmap bitmap, <span class="keyword">float</span> pixels)</span> </span>&#123;</div><div class="line">     <span class="keyword">int</span> width=bitmap.getWidth();</div><div class="line">     <span class="keyword">int</span> height=bitmap.getHeight();</div><div class="line">     Bitmap roundCornerBitmap = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);</div><div class="line">     Canvas canvas = <span class="keyword">new</span> Canvas(roundCornerBitmap);</div><div class="line">     Paint paint = <span class="keyword">new</span> Paint();</div><div class="line">     paint.setColor(Color.BLACK);</div><div class="line">     paint.setAntiAlias(<span class="keyword">true</span>);</div><div class="line">     Rect rect = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, width, height);</div><div class="line">     RectF rectF = <span class="keyword">new</span> RectF(rect);</div><div class="line">     canvas.drawRoundRect(rectF, pixels, pixels, paint);</div><div class="line">     PorterDuffXfermode xfermode=<span class="keyword">new</span> PorterDuffXfermode(PorterDuff.Mode.SRC_IN);</div><div class="line">     paint.setXfermode(xfermode);</div><div class="line">     canvas.drawBitmap(bitmap, rect, rect, paint);</div><div class="line">     <span class="keyword">return</span> roundCornerBitmap;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <h2 id="draw"><a href="#draw" class="headerlink" title="draw"></a>draw</h2><p>view的draw()方法：</p>
 <p>有2个draw()方法，分别是：  </p>
 <ol>
@@ -480,107 +408,13 @@
 </ol>
 <p>一般情况下可以忽略第2步和第5步。</p>
 <p>绘制第2步和第5步要相对耗时一点。</p>
-<h3 id="draw-canvas-源码解析"><a href="#draw-canvas-源码解析" class="headerlink" title="draw(canvas)源码解析"></a>draw(canvas)源码解析</h3><pre><code class="java">  /**
-   * 手动的把当前的view以及它的所有子view渲染到画布上。
-   * 在调用此方法之前必须完成完整的layout过程。实现一个view的时候，
-   * 实现{@link #onDraw(android.graphics.Canvas)}而不是覆盖此方法。
-   * 覆盖这个方法的时候一定要先调用父类super.draw(canvas)方法。
-   *
-   * @param canvas 渲染视图的画布。
-   */
-  @CallSuper public void draw(Canvas canvas) {
-    final int privateFlags = mPrivateFlags;
-    final boolean dirtyOpaque = (privateFlags &amp; PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &amp;&amp; (
-        mAttachInfo == null
-            || !mAttachInfo.mIgnoreDirtyState);
-    mPrivateFlags = (privateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DRAWN;
-
-
-    // 第1步：绘制背景
-    int saveCount;
-
-    if (!dirtyOpaque) {
-      drawBackground(canvas);
-    }
-
-    // 一般情况下省略第2步和第5步
-    final int viewFlags = mViewFlags;
-    boolean horizontalEdges = (viewFlags &amp; FADING_EDGE_HORIZONTAL) != 0;
-    boolean verticalEdges = (viewFlags &amp; FADING_EDGE_VERTICAL) != 0;
-    if (!verticalEdges &amp;&amp; !horizontalEdges) {
-      // 第3步：绘制内容
-      if (!dirtyOpaque) onDraw(canvas);
-
-      // 第4步：绘制子view
-      dispatchDraw(canvas);
-
-      // Overlay is part of the content and draws beneath Foreground
-      if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) {
-        mOverlay.getOverlayView().dispatchDraw(canvas);
-      }
-
-      // 第6步：绘制decoration
-      onDrawForeground(canvas);
-
-      // 结束
-      return;
-    }
-
-        /*
-         * 下面是少数情况下的完整的流程
-         */
-
-
-    // Step 2, save the canvas&#39; layers
-    ....省略第2步的代码
-
-    // Step 3, draw the content
-    if (!dirtyOpaque) onDraw(canvas);
-
-    // Step 4, draw the children
-    dispatchDraw(canvas);
-
-    // Step 5, draw the fade effect and restore layers
-    ....省略第5步的代码
-
-    // Step 6, draw decorations (foreground, scrollbars)
-    onDrawForeground(canvas);
-  }
-</code></pre>
+<h3 id="draw-canvas-源码解析"><a href="#draw-canvas-源码解析" class="headerlink" title="draw(canvas)源码解析"></a>draw(canvas)源码解析</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 手动的把当前的view以及它的所有子view渲染到画布上。</div><div class="line"> * 在调用此方法之前必须完成完整的layout过程。实现一个view的时候，</div><div class="line"> * 实现&#123;<span class="doctag">@link</span> #onDraw(android.graphics.Canvas)&#125;而不是覆盖此方法。</div><div class="line"> * 覆盖这个方法的时候一定要先调用父类super.draw(canvas)方法。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> canvas 渲染视图的画布。</div><div class="line"> */</div><div class="line"><span class="meta">@CallSuper</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">  <span class="keyword">final</span> <span class="keyword">int</span> privateFlags = mPrivateFlags;</div><div class="line">  <span class="keyword">final</span> <span class="keyword">boolean</span> dirtyOpaque = (privateFlags &amp; PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &amp;&amp; (</div><div class="line">      mAttachInfo == <span class="keyword">null</span></div><div class="line">          || !mAttachInfo.mIgnoreDirtyState);</div><div class="line">  mPrivateFlags = (privateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DRAWN;</div><div class="line">  </div><div class="line"></div><div class="line">  <span class="comment">// 第1步：绘制背景</span></div><div class="line">  <span class="keyword">int</span> saveCount;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!dirtyOpaque) &#123;</div><div class="line">    drawBackground(canvas);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 一般情况下省略第2步和第5步</span></div><div class="line">  <span class="keyword">final</span> <span class="keyword">int</span> viewFlags = mViewFlags;</div><div class="line">  <span class="keyword">boolean</span> horizontalEdges = (viewFlags &amp; FADING_EDGE_HORIZONTAL) != <span class="number">0</span>;</div><div class="line">  <span class="keyword">boolean</span> verticalEdges = (viewFlags &amp; FADING_EDGE_VERTICAL) != <span class="number">0</span>;</div><div class="line">  <span class="keyword">if</span> (!verticalEdges &amp;&amp; !horizontalEdges) &#123;</div><div class="line">    <span class="comment">// 第3步：绘制内容</span></div><div class="line">    <span class="keyword">if</span> (!dirtyOpaque) onDraw(canvas);</div><div class="line"></div><div class="line">    <span class="comment">// 第4步：绘制子view</span></div><div class="line">    dispatchDraw(canvas);</div><div class="line"></div><div class="line">    <span class="comment">// Overlay is part of the content and draws beneath Foreground</span></div><div class="line">    <span class="keyword">if</span> (mOverlay != <span class="keyword">null</span> &amp;&amp; !mOverlay.isEmpty()) &#123;</div><div class="line">      mOverlay.getOverlayView().dispatchDraw(canvas);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 第6步：绘制decoration</span></div><div class="line">    onDrawForeground(canvas);</div><div class="line"></div><div class="line">    <span class="comment">// 结束</span></div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">      <span class="comment">/*</span></div><div class="line">       * 下面是少数情况下的完整的流程</div><div class="line">       */</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">// Step 2, save the canvas' layers</span></div><div class="line">  ....省略第<span class="number">2</span>步的代码</div><div class="line"></div><div class="line">  <span class="comment">// Step 3, draw the content</span></div><div class="line">  <span class="keyword">if</span> (!dirtyOpaque) onDraw(canvas);</div><div class="line"></div><div class="line">  <span class="comment">// Step 4, draw the children</span></div><div class="line">  dispatchDraw(canvas);</div><div class="line"></div><div class="line">  <span class="comment">// Step 5, draw the fade effect and restore layers</span></div><div class="line">  ....省略第<span class="number">5</span>步的代码</div><div class="line"></div><div class="line">  <span class="comment">// Step 6, draw decorations (foreground, scrollbars)</span></div><div class="line">  onDrawForeground(canvas);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="draw-Canvas-canvas-ViewGroup-parent-long-drawingTime"><a href="#draw-Canvas-canvas-ViewGroup-parent-long-drawingTime" class="headerlink" title="draw(Canvas canvas, ViewGroup parent, long drawingTime)"></a>draw(Canvas canvas, ViewGroup parent, long drawingTime)</h3><p>ViewGroup.drawChild()调用这个方法来让子view绘制自身,这里View根据图层类型和硬件加速特性来渲染。</p>
-<h2 id="onDraw"><a href="#onDraw" class="headerlink" title="onDraw"></a>onDraw</h2><p>View 中的 onDraw() 方法：</p>
-<pre><code class="java">/**
-     * Implement this to do your drawing.
-     *
-     * @param canvas the canvas on which the background will be drawn
-     */
-    protected void onDraw(Canvas canvas) {
-    }
-</code></pre>
+<h2 id="onDraw"><a href="#onDraw" class="headerlink" title="onDraw"></a>onDraw</h2><p>View 中的 onDraw() 方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">     * Implement this to do your drawing.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> canvas the canvas on which the background will be drawn</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
 <p>子类实现这个方法来绘制，参数canvas用来绘制背景画布。</p>
-<h2 id="dispatchDraw"><a href="#dispatchDraw" class="headerlink" title="dispatchDraw"></a>dispatchDraw</h2><pre><code class="java">    /**
-     * Called by draw to draw the child views. This may be overridden
-     * by derived classes to gain control just before its children are drawn
-     * (but after its own view has been drawn).
-     * @param canvas the canvas on which to draw the view
-     */
-    protected void dispatchDraw(Canvas canvas) {
-
-    }
-</code></pre>
+<h2 id="dispatchDraw"><a href="#dispatchDraw" class="headerlink" title="dispatchDraw"></a>dispatchDraw</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Called by draw to draw the child views. This may be overridden</div><div class="line"> * by derived classes to gain control just before its children are drawn</div><div class="line"> * (but after its own view has been drawn).</div><div class="line"> * <span class="doctag">@param</span> canvas the canvas on which to draw the view</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">dispatchDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>绘制自身之后，绘制子view之前可以调用这个方法。</p>
-<h2 id="ViewGroup-中的-drawChild-方法"><a href="#ViewGroup-中的-drawChild-方法" class="headerlink" title="ViewGroup 中的 drawChild()方法"></a>ViewGroup 中的 drawChild()方法</h2><pre><code class="java">  /**
-   * 绘制其中一个子view
-   *
-   * @param canvas 绘制子view的canvas
-   * @param child 子view
-   * @param drawingTime draw发生的时间
-   * @return 如果是调用invalidate()绘制的话就返回true
-   */
-  protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-    return child.draw(canvas, this, drawingTime);
-  }
-</code></pre>
+<h2 id="ViewGroup-中的-drawChild-方法"><a href="#ViewGroup-中的-drawChild-方法" class="headerlink" title="ViewGroup 中的 drawChild()方法"></a>ViewGroup 中的 drawChild()方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 绘制其中一个子view</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> canvas 绘制子view的canvas</div><div class="line"> * <span class="doctag">@param</span> child 子view</div><div class="line"> * <span class="doctag">@param</span> drawingTime draw发生的时间</div><div class="line"> * <span class="doctag">@return</span> 如果是调用invalidate()绘制的话就返回true</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">drawChild</span><span class="params">(Canvas canvas, View child, <span class="keyword">long</span> drawingTime)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> child.draw(canvas, <span class="keyword">this</span>, drawingTime);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="draw的顺序图"><a href="#draw的顺序图" class="headerlink" title="draw的顺序图"></a>draw的顺序图</h2><p><img src="http://note.youdao.com/yws/public/resource/0d9fab87ecaf0e9990601fff1d86b585/xmlnote/WEBRESOURCEbadeadbbb425c3364428feaad2932dbd/1756" alt=""></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/lfdfhl/article/details/51435968" target="_blank" rel="external">自定义View系列教程04–Draw源码分析及其实践</a></p>
 <p><a href="https://developer.android.com/guide/topics/ui/how-android-draws.html" target="_blank" rel="external">How Android Draws Views</a></p>

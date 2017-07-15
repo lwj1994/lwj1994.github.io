@@ -376,139 +376,16 @@
 <li>实施者：操作建造者对象</li>
 <li>要建造的对象：最终建造的对象</li>
 </ol>
-<h2 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h2><p>我们要生产一部 Mac，Mac 有很多零件。<br>我们的抽象建造者就是电脑的设计图，<br>具体建造者就是 Mac 独有的一些设计，比如视网膜屏幕，macOS 系统，type-c 接口。<br>实施者就是工人，一个开关流水线机器人就运作了。<br>最后要建造的对象当然是 Mac 了。</p>
-<pre><code class="java">public class MacBookPro extends Computer{
-  int part1;
-  int part2;
-  int part3;
-
-  public void setPart1(int part1) {
-    this.part1 = part1;
-  }
-
-  public void setPart2(int part2) {
-    this.part2 = part2;
-  }
-
-  public void setPart3(int part3) {
-    this.part3 = part3;
-  }
-
-  public static class Builder {
-    MacBookPro mMacBookPro;
-
-    public Builder() {
-      mMacBookPro = new MacBookPro();
-    }
-
-    public Builder setPart1(int part1) {
-      mMacBookPro.setPart1(part1);
-      return this;
-    }
-
-    public Builder setPart2(int part2) {
-      mMacBookPro.setPart2(part2);
-      return this;
-    }
-
-    public Builder setPart3(int part3) {
-      mMacBookPro.setPart2(part3);
-      return this;
-    }
-
-    public MacBookPro build() {
-      return mMacBookPro;
-    }
-  }
-
-/*工人*/
-public static class Worker {
-    private Builder mBuilder;
-
-    public Worker() {
-      mBuilder = new Builder();
-    }
-
-    public MacBookPro buildMac() {
-      return mBuilder.setPart1(1).setPart2(2).setPart3(3).build();
-    }
-  }
-}
-</code></pre>
+<h2 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h2><p>我们要生产一部 Mac，Mac 有很多零件。<br>我们的抽象建造者就是电脑的设计图，<br>具体建造者就是 Mac 独有的一些设计，比如视网膜屏幕，macOS 系统，type-c 接口。<br>实施者就是工人，一个开关流水线机器人就运作了。<br>最后要建造的对象当然是 Mac 了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MacBookPro</span> <span class="keyword">extends</span> <span class="title">Computer</span></span>&#123;</div><div class="line">  <span class="keyword">int</span> part1;</div><div class="line">  <span class="keyword">int</span> part2;</div><div class="line">  <span class="keyword">int</span> part3;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPart1</span><span class="params">(<span class="keyword">int</span> part1)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.part1 = part1;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPart2</span><span class="params">(<span class="keyword">int</span> part2)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.part2 = part2;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPart3</span><span class="params">(<span class="keyword">int</span> part3)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.part3 = part3;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    MacBookPro mMacBookPro;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;</div><div class="line">      mMacBookPro = <span class="keyword">new</span> MacBookPro();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">setPart1</span><span class="params">(<span class="keyword">int</span> part1)</span> </span>&#123;</div><div class="line">      mMacBookPro.setPart1(part1);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">setPart2</span><span class="params">(<span class="keyword">int</span> part2)</span> </span>&#123;</div><div class="line">      mMacBookPro.setPart2(part2);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">setPart3</span><span class="params">(<span class="keyword">int</span> part3)</span> </span>&#123;</div><div class="line">      mMacBookPro.setPart2(part3);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> MacBookPro <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">return</span> mMacBookPro;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"><span class="comment">/*工人*/</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Worker</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Builder mBuilder;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Worker</span><span class="params">()</span> </span>&#123;</div><div class="line">      mBuilder = <span class="keyword">new</span> Builder();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> MacBookPro <span class="title">buildMac</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">return</span> mBuilder.setPart1(<span class="number">1</span>).setPart2(<span class="number">2</span>).setPart3(<span class="number">3</span>).build();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>调用的时候这样写：</p>
-<pre><code class="java">// 让工人去工作生产一部 mac
-MacBookPro.Worker worker = new MacBookPro.Worker();
-MacBookPro macBookPro = worker.buildMac();
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 让工人去工作生产一部 mac</span></div><div class="line">MacBookPro.Worker worker = <span class="keyword">new</span> MacBookPro.Worker();</div><div class="line">MacBookPro macBookPro = worker.buildMac();</div></pre></td></tr></table></figure>
 <p>在实际开发中一般会省去实施者这个角色。</p>
 <h2 id="源码中的例子"><a href="#源码中的例子" class="headerlink" title="源码中的例子"></a>源码中的例子</h2><p>比如在 Android 的源码中，创建一个 Dialog 的时候是这样的：</p>
-<pre><code class="java">AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setCustomTitle();
-    builder.setIcon();
-    builder.setItems();
-    AlertDialog show = builder.show();
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">AlertDialog.Builder builder = <span class="keyword">new</span> AlertDialog.Builder(<span class="keyword">this</span>);</div><div class="line">    builder.setCustomTitle();</div><div class="line">    builder.setIcon();</div><div class="line">    builder.setItems();</div><div class="line">    AlertDialog show = builder.show();</div></pre></td></tr></table></figure>
 <p>还有我们 Android 日常开发常用的 OkHttp 和 Retrofit，在初始化的时候都会 new 一个 Builder 来设置一些参数。</p>
-<p>Retrofit 示例：</p>
-<pre><code class="java">mRetrofit = new Retrofit.Builder().client(okHttpClient)
-        .baseUrl(Constants.BASE_URL)
-        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build();
-</code></pre>
+<p>Retrofit 示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mRetrofit = <span class="keyword">new</span> Retrofit.Builder().client(okHttpClient)</div><div class="line">        .baseUrl(Constants.BASE_URL)</div><div class="line">        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())</div><div class="line">        .addConverterFactory(GsonConverterFactory.create(gson))</div><div class="line">        .build();</div></pre></td></tr></table></figure></p>
 <p>这种链式的写法特别方便。 要满足链式调用每个方法都要返回 Builder 对象。</p>
-<p> 简单贴一下 <code>Retrofit.Builder</code> 的源码：</p>
-<pre><code class="java">
-// 省去了若干代码
-public static final class Builder {
-    private Platform platform;
-    private okhttp3.Call.Factory callFactory;
-    private HttpUrl baseUrl;
-    private List&lt;Converter.Factory&gt; converterFactories = new ArrayList&lt;&gt;();
-    private List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;();
-    private Executor callbackExecutor;
-    private boolean validateEagerly;
-
-    /* 构造方法初始化一些参数 */
-    Builder(Platform platform) {
-      this.platform = platform;
-      consume all types.
-      converterFactories.add(new BuiltInConverters());
-    }
-
-    public Builder() {
-      this(Platform.get());
-    }
-
-
-    public Builder client(OkHttpClient client) {
-      return callFactory(checkNotNull(client, &quot;client == null&quot;));
-    }
-
-    public Builder baseUrl(String baseUrl) {
-          // 省去若干代码。。。
-
-      return baseUrl(httpUrl);
-    }
-
-    public Builder addConverterFactory(Converter.Factory factory) {
-      converterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
-      return this;
-    }
-
-    public Builder addCallAdapterFactory(CallAdapter.Factory factory) {
-      adapterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
-      return this;
-    }
-
-    public Retrofit build() {
-
-    // 省去若干代码。。。
-      return new Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,
-          callbackExecutor, validateEagerly);
-    }
-  }
-</code></pre>
+<p> 简单贴一下 <code>Retrofit.Builder</code> 的源码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 省去了若干代码</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Platform platform;</div><div class="line">    <span class="keyword">private</span> okhttp3.Call.Factory callFactory;</div><div class="line">    <span class="keyword">private</span> HttpUrl baseUrl;</div><div class="line">    <span class="keyword">private</span> List&lt;Converter.Factory&gt; converterFactories = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="keyword">private</span> List&lt;CallAdapter.Factory&gt; adapterFactories = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="keyword">private</span> Executor callbackExecutor;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> validateEagerly;</div><div class="line"></div><div class="line">	<span class="comment">/* 构造方法初始化一些参数 */</span></div><div class="line">    Builder(Platform platform) &#123;</div><div class="line">      <span class="keyword">this</span>.platform = platform;</div><div class="line">      consume all types.</div><div class="line">      converterFactories.add(<span class="keyword">new</span> BuiltInConverters());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">this</span>(Platform.get());</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">client</span><span class="params">(OkHttpClient client)</span> </span>&#123;</div><div class="line">      <span class="keyword">return</span> callFactory(checkNotNull(client, <span class="string">"client == null"</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">baseUrl</span><span class="params">(String baseUrl)</span> </span>&#123;</div><div class="line">      	<span class="comment">// 省去若干代码。。。</span></div><div class="line"></div><div class="line">      <span class="keyword">return</span> baseUrl(httpUrl);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">addConverterFactory</span><span class="params">(Converter.Factory factory)</span> </span>&#123;</div><div class="line">      converterFactories.add(checkNotNull(factory, <span class="string">"factory == null"</span>));</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">addCallAdapterFactory</span><span class="params">(CallAdapter.Factory factory)</span> </span>&#123;</div><div class="line">      adapterFactories.add(checkNotNull(factory, <span class="string">"factory == null"</span>));</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Retrofit <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// 省去若干代码。。。</span></div><div class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,</div><div class="line">          callbackExecutor, validateEagerly);</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
 <p>对比我们生产 Mac 的例子，其实大同小异。</p>
 <h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><ol>
 <li>优点：开头已经说了，也就是将复杂产品的创建步骤分解在不同的方法中，使得创建过程更加清晰。</li>
