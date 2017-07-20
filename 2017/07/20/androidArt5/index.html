@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>android开发艺术探索笔记-第5章 remotevies | luwenjie&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="Android开发艺术探索" />
+  
+  
+  
+  
+  <meta name="description" content="RemoteViews表示的是一个View结构，它可以在其他进程中显示，由于它在其他进程中显示，为了能够更新它的界面，Re-moteViews提供了一组基础的操作用于跨进程更新它的界面。这听起来有点神奇，竟然能跨进程更新界面！但是RemoteViews的确能够实现这个效果。RemoteViews在Android中的使用场景有两种：通知栏和桌面小部件。">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第5章 RemoteVies">
+<meta property="og:url" content="https://luwenjie.me/2017/07/20/androidArt5/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="RemoteViews表示的是一个View结构，它可以在其他进程中显示，由于它在其他进程中显示，为了能够更新它的界面，Re-moteViews提供了一组基础的操作用于跨进程更新它的界面。这听起来有点神奇，竟然能跨进程更新界面！但是RemoteViews的确能够实现这个效果。RemoteViews在Android中的使用场景有两种：通知栏和桌面小部件。">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/97a3695df648980f5672c984d7379197">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/ffded5232e9f5a4714c3f2df7a6bcc07">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/8ff4dd522cdb9d72c14aecc73208265e?thumb=384x&scale=auto">
+<meta property="og:updated_time" content="2017-07-20T10:49:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第5章 RemoteVies">
+<meta name="twitter:description" content="RemoteViews表示的是一个View结构，它可以在其他进程中显示，由于它在其他进程中显示，为了能够更新它的界面，Re-moteViews提供了一组基础的操作用于跨进程更新它的界面。这听起来有点神奇，竟然能跨进程更新界面！但是RemoteViews的确能够实现这个效果。RemoteViews在Android中的使用场景有两种：通知栏和桌面小部件。">
+<meta name="twitter:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/97a3695df648980f5672c984d7379197">
+  
+    <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/css/dialog.css">
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-androidArt5" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Android开发艺术探索笔记-第5章 RemoteVies
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/07/20/androidArt5/" class="article-date">
+	  <time datetime="2017-07-20T10:48:00.000Z" itemprop="datePublished">2017-07-20</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>RemoteViews表示的是一个View结构，它可以在其他进程中显示，由于它在其他进程中显示，为了能够更新它的界面，Re-moteViews提供了一组基础的操作用于跨进程更新它的界面。这听起来有点神奇，竟然能跨进程更新界面！但是RemoteViews的确能够实现这个效果。RemoteViews在Android中的使用场景有两种：通知栏和桌面小部件。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="RemoteViews-的应用"><a href="#RemoteViews-的应用" class="headerlink" title="RemoteViews 的应用"></a>RemoteViews 的应用</h1><p>主要用在通知栏和桌面小部件。  </p>
+<p>通知栏是通过 <code>NotificationManager</code> 的 <code>notify()</code> 方法实现的，除了默认效果外，还可以自定义布局。  </p>
+<p>桌面小部件是通过 <code>AppWidgetProvider</code> 来实现的。<code>AppWidgetProvider</code> 本质是一个广播。  </p>
+<p>这二者的界面都运行在系统的 SystemServer 进程，无法直接更新 View，只能跨进程更新。</p>
+<h2 id="通知栏"><a href="#通知栏" class="headerlink" title="通知栏"></a>通知栏</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">RemoteViews remoteViews  = <span class="keyword">new</span> RemoteViews(getPackageName(),R.layout.remoteview);</div><div class="line">remoteViews.setTextViewText(R.id.text,<span class="string">"修改文字"</span>);</div><div class="line"><span class="keyword">int</span> id = <span class="number">1</span>;</div><div class="line">Intent resultIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, NotificationActivity.class);</div><div class="line">TaskStackBuilder stackBuilder = TaskStackBuilder.create(<span class="keyword">this</span>);</div><div class="line"><span class="comment">// Adds the back stack</span></div><div class="line">stackBuilder.addParentStack(NotificationActivity.class);</div><div class="line"><span class="comment">// Adds the Intent to the top of the stack</span></div><div class="line">stackBuilder.addNextIntent(resultIntent);</div><div class="line"><span class="comment">// Gets a PendingIntent containing the entire back stack</span></div><div class="line">PendingIntent resultPendingIntent =</div><div class="line">    stackBuilder.getPendingIntent(<span class="number">0</span>, PendingIntent.FLAG_UPDATE_CURRENT);</div><div class="line"></div><div class="line">NotificationCompat.Builder builder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</div><div class="line">builder.setSmallIcon(R.mipmap.ic_launcher_round)</div><div class="line">    .setContentTitle(<span class="string">"title"</span>)</div><div class="line">    .setContentInfo(<span class="string">"info "</span>)</div><div class="line">    .setContent(remoteViews)</div><div class="line">    .setContentText(<span class="string">"text"</span>)</div><div class="line">    .setTicker(<span class="string">"ticker"</span>);</div><div class="line">builder.setContentIntent(resultPendingIntent);</div><div class="line">NotificationManager mNotificationManager =</div><div class="line">    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);</div><div class="line">mNotificationManager.notify(id, builder.build());</div></pre></td></tr></table></figure>
+<p>提供当前应用的包名和布局文件的id创建一个 RemoteViews 对象。  </p>
+<p>无法直接更新 RemoteViews，必须通过 RemoteViews 提供的一系列方法更新。</p>
+<h2 id="桌面小部件"><a href="#桌面小部件" class="headerlink" title="桌面小部件"></a>桌面小部件</h2><p>AppWidgetProvider 用于实现桌面小部件。  </p>
+<p><code>public class AppWidgetProvider extends BroadcastReceiver</code></p>
+<p>本质上是一个广播。</p>
+<p>MyAppWidgetProvider.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAppWidgetProvider</span> <span class="keyword">extends</span> <span class="title">AppWidgetProvider</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String TAG = <span class="string">"MyAppWidgetProvider"</span>;</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CLICK_ACTION = <span class="string">"com.luwenjie.appwidget"</span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MyAppWidgetProvider</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(<span class="keyword">final</span> Context context, <span class="keyword">final</span> Intent intent)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onReceive(context, intent);</div><div class="line">    Log.d(TAG, <span class="string">"onReceive, action = "</span> + intent.getAction());</div><div class="line"></div><div class="line">    <span class="comment">// 判断是不是自己的ACTION。</span></div><div class="line">    <span class="keyword">if</span> (intent.getAction().equals(CLICK_ACTION))&#123;</div><div class="line">      Toast.makeText(context,<span class="string">"clicked it"</span>,Toast.LENGTH_SHORT).show();</div><div class="line">      <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">        <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">          Bitmap bitmap =</div><div class="line">              BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);</div><div class="line">          AppWidgetManager appWidgetManager  = AppWidgetManager.getInstance(context);</div><div class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">37</span>; i++) &#123;</div><div class="line">            <span class="keyword">float</span> degree = (i * <span class="number">10</span> )%<span class="number">360</span>;</div><div class="line"></div><div class="line">            RemoteViews remoteViews = <span class="keyword">new</span> RemoteViews(context.getPackageName(),R.layout.widget);</div><div class="line">            remoteViews.setImageViewBitmap(R.id.imageView,rotateBitmap(context,bitmap,degree));</div><div class="line">            Intent intentClick = <span class="keyword">new</span> Intent();</div><div class="line">            intentClick.setAction(CLICK_ACTION);</div><div class="line">            PendingIntent pendingIntent= PendingIntent.getBroadcast(context, <span class="number">0</span>, intentClick, <span class="number">0</span>);</div><div class="line">            remoteViews.setOnClickPendingIntent(R.id.imageView,pendingIntent);</div><div class="line">            appWidgetManager.updateAppWidget(<span class="keyword">new</span> ComponentName(context,MyAppWidgetProvider.class),remoteViews);</div><div class="line">            SystemClock.sleep(<span class="number">30</span>);</div><div class="line">          &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">      &#125;).start();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--声明小部件--&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".appwidget.MyAppWidgetProvider"</span></span></div><div class="line">       &gt;</div><div class="line">     <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line">         <span class="attr">android:name</span>=<span class="string">"android.appwidget.provider"</span></div><div class="line">         <span class="attr">android:resource</span>=<span class="string">"@xml/appwidget_provider_info"</span></div><div class="line">         /&gt;</div><div class="line">     <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"me.wenjie.click.action"</span>/&gt;</span></div><div class="line">       <span class="comment">&lt;!--作为小部件标识必须存在--&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.appwidget.action.APPWIDGET_UPDATE"</span>/&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="PendingIntent"><a href="#PendingIntent" class="headerlink" title="PendingIntent"></a>PendingIntent</h2><p>一种出于 pending 状态的 Intent。接下来有一个 Intent 将在某个不确定的时刻发生。Intent 是立即发生。</p>
+<p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/97a3695df648980f5672c984d7379197" alt=""></p>
+<p>其中 requestCode 和 flags 的意义：</p>
+<ol>
+<li>requstCode<blockquote>
+<p>表示 PendingIntent 发送方的请求码，多数情况下设为0，requestCode 会影响到 flags 的效果。</p>
+</blockquote>
+</li>
+<li>flag<blockquote>
+<p>flag 的类型： FLAG_ONE_SHOT, FLAG_NO_CREATE, FLAG_CANCEL_CURRENT, FLAG_UP_DATE_CURRENT。</p>
+</blockquote>
+</li>
+</ol>
+<p>匹配规则:<br>如果 2 个 PendingIntent 他们的的 Intent 相同, requestCode 也相同。这 2 个 PeddingIntent 就是相同的。 </p>
+<p>Intent 的匹配规则：  ComponentName 和 intet-filter 都想同时，Intent就是相同的。</p>
+<p>_FLAG_ONE<em>SHOT</em><br>当前描述的 PendingIntent 只能被使用 1 次，然后就被自动 cancel。同类的通知栏点击后只能打开一次。</p>
+<p>_FLAG_NO<em>CREATE</em><br>当前描述的 PendingIntent 不会主动创建, 很少见，无法单独使用。在开发中没有太多使用意义。</p>
+<p>_FLAG_CANCEL<em>CURRENT</em><br>当前描述的 PendingIntent 如果已经存在，那么都会被 cancel。系统会创建一个新的 PendingIntent。被 cancel 的消息通知栏点击后不会响应。</p>
+<p>_FLAG_UPDATE<em>CURRENT</em><br>当前描述的 PendingIntent 如果已经存在, 内部的 Intent 中的 Extras 会被替换成最新的。</p>
+<p><code>manager.notify(1,notification)</code><br>若 id 都是同一个，后续的通知会把之前的通知完全替代掉。每次的 id 不同时，会弹出多个通知。  </p>
+<p>id 不相同，当 PendingIntent 也不匹配时，这种情况不管采用任何标记位，这些通知互相之间不会互相干扰。</p>
+<p>当 PendingIntent 匹配时：  </p>
+<ol>
+<li>采用了 FLAG_ONE_SHOT: 后续通知中的 PendingIntent 和第一条保持一致，单击任何一条通知后，剩下的通知都无法打开。</li>
+<li>采用 FLAG_CANCEL_CURRENT: 只有最新的通知可以被打开，之前弹出的所有通知均无法打开。</li>
+<li>采用 FLAG_UPDATE_CURRENT: 之前弹出的通知中的 PendingIntent 全会被更新，和最新的保持一致。都是可以打开的。</li>
+</ol>
+<h1 id="RemoteViews-的内部机制"><a href="#RemoteViews-的内部机制" class="headerlink" title="RemoteViews 的内部机制"></a>RemoteViews 的内部机制</h1><p>支持的类型：  </p>
+<ol>
+<li>FrameLayout、</li>
+<li>LinearLayout、</li>
+<li>RelativeLay-out、</li>
+<li>GridLayout。</li>
+<li>AnalogClock、</li>
+<li>Button、</li>
+<li>Chronometer、</li>
+<li>ImageButton、</li>
+<li>ImageView、</li>
+<li>ProgressBar、</li>
+<li>TextView、</li>
+<li>ViewFlipper、</li>
+<li>ListView、</li>
+<li>GridView、</li>
+<li>StackView、</li>
+<li>AdapterViewFlipper、</li>
+<li>ViewStub。</li>
+</ol>
+<p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/ffded5232e9f5a4714c3f2df7a6bcc07" alt=""></p>
+<p>一系列 set 方法通过反射来完成。</p>
+<p>RemoteViews 主要用于通知栏和桌面小部件。<br>NotificationManager 和 AppWidgetManager 通过 Binder 分别和 SystemServer 进程中 NotificationMangerService 和 AppWidgetService 进行通信。  </p>
+<p>所以，通知栏和小部件的布局文件实际上是在 NotificationMangerService 和 AppWidgetService 中被加载的，service 运行在系统的 SystemServer 中，这就构成了跨进程通信。</p>
+<ol>
+<li>RemoteViews 通过 Bidner 传递到 SystemServer 进程，系统通过包名信息得到对应的资源。</li>
+<li>在 SystemServer 中通过 LayoutInflater 去加载布局文件。</li>
+<li>操作系统对 View 执行一系列界面更新任务，这些就是我们之前通过 set 方法提交的。set 方法只是先记录更新操作。等到 RemoteViews 被加载后才能执行。此时 RemoteView 就可以在 SystemServer 中显示。</li>
+<li>更新时通过 set 方法通过 NotificationManager 和 AppWidgetManager 才提交更新。</li>
+</ol>
+<p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/8ff4dd522cdb9d72c14aecc73208265e?thumb=384x&amp;scale=auto" alt=""></p>
+<p>系统没有直接通过 Binder 去支持 View 的跨进程访问，而是提供了一个 Action。<br>Action 代表一个 View 操作。 </p>
+<ol>
+<li>系统首先将 View 操作封装到 Action 对象并将这些对象跨进程运输到远处进程</li>
+<li>接着在远程进程中执行 Action 对象的具体操作。每次调用 set 方法，RemoteViews 中就会添加一个对应的 Action 对象。</li>
+<li>当通过 manager 来提交更新时，Action 对象就会传输到远程进程并依次执行。</li>
+<li>远程进程通过 RemoteViews 的 apply 方法来执行 View 的更新操作。apply 方法内部会遍历所有的 Action 对象并调用它们的 apply 方法。</li>
+</ol>
+<p>好处：不需要大量的 Binder 接口，避免了大量的 IPC 操作，提高性能。</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>RemoteViews.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTextViewText</span><span class="params">(<span class="keyword">int</span> viewId, CharSequence text)</span> </span>&#123;</div><div class="line">        setCharSequence(viewId, <span class="string">"setText"</span>, text);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 内部添加了一个反射动作：ReflectionAction</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCharSequence</span><span class="params">(<span class="keyword">int</span> viewId, String methodName, CharSequence value)</span> </span>&#123;</div><div class="line">        addAction(<span class="keyword">new</span> ReflectionAction(viewId, methodName, ReflectionAction.CHAR_SEQUENCE, value));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 先将所有的action加入一个 actionList 中。这里仅仅是保存了起来，并没有操作。</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addAction</span><span class="params">(Action a)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (hasLandscapeAndPortraitLayouts()) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"RemoteViews specifying separate landscape and portrait"</span> +</div><div class="line">                    <span class="string">" layouts cannot be modified. Instead, fully configure the landscape and"</span> +</div><div class="line">                    <span class="string">" portrait layouts individually before constructing the combined layout."</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mActions == <span class="keyword">null</span>) &#123;</div><div class="line">            mActions = <span class="keyword">new</span> ArrayList&lt;Action&gt;();</div><div class="line">        &#125;</div><div class="line">        mActions.add(a);</div><div class="line"></div><div class="line">        <span class="comment">// update the memory usage stats</span></div><div class="line">        a.updateMemoryUsageEstimate(mMemoryUsageCounter);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行的过程看 Action 实现类的 apply 方法。</p>
+<p>RemoteViews#apply<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// </span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">apply</span><span class="params">(Context context, ViewGroup parent, OnClickHandler handler)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取remoteView</span></div><div class="line">        RemoteViews rvToApply = getRemoteViewsToApply(context);</div><div class="line">    <span class="comment">// 通过 layoutInflater 加载布局文件</span></div><div class="line">        View result = inflateView(context, rvToApply, parent);</div><div class="line">        loadTransitionOverride(context, handler);</div><div class="line">        <span class="comment">// 遍历执行 mActions 的 action 的apply</span></div><div class="line">        rvToApply.performApply(result, parent, handler);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>Remoteviews#Action#apply<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(View root, ViewGroup rootParent,</span></span></div><div class="line">               OnClickHandler handler) <span class="keyword">throws</span> ActionException;</div></pre></td></tr></table></figure></p>
+<p>Remoteviews#ReflectionAction#apply<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectionAction</span> <span class="keyword">extends</span> <span class="title">Action</span> </span>&#123;</div><div class="line">       </div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(View root, ViewGroup rootParent, OnClickHandler handler)</span> </span>&#123;</div><div class="line">            <span class="keyword">final</span> View view = root.findViewById(viewId);</div><div class="line">            <span class="keyword">if</span> (view == <span class="keyword">null</span>) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">            Class&lt;?&gt; param = getParameterType();</div><div class="line">            <span class="keyword">if</span> (param == <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ActionException(<span class="string">"bad type: "</span> + <span class="keyword">this</span>.type);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 通过反射来调用方法</span></div><div class="line">                getMethod(view, <span class="keyword">this</span>.methodName, param).invoke(view, wrapArg(<span class="keyword">this</span>.value));</div><div class="line">            &#125; <span class="keyword">catch</span> (ActionException e) &#123;</div><div class="line">                <span class="keyword">throw</span> e;</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ActionException(ex);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="单击事件"><a href="#单击事件" class="headerlink" title="单击事件"></a>单击事件</h2><p>RemoteViews 只支持发起 PendingIntent，不支持 onClickListener。  </p>
+<p>setOnClickFillInIntent 用于给普通View设置单击事件，但是不能给集合View（ListView 和 StackView）设置单击事件。  因为开销大，系统禁止了。  </p>
+<p>必须通过 setPendingIntentTemplate 和 setOnClickFillInIntent 组合使用才可以。</p>
+<h1 id="RemoteViews-的意义"><a href="#RemoteViews-的意义" class="headerlink" title="RemoteViews 的意义"></a>RemoteViews 的意义</h1><p>模拟一个通知栏过程实现跨进程的UI更新。</p>
+<p>2 个 Activity 在不同的进程中。</p>
+<p>A 扮演通知栏的角色，B 不停的发送通知消息。</p>
+<p>在B中创建 RemoteVies 对象，在A中显示。</p>
+<p>A<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> LinearLayout mRemoteViesContent;</div><div class="line">  <span class="keyword">private</span> BroadcastReceiver receiver = <span class="keyword">new</span> BroadcastReceiver() &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">      RemoteViews remoteViews = intent.getParcelableExtra(BActivity.EXTRA_REMOTE_VIEWS);</div><div class="line">      <span class="keyword">if</span> (remoteViews != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// 收到广播后,取出 remoteView 对象</span></div><div class="line">        updateUI(remoteViews);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateUI</span><span class="params">(RemoteViews remoteViews)</span> </span>&#123;</div><div class="line">    <span class="comment">// 通过 apply 加载布局执行更新操作。</span></div><div class="line">    View view = remoteViews.apply(<span class="keyword">this</span>, mRemoteViesContent);</div><div class="line">    mRemoteViesContent.addView(view);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_meaninga);</div><div class="line">    initView();</div><div class="line">    startActivity(<span class="keyword">new</span> Intent(<span class="keyword">this</span>,BActivity.class));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</div><div class="line">    mRemoteViesContent = (LinearLayout) findViewById(R.id.remoteviews_content);</div><div class="line">    IntentFilter intentFilter = <span class="keyword">new</span> IntentFilter(BActivity.REMOTE_ACTION);</div><div class="line">    registerReceiver(receiver, intentFilter);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">    unregisterReceiver(receiver);</div><div class="line">    <span class="keyword">super</span>.onDestroy();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>B<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String REMOTE_ACTION = <span class="string">"remoteAction"</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXTRA_REMOTE_VIEWS = <span class="string">"extraRemoteViews"</span>;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_meaningb);</div><div class="line"></div><div class="line">    RemoteViews remoteViews = <span class="keyword">new</span> RemoteViews(getPackageName(), R.layout.simulate_notification);</div><div class="line">    remoteViews.setImageViewResource(R.id.simulate_notification_image, R.mipmap.ic_launcher_round);</div><div class="line">    remoteViews.setTextViewText(R.id.simulate_notification_text,</div><div class="line">        <span class="string">"msg from process:"</span> + Process.myPid());</div><div class="line">    PendingIntent pendingIntent =</div><div class="line">        PendingIntent.getActivity(<span class="keyword">this</span>, <span class="number">0</span>, <span class="keyword">new</span> Intent(<span class="keyword">this</span>, CActivity.class),</div><div class="line">            PendingIntent.FLAG_UPDATE_CURRENT);</div><div class="line">    PendingIntent pendingIntent2 =</div><div class="line">        PendingIntent.getActivity(<span class="keyword">this</span>, <span class="number">0</span>, <span class="keyword">new</span> Intent(<span class="keyword">this</span>, DActivity.class),</div><div class="line">            PendingIntent.FLAG_UPDATE_CURRENT);</div><div class="line"></div><div class="line">    remoteViews.setOnClickPendingIntent(R.id.simulate_notification_image, pendingIntent);</div><div class="line">    remoteViews.setOnClickPendingIntent(R.id.simulate_notification_text, pendingIntent2);</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(REMOTE_ACTION);</div><div class="line">    intent.putExtra(EXTRA_REMOTE_VIEWS, remoteViews);</div><div class="line">    sendBroadcast(intent);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>2 个不同进程之间更新UI可以通过AIDL实现，如果更新较为频繁，AIDL效率低且AIDL接口变得很复杂。RemoteViews 就没有这些问题，但是RemoteViews只支持固定的View。</p>
+<h2 id="布局文件加载问题"><a href="#布局文件加载问题" class="headerlink" title="布局文件加载问题"></a>布局文件加载问题</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">View view = remoteViews.apply(<span class="keyword">this</span>,mRemoteViewsContent);     mRemoteViewsContent.addView(view);</div></pre></td></tr></table></figure>
+<p>这种写法在一个App的多进程中传递没什么问题。如果 A 和 B 属于不同的App，B 中的布局文件id传递到A中不一定对应。  </p>
+<p>这种情况可以约定一个资源名称，通过资源名字来找id。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> layoutId = getResources().getIdentifier(<span class="string">"layout_simulated_   notification"</span>,<span class="string">"layout"</span>,getPackageName());</div><div class="line">View view = getLayoutInflater().inflate(layoutId,mRemoteViewsContent,    <span class="keyword">false</span>);</div><div class="line">remoteViews.reapply(<span class="keyword">this</span>,view);</div><div class="line">mRemoteViewsContent.addView(view);</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/06/28/AndroidArtChapter2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Android开发艺术探索笔记-第2章 Android的IPC机制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RemoteViews-的应用"><span class="nav-number">1.</span> <span class="nav-text">RemoteViews 的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通知栏"><span class="nav-number">1.1.</span> <span class="nav-text">通知栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#桌面小部件"><span class="nav-number">1.2.</span> <span class="nav-text">桌面小部件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PendingIntent"><span class="nav-number">1.3.</span> <span class="nav-text">PendingIntent</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RemoteViews-的内部机制"><span class="nav-number">2.</span> <span class="nav-text">RemoteViews 的内部机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析"><span class="nav-number">2.1.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单击事件"><span class="nav-number">2.2.</span> <span class="nav-text">单击事件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RemoteViews-的意义"><span class="nav-number">3.</span> <span class="nav-text">RemoteViews 的意义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#布局文件加载问题"><span class="nav-number">3.1.</span> <span class="nav-text">布局文件加载问题</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 luwenjie&#39;s Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/scripts.js"></script>
+
+
+
+
+  <script src="/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            luwenjie&#39;s Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2017 luwenjie All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
