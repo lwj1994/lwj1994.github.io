@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>android开发艺术探索笔记-第7章 android 动画深入分析 | luwenjie&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="Android开发艺术探索" />
+  
+  
+  
+  
+  <meta name="description" content="Android 动画分为 3 种，View 动画、帧动画、属性动画。在本章中，首先简单介绍View动画以及自定义View动画的方式，接着介绍View动画的一些特殊的使用场景，最后对属性动画做一个全面性的介绍，另外还介绍使用动画的一些注意事项。">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第7章 Android 动画深入分析">
+<meta property="og:url" content="https://luwenjie.me/2017/07/30/AndroidArtChapter7/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="Android 动画分为 3 种，View 动画、帧动画、属性动画。在本章中，首先简单介绍View动画以及自定义View动画的方式，接着介绍View动画的一些特殊的使用场景，最后对属性动画做一个全面性的介绍，另外还介绍使用动画的一些注意事项。">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/de1f3c842bfaf6e9a995996d7c844be8">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170721150062875820544.gif">
+<meta property="og:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/5604a3a0b1c6b564a2145f2a0a0402b9?thumb=384x&scale=auto">
+<meta property="og:image" content="http://7xt4re.com1.z0.glb.clouddn.com/20170730150140886994597.gif">
+<meta property="og:updated_time" content="2017-07-30T10:53:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第7章 Android 动画深入分析">
+<meta name="twitter:description" content="Android 动画分为 3 种，View 动画、帧动画、属性动画。在本章中，首先简单介绍View动画以及自定义View动画的方式，接着介绍View动画的一些特殊的使用场景，最后对属性动画做一个全面性的介绍，另外还介绍使用动画的一些注意事项。">
+<meta name="twitter:image" content="https://cdn.cnbj1.fds.api.mi-img.com/book/images/de1f3c842bfaf6e9a995996d7c844be8">
+  
+    <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/css/dialog.css">
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-AndroidArtChapter7" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Android开发艺术探索笔记-第7章 Android 动画深入分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/07/30/AndroidArtChapter7/" class="article-date">
+	  <time datetime="2017-07-30T10:53:00.000Z" itemprop="datePublished">2017-07-30</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Android 动画分为 3 种，View 动画、帧动画、属性动画。在本章中，首先简单介绍View动画以及自定义View动画的方式，接着介绍View动画的一些特殊的使用场景，最后对属性动画做一个全面性的介绍，另外还介绍使用动画的一些注意事项。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="View-动画"><a href="#View-动画" class="headerlink" title="View 动画"></a>View 动画</h1><p>作用对象是 View。支持 4 种 动画效果。</p>
+<ol>
+<li>平移动画</li>
+<li>缩放动画</li>
+<li>旋转动画</li>
+<li>透明度动画</li>
+</ol>
+<h2 id="View-动画的种类"><a href="#View-动画的种类" class="headerlink" title="View 动画的种类"></a>View 动画的种类</h2><p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/de1f3c842bfaf6e9a995996d7c844be8" alt=""></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:interpolator</span>=<span class="string">"@[package:]anim/interpolator_resource"</span></div><div class="line">    <span class="attr">android:shareInterpolator</span>=<span class="string">[</span>"<span class="attr">true</span>" | "<span class="attr">false</span>"] &gt;</div><div class="line">        <span class="tag">&lt;<span class="name">alpha</span></span></div><div class="line">          <span class="attr">android:fromAlpha</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toAlpha</span>=<span class="string">"float"</span>/&gt;</div><div class="line">        </div><div class="line">        <span class="tag">&lt;<span class="name">scale</span></span></div><div class="line">          <span class="attr">android:fromXScale</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toXScale</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:fromYScale</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toYScale</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:pivotX</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:pivotY</span>=<span class="string">"float"</span>/&gt; </div><div class="line">        <span class="tag">&lt;<span class="name">translate</span></span></div><div class="line">          <span class="attr">android:fromXDelta</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toXDelta</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:fromYDelta</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toYDelta</span>=<span class="string">"float"</span>/&gt;  </div><div class="line">        <span class="tag">&lt;<span class="name">rotate</span></span></div><div class="line">          <span class="attr">android:fromDegrees</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:toDegrees</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:pivotX</span>=<span class="string">"float"</span></div><div class="line">          <span class="attr">android:pivotY</span>=<span class="string">"float"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>android:interpolater</p>
+<blockquote>
+<p>集合所采用的插值器，默认为<code>@android:anim/accelerate_decelerate_interpolator</code></p>
+</blockquote>
+<p>android:shareInterpolater</p>
+<blockquote>
+<p>集合中的动画是否和集合共享一个插值器。</p>
+</blockquote>
+<h2 id="自定义-View-动画"><a href="#自定义-View-动画" class="headerlink" title="自定义 View 动画"></a>自定义 View 动画</h2><p>继承 <code>Animation</code> 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomAnimation</span> <span class="keyword">extends</span> <span class="title">Animation</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(<span class="keyword">int</span> width, <span class="keyword">int</span> height, <span class="keyword">int</span> parentWidth, <span class="keyword">int</span> parentHeight)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.initialize(width, height, parentWidth, parentHeight);</div><div class="line">    <span class="comment">// 做一些初始化工作</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">applyTransformation</span><span class="params">(<span class="keyword">float</span> interpolatedTime, Transformation t)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.applyTransformation(interpolatedTime, t);</div><div class="line">    <span class="comment">// 进行相应的矩阵变化</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="帧动画"><a href="#帧动画" class="headerlink" title="帧动画"></a>帧动画</h2><p>顺序播放一组预先定义好的图片。系统提供了 <code>AnimationDrawable</code> 来使用帧动画。</p>
+<p>frame_animation.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">animation-list</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:oneshot</span>=<span class="string">"false"</span>&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">      <span class="attr">android:drawable</span>=<span class="string">"@mipmap/ic_launcher"</span></div><div class="line">      <span class="attr">android:duration</span>=<span class="string">"500"</span>/&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">      <span class="attr">android:drawable</span>=<span class="string">"@mipmap/ic_launcher_round"</span></div><div class="line">      <span class="attr">android:duration</span>=<span class="string">"500"</span>/&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">item</span></span></div><div class="line">      <span class="attr">android:drawable</span>=<span class="string">"@mipmap/egg"</span></div><div class="line">      <span class="attr">android:duration</span>=<span class="string">"500"</span>/&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">animation-list</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">textView.setBackgroundResource(R.drawable.frame_animation);</div><div class="line">AnimationDrawable background = (AnimationDrawable) textView.getBackground();</div><div class="line">background.start();</div></pre></td></tr></table></figure>
+<p>帧动画的使用比较简单，但是比较容易引起OOM，所以在使用帧动画时应尽量避免使用过多尺寸较大的图片。</p>
+<h1 id="View-动画的特殊使用场景"><a href="#View-动画的特殊使用场景" class="headerlink" title="View 动画的特殊使用场景"></a>View 动画的特殊使用场景</h1><h2 id="LayoutAnimation"><a href="#LayoutAnimation" class="headerlink" title="LayoutAnimation"></a>LayoutAnimation</h2><p>作用于 ViewGroup, 为 ViewGroup 指定一个动画，当它的子元素出场时都会具有这种效果。</p>
+<p>layout_animation.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">layoutAnimation</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:delay</span>=<span class="string">"0.5"</span></div><div class="line">    <span class="attr">android:animationOrder</span>=<span class="string">"normal"</span></div><div class="line">    <span class="attr">android:animation</span>=<span class="string">"@anim/anim_item"</span></div><div class="line">    &gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">layoutAnimation</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>anim_item.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:duration</span>=<span class="string">"300"</span></div><div class="line">    <span class="attr">android:interpolator</span>=<span class="string">"@android:anim/accelerate_interpolator"</span></div><div class="line">    <span class="attr">android:shareInterpolator</span>=<span class="string">"true"</span></div><div class="line">    &gt;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">alpha</span></span></div><div class="line">      <span class="attr">android:fromAlpha</span>=<span class="string">"0.0"</span></div><div class="line">      <span class="attr">android:toAlpha</span>=<span class="string">"1.0"</span></div><div class="line">      /&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">translate</span></span></div><div class="line">      <span class="attr">android:fromXDelta</span>=<span class="string">"500"</span></div><div class="line">      <span class="attr">android:toXDelta</span>=<span class="string">"0"</span></div><div class="line">      /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>android:delay</p>
+<blockquote>
+<p>子元素开始动画的时间延迟，如果子元素入场动画的时间周期为300ms，0.5 代表每个子元素都要延迟150ms才能播放入场动画。总体来说，第一个子元素延迟150ms开始播放入场动画，第2个子元素延迟300ms开始播放入场动画，依次类推。</p>
+</blockquote>
+<p>android:animationOrder</p>
+<blockquote>
+<p>normal表示顺序显示，reverse表示逆向显示，random则是随机播放入场动画。</p>
+</blockquote>
+<p>android:animation</p>
+<blockquote>
+<p>为元素指定具体的入场动画</p>
+</blockquote>
+<p>指定<code>android:layoutAnimation</code>属性<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/recyclerview"</span></div><div class="line">    <span class="attr">android:layoutAnimation</span>=<span class="string">"@anim/layout_animation"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    /&gt;</div></pre></td></tr></table></figure></p>
+<p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170721150062875820544.gif" alt=""></p>
+<h2 id="Activity-的切换效果"><a href="#Activity-的切换效果" class="headerlink" title="Activity 的切换效果"></a>Activity 的切换效果</h2><p><a href="http://blog.csdn.net/qq_23547831/article/details/51821159" target="_blank" rel="external">Github项目解析（九）–&gt;实现Activity跳转动画的五种方式</a></p>
+<p><a href=""></a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Call immediately after one of the flavors of &#123;<span class="doctag">@link</span> #startActivity(Intent)&#125;</div><div class="line"> * or &#123;<span class="doctag">@link</span> #finish&#125; to specify an explicit transition animation to</div><div class="line"> * perform next.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;As of &#123;<span class="doctag">@link</span> android.os.Build.VERSION_CODES#JELLY_BEAN&#125; an alternative</div><div class="line"> * to using this with starting activities is to supply the desired animation</div><div class="line"> * information through a &#123;<span class="doctag">@link</span> ActivityOptions&#125; bundle to</div><div class="line"> * &#123;<span class="doctag">@link</span> #startActivity(Intent, Bundle)&#125; or a related function.  This allows</div><div class="line"> * you to specify a custom animation even when starting an activity from</div><div class="line"> * outside the context of the current top activity.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> enterAnim A resource ID of the animation resource to use for</div><div class="line"> * the incoming activity.  Use 0 for no animation.</div><div class="line"> * <span class="doctag">@param</span> exitAnim A resource ID of the animation resource to use for</div><div class="line"> * the outgoing activity.  Use 0 for no animation.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">overridePendingTransition</span><span class="params">(<span class="keyword">int</span> enterAnim, <span class="keyword">int</span> exitAnim)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        ActivityManagerNative.getDefault().overridePendingTransition(</div><div class="line">                mToken, getPackageName(), enterAnim, exitAnim);</div><div class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 startActiviy 或者 finish 之后立刻执行。</p>
+<h1 id="属性动画"><a href="#属性动画" class="headerlink" title="属性动画"></a>属性动画</h1><p>API11 之后加入。  API11 之前使用 <a href="http://nineoldandroids.com" target="_blank" rel="external">nineoldandroids</a> 代替。</p>
+<h2 id="使用属性动画"><a href="#使用属性动画" class="headerlink" title="使用属性动画"></a>使用属性动画</h2><p>对任意对象的属性进行动画。<br>默认帧率是 10ms/帧。  </p>
+<p>常用的动画类：</p>
+<ol>
+<li>ValueAnimator</li>
+<li>ObjectAnimator : 继承自ValueAnimator</li>
+<li>AnimatorSet : 动画集合</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 改变一个对象（myObject）的translationY属性，让其沿着Y轴向上平移一段距离：它的高度，该动画在</div><div class="line"> * 默认时间内完成，动画的完成时间是可以定义的。</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">example1</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">  ObjectAnimator.ofFloat(view, <span class="string">"translationY"</span>, view.getHeight()).start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 改变一个对象的背景色属性，典型的情形是改变View的背景色，下面的动画可以让背景色在3秒内实现从0xFFFF8080到</div><div class="line"> * 0xFF8080FF的渐变，动画会无限循环而且会有反转的效果。</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">example2</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">  ObjectAnimator animator = ObjectAnimator.ofInt(view, <span class="string">"backgroundColor"</span>, <span class="number">0xFFFF8080</span>, <span class="number">0xFF8080FF</span>);</div><div class="line">  animator.setDuration(<span class="number">3000</span>);</div><div class="line">  animator.setEvaluator(<span class="keyword">new</span> ArgbEvaluator());</div><div class="line">  animator.setRepeatCount(ValueAnimator.INFINITE); <span class="comment">// 无限循环</span></div><div class="line">  animator.setRepeatMode(ValueAnimator.REVERSE);</div><div class="line">  animator.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 动画集合，5秒内对View的旋转、平移、缩放和透明度都进行了改变。</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">example3</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">  AnimatorSet set = <span class="keyword">new</span> AnimatorSet();</div><div class="line">  set.playSequentially(</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"rotationX"</span>,<span class="number">0</span>,<span class="number">360</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"rotationY"</span>,<span class="number">0</span>,<span class="number">180</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"translationX"</span>,<span class="number">0</span>,<span class="number">90</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"translationY"</span>,<span class="number">0</span>,<span class="number">90</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"scaleX"</span>,<span class="number">1</span>,<span class="number">1.5f</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"scaleY"</span>,<span class="number">1</span>,<span class="number">0.5f</span>),</div><div class="line">      ObjectAnimator.ofFloat(view,<span class="string">"alpha"</span>,<span class="number">1</span>,<span class="number">0.25f</span>,<span class="number">1</span>)</div><div class="line">  );</div><div class="line"></div><div class="line">  set.setDuration(<span class="number">5000</span>).start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="插值器和估值器"><a href="#插值器和估值器" class="headerlink" title="插值器和估值器"></a>插值器和估值器</h2><p>TimeInterpolate: 根据时间流逝的百分比来计算当前的属性值改变的百分比。<br>系统预置了：  </p>
+<ol>
+<li>LinearInterpolate (线性插值器：匀速动画)</li>
+<li>AccelerateDecelerateInterpolator (加减速插值器，动画两头慢中间快)</li>
+<li>DecelerateInterpolater (减速插值器：动画越来越慢)</li>
+</ol>
+<p>TypeEvaluator：类型估值算法。根据当前属性改变的百分比来计算改变后的属性值。<br>系统预置的有</p>
+<ol>
+<li>IntEvaluator</li>
+<li>FloatEvaluator</li>
+<li>ArgbEvaluator (针对Color属性)</li>
+</ol>
+<p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/5604a3a0b1c6b564a2145f2a0a0402b9?thumb=384x&amp;scale=auto" alt="插值器的工作原理"></p>
+<p>android.view.animation.LinearInterpolator<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * An interpolator where the rate of change is constant</div><div class="line"> */</div><div class="line"><span class="meta">@HasNativeInterpolator</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinearInterpolator</span> <span class="keyword">extends</span> <span class="title">BaseInterpolator</span> <span class="keyword">implements</span> <span class="title">NativeInterpolatorFactory</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinearInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinearInterpolator</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 输入值和返回值一样</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getInterpolation</span><span class="params">(<span class="keyword">float</span> input)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> input;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/** <span class="doctag">@hide</span> */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">createNativeInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> NativeInterpolatorFactoryHelper.createLinearInterpolator();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>android.animation.IntEvaluator</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * This evaluator can be used to perform type interpolation between &lt;code&gt;int&lt;/code&gt; values.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntEvaluator</span> <span class="keyword">implements</span> <span class="title">TypeEvaluator</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * This function returns the result of linearly interpolating the start and end values, with</div><div class="line">     * &lt;code&gt;fraction&lt;/code&gt; representing the proportion between the start and end values. The</div><div class="line">     * calculation is a simple parametric calculation: &lt;code&gt;result = x0 + t * (v1 - v0)&lt;/code&gt;,</div><div class="line">     * where &lt;code&gt;x0&lt;/code&gt; is &lt;code&gt;startValue&lt;/code&gt;, &lt;code&gt;x1&lt;/code&gt; is &lt;code&gt;endValue&lt;/code&gt;,</div><div class="line">     * and &lt;code&gt;t&lt;/code&gt; is &lt;code&gt;fraction&lt;/code&gt;.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> fraction   The fraction from the starting to the ending values 估值小数</div><div class="line">     * <span class="doctag">@param</span> startValue The start value; should be of type &lt;code&gt;int&lt;/code&gt; or </div><div class="line">     *                   &lt;code&gt;Integer&lt;/code&gt; 开始值</div><div class="line">     * <span class="doctag">@param</span> endValue   The end value; should be of type &lt;code&gt;int&lt;/code&gt; or &lt;code&gt;Integer&lt;/code&gt;结束值</div><div class="line">     * <span class="doctag">@return</span> A linear interpolation between the start and end values, given the</div><div class="line">     *         &lt;code&gt;fraction&lt;/code&gt; parameter. </div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">evaluate</span><span class="params">(<span class="keyword">float</span> fraction, Integer startValue, Integer endValue)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> startInt = startValue;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(startInt + fraction * (endValue - startInt));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>属性动画要求对象的属性必须有 set 和 get 方法。  </p>
+<p>自定义插值器需要实现 Interpolator 或者 TimeInterpolater，自定义估值算法需要实现 TypeEvaluator。  </p>
+<p>如果要对其他类型（非 int 、float、Color）做动画，必须要自定义类型估值算法。</p>
+<h1 id="属性动画的监听器"><a href="#属性动画的监听器" class="headerlink" title="属性动画的监听器"></a>属性动画的监听器</h1><p>主要有 2 个接口： <code>AnimatorUpdateListener</code> 和 <code>AnimatorListener</code>。</p>
+<p>android.animation.Animator.AnimatorListener<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnimatorListener</span> </span>&#123;</div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span></span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>android.animation.ValueAnimator.AnimatorUpdateListener<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"> <span class="comment">// 监听整个动画过程，每播放一帧就会回调一次。</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnimatorUpdateListener</span> </span>&#123;</div><div class="line">     <span class="comment">/**</span></div><div class="line">      * &lt;p&gt;Notifies the occurrence of another frame of the animation.&lt;/p&gt;</div><div class="line">      *</div><div class="line">      * <span class="doctag">@param</span> animation The animation which was repeated.</div><div class="line">      */</div><div class="line">     <span class="function"><span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span></span>;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<h1 id="对任意属性做动画"><a href="#对任意属性做动画" class="headerlink" title="对任意属性做动画"></a>对任意属性做动画</h1><p>Q：给Button加一个动画，让这个Button的宽度从当前宽度增加到500px。</p>
+<p>A：View动画只支持4种类型：平移（Translate），旋转（Rotate）,缩放（Scale），透明度（Alpha）。无法达到需求。</p>
+<p>属性动画的原理：需要动画对象提供 get，set 方法，属性动画根据外界传递的该属性的初始值和最终值，以动画效果多次去调用 set 方法。  </p>
+<p>总结：对 Object 的属性 abc 做动画，需要同时满足 2 个条件：</p>
+<ol>
+<li>Object 必须要提供 setAbc() 方法，如果动画的时候没有传递初始值，那么还需要提供 getAbc() 方法。因为系统需要去获取 adc 属性的初始值（若不满足，app 直接 crash）。</li>
+<li>Object 的 setAbc() 方法对属性 abc 所做的改变必须能够通过某种方法反映出来，比如会带来 Ui的改变。（若不满足，动画没有效果但不会 crash）。</li>
+</ol>
+<p>如果直接对 Button 的 windth 使用属性动画就会没有动画效果。</p>
+<p>set方法在 TextView 中</p>
+<p>android.widget.TextView#setWidth<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置最大宽度和最小宽度</span></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWidth</span><span class="params">(<span class="keyword">int</span> pixels)</span> </span>&#123;</div><div class="line">        mMaxWidth = mMinWidth = pixels;</div><div class="line">        mMaxWidthMode = mMinWidthMode = PIXELS;</div><div class="line"></div><div class="line">        requestLayout();</div><div class="line">        invalidate();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>get方法在 View 中。</p>
+<p>android.view.View#getWidth<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取 view 的宽度</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getWidth</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mRight - mLeft;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><ol>
+<li><p>给对象加上 set，get 方法</p>
+<p> 内部SDK没有权限。</p>
+</li>
+<li><p>包装类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewWraper</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> View mTarget;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ViewWraper</span><span class="params">(View target)</span> </span>&#123;</div><div class="line">    mTarget = target;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWidth</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mTarget.getWidth();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWidth</span><span class="params">(<span class="keyword">int</span> width)</span> </span>&#123;</div><div class="line">    mTarget.getLayoutParams().width = width;</div><div class="line">    mTarget.requestLayout();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>监听动画过程，自行实现属性的改变。</p>
+</li>
+</ol>
+<p>ValueAnimator 本身不作用于任何对象，直接使用它没有任何动画效果。它可以对一个值做动画，然后我们可以监听其动画过程。</p>
+<p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170730150140886994597.gif" alt=""></p>
+<h1 id="属性动画的工作原理"><a href="#属性动画的工作原理" class="headerlink" title="属性动画的工作原理"></a>属性动画的工作原理</h1><blockquote>
+<p>属性动画要求动画作用的对象提供该属性的set方法，属性动画根据你传递的该属性的初始值和最终值，以动画的效果多次去调用set方法。每次传递给set方法的值都不一样，确切来说是随着时间的推移，所传递的值越来越接近最终值。如果动画的时候没有传递初始值，那么还要提供get方法，因为系统要去获取属性的初始值。</p>
+</blockquote>
+<p>android.animation.ObjectAnimator#start<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="comment">// 如果当前动画、等待的动画（Pending）和延迟的动画（delay）中有何当前相同的动画，就把相同的动画给取消掉。</span></div><div class="line">      AnimationHandler.getInstance().autoCancelBasedOn(<span class="keyword">this</span>);</div><div class="line">      <span class="keyword">if</span> (DBG) &#123;</div><div class="line">          Log.d(LOG_TAG, <span class="string">"Anim target, duration: "</span> + getTarget() + <span class="string">", "</span> + getDuration());</div><div class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mValues.length; ++i) &#123;</div><div class="line">              PropertyValuesHolder pvh = mValues[i];</div><div class="line">              Log.d(LOG_TAG, <span class="string">"   Values["</span> + i + <span class="string">"]: "</span> +</div><div class="line">                  pvh.getPropertyName() + <span class="string">", "</span> + pvh.mKeyframes.getValue(<span class="number">0</span>) + <span class="string">", "</span> +</div><div class="line">                  pvh.mKeyframes.getValue(<span class="number">1</span>));</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      </div><div class="line">      <span class="comment">// 调用父类的 start</span></div><div class="line">      <span class="keyword">super</span>.start();</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>android.animation.ValueAnimator#start<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(<span class="keyword">boolean</span> playBackwards)</span> </span>&#123;</div><div class="line"></div><div class="line"><span class="comment">// 需要运行在有 looper 的线程中</span></div><div class="line">     <span class="keyword">if</span> (Looper.myLooper() == <span class="keyword">null</span>) &#123;</div><div class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(<span class="string">"Animators may only be run on Looper threads"</span>);</div><div class="line">     &#125;</div><div class="line">     mReversing = playBackwards;</div><div class="line">     <span class="comment">// Special case: reversing from seek-to-0 should act as if not seeked at all.</span></div><div class="line">     <span class="keyword">if</span> (playBackwards &amp;&amp; mSeekFraction != -<span class="number">1</span> &amp;&amp; mSeekFraction != <span class="number">0</span>) &#123;</div><div class="line">         <span class="keyword">if</span> (mRepeatCount == INFINITE) &#123;</div><div class="line">             <span class="comment">// Calculate the fraction of the current iteration.</span></div><div class="line">             <span class="keyword">float</span> fraction = (<span class="keyword">float</span>) (mSeekFraction - Math.floor(mSeekFraction));</div><div class="line">             mSeekFraction = <span class="number">1</span> - fraction;</div><div class="line">         &#125; <span class="keyword">else</span> &#123;</div><div class="line">             mSeekFraction = <span class="number">1</span> + mRepeatCount - mSeekFraction;</div><div class="line">         &#125;</div><div class="line">     &#125;</div><div class="line">     mStarted = <span class="keyword">true</span>;</div><div class="line">     mPaused = <span class="keyword">false</span>;</div><div class="line">     mRunning = <span class="keyword">false</span>;</div><div class="line">     mAnimationEndRequested = <span class="keyword">false</span>;</div><div class="line">     <span class="comment">// Resets mLastFrameTime when start() is called, so that if the animation was running,</span></div><div class="line">     <span class="comment">// calling start() would put the animation in the</span></div><div class="line">     <span class="comment">// started-but-not-yet-reached-the-first-frame phase.</span></div><div class="line">     mLastFrameTime = <span class="number">0</span>;</div><div class="line">     AnimationHandler animationHandler = AnimationHandler.getInstance();</div><div class="line">     animationHandler.addAnimationFrameCallback(<span class="keyword">this</span>, (<span class="keyword">long</span>) (mStartDelay * sDurationScale));</div><div class="line"></div><div class="line">     <span class="keyword">if</span> (mStartDelay == <span class="number">0</span> || mSeekFraction &gt;= <span class="number">0</span>) &#123;</div><div class="line">         <span class="comment">// If there's no start delay, init the animation and notify start listeners right away</span></div><div class="line">         <span class="comment">// to be consistent with the previous behavior. Otherwise, postpone this until the first</span></div><div class="line">         <span class="comment">// frame after the start delay.</span></div><div class="line">         startAnimation();</div><div class="line">         <span class="keyword">if</span> (mSeekFraction == -<span class="number">1</span>) &#123;</div><div class="line">             <span class="comment">// No seek, start at play time 0. Note that the reason we are not using fraction 0</span></div><div class="line">             <span class="comment">// is because for animations with 0 duration, we want to be consistent with pre-N</span></div><div class="line">             <span class="comment">// behavior: skip to the final value immediately.</span></div><div class="line">             setCurrentPlayTime(<span class="number">0</span>);</div><div class="line">         &#125; <span class="keyword">else</span> &#123;</div><div class="line">             setCurrentFraction(mSeekFraction);</div><div class="line">         &#125;</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>android.animation.ValueAnimator#doAnimationFrame<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">doAnimationFrame</span><span class="params">(<span class="keyword">long</span> frameTime)</span> </span>&#123;</div><div class="line">    AnimationHandler handler = AnimationHandler.getInstance();</div><div class="line">    <span class="keyword">if</span> (mLastFrameTime == <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// First frame</span></div><div class="line">        handler.addOneShotCommitCallback(<span class="keyword">this</span>);</div><div class="line">        <span class="keyword">if</span> (mStartDelay &gt; <span class="number">0</span>) &#123;</div><div class="line">            startAnimation();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mSeekFraction &lt; <span class="number">0</span>) &#123;</div><div class="line">            mStartTime = frameTime;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">long</span> seekTime = (<span class="keyword">long</span>) (getScaledDuration() * mSeekFraction);</div><div class="line">            mStartTime = frameTime - seekTime;</div><div class="line">            mSeekFraction = -<span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        mStartTimeCommitted = <span class="keyword">false</span>; <span class="comment">// allow start time to be compensated for jank</span></div><div class="line">    &#125;</div><div class="line">    mLastFrameTime = frameTime;</div><div class="line">    <span class="keyword">if</span> (mPaused) &#123;</div><div class="line">        mPauseTime = frameTime;</div><div class="line">        handler.removeCallback(<span class="keyword">this</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mResumed) &#123;</div><div class="line">        mResumed = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (mPauseTime &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// Offset by the duration that the animation was paused</span></div><div class="line">            mStartTime += (frameTime - mPauseTime);</div><div class="line">            mStartTimeCommitted = <span class="keyword">false</span>; <span class="comment">// allow start time to be compensated for jank</span></div><div class="line">        &#125;</div><div class="line">        handler.addOneShotCommitCallback(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// The frame time might be before the start time during the first frame of</span></div><div class="line">    <span class="comment">// an animation.  The "current time" must always be on or after the start</span></div><div class="line">    <span class="comment">// time to avoid animating frames at negative time intervals.  In practice, this</span></div><div class="line">    <span class="comment">// is very rare and only happens when seeking backwards.</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">long</span> currentTime = Math.max(frameTime, mStartTime);</div><div class="line">    <span class="keyword">boolean</span> finished = animateBasedOnTime(currentTime);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (finished) &#123;</div><div class="line">        endAnimation();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在初始化的时候，如果属性的初始值没有提供，则get方法会被调用，get方法是用反射来调用的。  </p>
+<p>android.animation.PropertyValuesHolder#setupValue<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setupValue</span><span class="params">(Object target, Keyframe kf)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (mProperty != <span class="keyword">null</span>) &#123;</div><div class="line">           Object value = convertBack(mProperty.get(target));</div><div class="line">           kf.setValue(value);</div><div class="line">       &#125; <span class="keyword">else</span> &#123;</div><div class="line">           <span class="keyword">try</span> &#123;</div><div class="line">               <span class="keyword">if</span> (mGetter == <span class="keyword">null</span>) &#123;</div><div class="line">                   Class targetClass = target.getClass();</div><div class="line">                   setupGetter(targetClass);</div><div class="line">                   <span class="keyword">if</span> (mGetter == <span class="keyword">null</span>) &#123;</div><div class="line">                       <span class="comment">// Already logged the error - just return to avoid NPE</span></div><div class="line">                       <span class="keyword">return</span>;</div><div class="line">                   &#125;</div><div class="line">               &#125;</div><div class="line">               Object value = convertBack(mGetter.invoke(target));</div><div class="line">               kf.setValue(value);</div><div class="line">           &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">               Log.e(<span class="string">"PropertyValuesHolder"</span>, e.toString());</div><div class="line">           &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">               Log.e(<span class="string">"PropertyValuesHolder"</span>, e.toString());</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>当下一帧到来的时候，PropertyValuesHolder 中的 setAnimatedValue 会将新的属性值设置给对象。set 也是通过反射来调用的。</p>
+<p>android.animation.PropertyValuesHolder#setAnimatedValue<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setAnimatedValue</span><span class="params">(Object target)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (mProperty != <span class="keyword">null</span>) &#123;</div><div class="line">          mProperty.set(target, getAnimatedValue());</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (mSetter != <span class="keyword">null</span>) &#123;</div><div class="line">          <span class="keyword">try</span> &#123;</div><div class="line">              mTmpValueArray[<span class="number">0</span>] = getAnimatedValue();</div><div class="line">              mSetter.invoke(target, mTmpValueArray);</div><div class="line">          &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">              Log.e(<span class="string">"PropertyValuesHolder"</span>, e.toString());</div><div class="line">          &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">              Log.e(<span class="string">"PropertyValuesHolder"</span>, e.toString());</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><ol>
+<li>OOM<br>主要出现在帧动画中，尽量避免使用帧动画。</li>
+<li><p>内存泄漏<br>当有无限循环的动画时，需要在 Activity 退出时及时停止。View 动画不存在此问题。</p>
+</li>
+<li><p>兼容性<br>在 3.0 以下需要适配。</p>
+</li>
+<li>View 动画的问题<br>View 动画是对 View 的影像做动画，并不是真正的改变 View 的状态，因此有时会出现动画完成后 View 无法隐藏的现象，即 <code>view.setVisible(GONE)</code> 失效了，这时只需要调用 <code>view.clearAnimation()</code> 清除 View 动画就可以解决。 </li>
+<li>不要使用 px<br>尽量使用 dp</li>
+<li>动画元素的交互<br>将view移动（平移）后，在Android 3.0以前的系统上，不管是View动画还是属性动画，新位置均无法触发单击事件，同时，老位置仍然可以触发单击事件。尽管View已经在视觉上不存在了，将View移回原位置以后，原位置的单击事件继续生效。从3.0开始，属性动画的单击事件触发位置为移动后的位置，但是View动画仍然在原位置。</li>
+<li>硬件加速<br>建议开启，提高动画流程性</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/20/androidArt5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Android开发艺术探索笔记-第5章 RemoteViews</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#View-动画"><span class="nav-number">1.</span> <span class="nav-text">View 动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#View-动画的种类"><span class="nav-number">1.1.</span> <span class="nav-text">View 动画的种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-View-动画"><span class="nav-number">1.2.</span> <span class="nav-text">自定义 View 动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#帧动画"><span class="nav-number">1.3.</span> <span class="nav-text">帧动画</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#View-动画的特殊使用场景"><span class="nav-number">2.</span> <span class="nav-text">View 动画的特殊使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LayoutAnimation"><span class="nav-number">2.1.</span> <span class="nav-text">LayoutAnimation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-的切换效果"><span class="nav-number">2.2.</span> <span class="nav-text">Activity 的切换效果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#属性动画"><span class="nav-number">3.</span> <span class="nav-text">属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用属性动画"><span class="nav-number">3.1.</span> <span class="nav-text">使用属性动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插值器和估值器"><span class="nav-number">3.2.</span> <span class="nav-text">插值器和估值器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#属性动画的监听器"><span class="nav-number">4.</span> <span class="nav-text">属性动画的监听器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对任意属性做动画"><span class="nav-number">5.</span> <span class="nav-text">对任意属性做动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方法"><span class="nav-number">5.1.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#属性动画的工作原理"><span class="nav-number">6.</span> <span class="nav-text">属性动画的工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注意事项"><span class="nav-number">7.</span> <span class="nav-text">注意事项</span></a></li></ol>
+    
+    </div>
+  </aside>
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 luwenjie&#39;s Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/scripts.js"></script>
+
+
+
+
+  <script src="/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            luwenjie&#39;s Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2017 luwenjie All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
