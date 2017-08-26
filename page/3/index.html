@@ -151,6 +151,52 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-自定义 View 笔记 - MeasureSpec 详解"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/">自定义 View 笔记 2 - MeasureSpec 详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/" class="article-date">
+	  <time datetime="2017-01-19T14:20:00.000Z" itemprop="datePublished">2017-01-19</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/自定义-View/">自定义 View</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥着不可或缺的作用。所以，了解 View 的测量过程，最合适的切入点就是 MeasureSpec。于是我们从 MeasureSpec 着手去寻找上述问题的答案。</p>
+        <!-- 在自定义 View 的时候通常会遇到很多问题。比如为什么父 View 影响到了子 View 的 MeasureSpec 的生成？子 View 的 specMode 和 specSize 的生成依据又是什么？ 系统显示一个 View，首先需要通过测量(measure) 该 View 来知晓其长和宽从而确定显示该 View 时需要多大的空间。在测量的过程中 MeasureSpec 贯穿全程，发挥......  -->
+        <p class="article-more-link">
+          <a href="/2017/01/19/自定义 View 笔记 - MeasureSpec 详解/#more">阅读全文</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+  
     <article id="post-Mac Chrome 快捷键"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
@@ -667,68 +713,6 @@ Adaptee：适配者，需要适配的接口......  -->
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qxt/">qxt</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-从零开始的设计模式2-代理模式"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/01/01/从零开始的设计模式2-代理模式/">Re：从零开始的设计模式 2 - 代理模式(Proxy Pattern)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/01/01/从零开始的设计模式2-代理模式/" class="article-date">
-	  <time datetime="2017-01-01T15:40:00.000Z" itemprop="datePublished">2017-01-01</time>
-	</a>
-
-      
-    <a class="article-category-link" href="/categories/从零开始的设计模式系列/">从零开始的设计模式系列</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>给某个对象提供一个代理对象，并由代理对象控制对于原对象的访问，即客户不直接操控原对象，而是通过代理对象间接地操控原对象。</p>
-</blockquote>
-        <!-- 
-给某个对象提供一个代理对象，并由代理对象控制对于原对象的访问，即客户不直接操控原对象，而是通过代理对象间接地操控原对象。
-
-
-举个栗子我们在国内想要访问谷歌，必须走代理。这就是一个典型的场景。过程如下：
-
-用户把 Http 请求发给代理
-代理把 Http 请求发给谷歌服务器
-服务器把 Http 响应发给代理
-代理把 Http 响应发回用户
-
-然后我们就能愉快的 Google 了。
-怎样用代......  -->
-        <p class="article-more-link">
-          <a href="/2017/01/01/从零开始的设计模式2-代理模式/#more">阅读全文</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
 
     </footer>
   </div>
