@@ -151,6 +151,59 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-自定义 View onMeasure() 的过程"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/01/19/自定义 View onMeasure() 的过程/">自定义 View 笔记 3 - onMeasure() 的过程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/01/19/自定义 View onMeasure() 的过程/" class="article-date">
+	  <time datetime="2017-01-19T14:23:00.000Z" itemprop="datePublished">2017-01-19</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/自定义-View/">自定义 View</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上篇<a href="https://luwenjie.me/2017/01/19/%E8%87%AA%E5%AE%9A%E4%B9%89%20View%20%E7%AC%94%E8%AE%B0%20-%20MeasureSpec%20%E8%AF%A6%E8%A7%A3/">自定义 View 笔记 2 - MeasureSpec 详解</a>分析了MeasureSpec生成的原理，父容器测量子 View首先确定MeasureSpec，再让子View测量自己。<br>
+        <!-- 上篇自定义 View 笔记 2 - MeasureSpec 详解分析了MeasureSpec生成的原理，父容器测量子 View首先确定MeasureSpec，再让子View测量自己。
+完整的流程图是这样的：
+
+父类和子类共同确定完子类的MeassureSpec后，子类就要测量自身的尺寸。
+其中子View测量自身源码的调用流程图：我们从尾到头看一下源码的实现。
+View#getSuggeste......  -->
+        <p class="article-more-link">
+          <a href="/2017/01/19/自定义 View onMeasure() 的过程/#more">阅读全文</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习笔记/">学习笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+  
     <article id="post-自定义 View 笔记 - MeasureSpec 详解"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
@@ -663,56 +716,6 @@ Adaptee：适配者，需要适配的接口......  -->
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/适配器模式/">适配器模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-记一次 ScrollView 嵌套 RecyclerView 的坑"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/01/06/记一次 ScrollView 嵌套 RecyclerView 的坑/">记一次 ScrollView 嵌套 RecyclerView 的坑</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/01/06/记一次 ScrollView 嵌套 RecyclerView 的坑/" class="article-date">
-	  <time datetime="2017-01-06T09:50:00.000Z" itemprop="datePublished">2017-01-06</time>
-	</a>
-
-      
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我在一个 ScrollerView 中嵌套了 2 个横向的 RecyclerView。<br>结果每次点击这个页面初始化的时候，ScrollView 总是不在最顶端。而是在 RecyclerView 的顶端位置。<br>
-        <!-- 我在一个 ScrollerView 中嵌套了 2 个横向的 RecyclerView。结果每次点击这个页面初始化的时候，ScrollView 总是不在最顶端。而是在 RecyclerView 的顶端位置。
-类似于这种情况：
-原因Google 发现是 RecyclerView 抢了焦点。这种现象是因为 ScrollView 里的控件抢夺到了焦点导致的，控件抢到焦点以后，ScrollView 会......  -->
-        <p class="article-more-link">
-          <a href="/2017/01/06/记一次 ScrollView 嵌套 RecyclerView 的坑/#more">阅读全文</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qxt/">qxt</a></li></ul>
 
     </footer>
   </div>

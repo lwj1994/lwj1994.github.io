@@ -3,21 +3,25 @@
 <head>
   <meta charset="utf-8">
   
-  <title>category: android | luwenjie&#39;s Blog</title>
+  <title>android开发艺术探索笔记-第 15 章 性能优化 | luwenjie&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
+  <meta name="keywords" content="Android开发艺术探索" />
   
   
   
-  <meta name="description" content="逃避可耻但很有用">
-<meta property="og:type" content="website">
-<meta property="og:title" content="luwenjie&#39;s Blog">
-<meta property="og:url" content="https://luwenjie.me/categories/Android/index.html">
+  
+  <meta name="description" content="2015年Google在YouTube上发布了关于An-droid性能优化典范的专题，通过一系列短视频来帮助开发者创建更快更优秀的Android应用，课程专题不仅仅介绍了Android系统中有关性能问题的底层工作原理，同时也介绍了如何通过工具来找出性能问题以及提升性能的建议，地址是：https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3B">
+<meta name="keywords" content="Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发艺术探索笔记-第 15 章 性能优化">
+<meta property="og:url" content="https://luwenjie.me/2017/08/29/androidArt15/index.html">
 <meta property="og:site_name" content="luwenjie&#39;s Blog">
-<meta property="og:description" content="逃避可耻但很有用">
+<meta property="og:description" content="2015年Google在YouTube上发布了关于An-droid性能优化典范的专题，通过一系列短视频来帮助开发者创建更快更优秀的Android应用，课程专题不仅仅介绍了Android系统中有关性能问题的底层工作原理，同时也介绍了如何通过工具来找出性能问题以及提升性能的建议，地址是：https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3B">
+<meta property="og:updated_time" content="2017-08-29T10:52:03.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="luwenjie&#39;s Blog">
-<meta name="twitter:description" content="逃避可耻但很有用">
+<meta name="twitter:title" content="Android开发艺术探索笔记-第 15 章 性能优化">
+<meta name="twitter:description" content="2015年Google在YouTube上发布了关于An-droid性能优化典范的专题，通过一系列短视频来帮助开发者创建更快更优秀的Android应用，课程专题不仅仅介绍了Android系统中有关性能问题的底层工作原理，同时也介绍了如何通过工具来找出性能问题以及提升性能的建议，地址是：https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3B">
   
     <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
   
@@ -54,8 +58,6 @@
   
 
   
-    <link rel="stylesheet" href="/css/archive.css" >
-  
   
   
 
@@ -63,7 +65,7 @@
 
 
 
-  <body>
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
 
 
   
@@ -86,7 +88,7 @@
             
               <a class="brand" style="
                  margin-top: 0px;"  
-                 >
+                href="#" data-toggle="modal" data-target="#myModal" >
                   <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
               </a>
             
@@ -151,238 +153,130 @@
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;">
-  
-  
-  
+          <section id="main" style="float:none;"><article id="post-androidArt15" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
     
     
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <h1><a href="/archives/2017" class="archive-year">2017</a></h1>
-        </div>
-        <div class="archives">
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Android开发艺术探索笔记-第 15 章 性能优化
+    </h1>
+  
+
+      </header>
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
+    <div class="article-meta">
       
-	<a href="/2017/08/29/androidArt15/" class="archive-article-date">
+	<a href="/2017/08/29/androidArt15/" class="article-date">
 	  <time datetime="2017-08-29T10:37:00.000Z" itemprop="datePublished">2017-08-29</time>
 	</a>
 
       
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/08/29/androidArt15/">Android开发艺术探索笔记-第 15 章 性能优化</a>
-    </h1>
-  
+    <a class="article-category-link" href="/categories/Android/">Android</a>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
       
-	<a href="/2017/08/26/androidArt9/" class="archive-article-date">
-	  <time datetime="2017-08-26T02:37:00.000Z" itemprop="datePublished">2017-08-26</time>
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
 	</a>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/08/26/androidArt9/">Android开发艺术探索笔记-第9章 四大组件的功能</a>
-    </h1>
-  
+        <blockquote>
+<p>2015年Google在YouTube上发布了关于An-droid性能优化典范的专题，通过一系列短视频来帮助开发者创建更快更优秀的Android应用，课程专题不仅仅介绍了Android系统中有关性能问题的底层工作原理，同时也介绍了如何通过工具来找出性能问题以及提升性能的建议，地址是：<a href="https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE" target="_blank" rel="external">https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="性能优化方法"><a href="#性能优化方法" class="headerlink" title="性能优化方法"></a>性能优化方法</h2><p>主要有：</p>
+<ol>
+<li>布局优化</li>
+<li>绘制优化</li>
+<li>内存泄漏优化</li>
+<li>响应速度优化</li>
+<li>ListView 优化</li>
+<li>Bitmap 优化</li>
+<li>线程优化</li>
+<li>一些性能优化建议</li>
+</ol>
+<h2 id="布局优化"><a href="#布局优化" class="headerlink" title="布局优化"></a>布局优化</h2><p>思想是减少布局的层级。  </p>
+<p>有选择的使用一些性能不高的布局：如 RelativeLayout，它的布局需要花费更多的时间。</p>
+<p>使用 <code>&lt;inclue&gt;</code>、<code>&lt;merge&gt;</code>、和 <code>ViewStub</code></p>
+<h2 id="绘制优化"><a href="#绘制优化" class="headerlink" title="绘制优化"></a>绘制优化</h2><p>避免在 <code>onDraw()</code> 中执行大量的操作。  </p>
+<p>避免在 <code>onDraw()</code> 中创建新的局部对象，因为 <code>onDraw()</code> 会被多次调用，会导致频繁 GC。  </p>
+<p>不能做耗时操作。</p>
+<h2 id="内存泄漏优化"><a href="#内存泄漏优化" class="headerlink" title="内存泄漏优化"></a>内存泄漏优化</h2><p>避免写出有内存泄漏的代码，利用 MAT 等工具查找。  </p>
+<ol>
+<li>静态变量</li>
+<li>单例</li>
+<li>属性动画</li>
+</ol>
+<h2 id="响应速度优化和-ANR-日志分析"><a href="#响应速度优化和-ANR-日志分析" class="headerlink" title="响应速度优化和 ANR 日志分析"></a>响应速度优化和 ANR 日志分析</h2><p>避免将耗时操作放在主线程中执行。<br>Activiy 5s 无法响应屏幕触摸事件就会发生 ANR，BroadcastReceiver 是 10s。  </p>
+<p>一个进程发生 ANR 后，系统会在 /data/anr 创建一个文件 traces.txt</p>
+<h2 id="ListView-和-Bitmap-优化"><a href="#ListView-和-Bitmap-优化" class="headerlink" title="ListView 和 Bitmap 优化"></a>ListView 和 Bitmap 优化</h2><p>ListView </p>
+<ol>
+<li>复用 ViewHolder</li>
+<li>当列表在滑动时不适合做大量异步认为</li>
+<li>可以开启硬件加速</li>
+</ol>
+<p>Bitmap</p>
+<p>通过 <code>BitmapFactory.Options</code> 根据需要对图片进行采样，利用 <code>inSampleSize</code> 进行裁剪减小 Bitmap 的大小。</p>
+<h2 id="线程优化"><a href="#线程优化" class="headerlink" title="线程优化"></a>线程优化</h2><p>采样线程池，复用线程。控制线程的最大并发数。</p>
+<h2 id="一些建议"><a href="#一些建议" class="headerlink" title="一些建议"></a>一些建议</h2><ol>
+<li>避免创建过多的对象；   </li>
+<li>不要过多使用枚举，枚举占用的内存空间要比整型大；   </li>
+<li>常量请使用static final来修饰；   </li>
+<li>使用一些Android特有的数据结构，比如SparseArray和Pair等，它们都具有更好的性能；   </li>
+<li>适当使用软引用和软引用；   </li>
+<li>采用内存缓存和磁盘缓存；   </li>
+<li>尽量采用静态内部类，这样可以避免潜在的由于内部类而导致的内存泄露。</li>
+</ol>
+<h2 id="MAT-分析工具"><a href="#MAT-分析工具" class="headerlink" title="MAT 分析工具"></a>MAT 分析工具</h2><p>全称 Eclipse Memory Analyzer。</p>
+<p>下载地址：<a href="http://www.eclipse.org/mat/downloads.php" target="_blank" rel="external">http://www.eclipse.org/mat/downloads.php</a></p>
+<h2 id="提高程序的可维护性"><a href="#提高程序的可维护性" class="headerlink" title="提高程序的可维护性"></a>提高程序的可维护性</h2><ol>
+<li>命名规范</li>
+<li>代码留出适当的空白区分不同的代码块</li>
+<li>只给关键的地方写注释</li>
+</ol>
+<p>一段繁琐的业务逻辑，应该适当拆分为几个小的函数或者类。</p>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/08/26/androidArt9/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Android开发艺术探索笔记-第9章 四大组件的功能</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
     
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#性能优化方法"><span class="nav-number">1.</span> <span class="nav-text">性能优化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布局优化"><span class="nav-number">2.</span> <span class="nav-text">布局优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘制优化"><span class="nav-number">3.</span> <span class="nav-text">绘制优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存泄漏优化"><span class="nav-number">4.</span> <span class="nav-text">内存泄漏优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应速度优化和-ANR-日志分析"><span class="nav-number">5.</span> <span class="nav-text">响应速度优化和 ANR 日志分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ListView-和-Bitmap-优化"><span class="nav-number">6.</span> <span class="nav-text">ListView 和 Bitmap 优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程优化"><span class="nav-number">7.</span> <span class="nav-text">线程优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些建议"><span class="nav-number">8.</span> <span class="nav-text">一些建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MAT-分析工具"><span class="nav-number">9.</span> <span class="nav-text">MAT 分析工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高程序的可维护性"><span class="nav-number">10.</span> <span class="nav-text">提高程序的可维护性</span></a></li></ol>
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/08/20/androidArt8/" class="archive-article-date">
-	  <time datetime="2017-08-20T09:31:00.000Z" itemprop="datePublished">2017-08-20</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/08/20/androidArt8/">Android开发艺术探索笔记-第8章 Window 的创建过程</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/07/30/AndroidArtChapter7/" class="archive-article-date">
-	  <time datetime="2017-07-30T10:53:00.000Z" itemprop="datePublished">2017-07-30</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/07/30/AndroidArtChapter7/">Android开发艺术探索笔记-第7章 Android 动画深入分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/07/20/androidArt5/" class="archive-article-date">
-	  <time datetime="2017-07-20T10:48:00.000Z" itemprop="datePublished">2017-07-20</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/07/20/androidArt5/">Android开发艺术探索笔记-第5章 RemoteViews</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/06/28/AndroidArtChapter2/" class="archive-article-date">
-	  <time datetime="2017-06-28T08:37:00.000Z" itemprop="datePublished">2017-06-28</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/06/28/AndroidArtChapter2/">Android开发艺术探索笔记-第2章 Android的IPC机制</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/06/19/Android开发艺术探索笔记第6章/" class="archive-article-date">
-	  <time datetime="2017-06-19T08:37:00.000Z" itemprop="datePublished">2017-06-19</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/06/19/Android开发艺术探索笔记第6章/">Android开发艺术探索笔记-第6章 Android的Drawable</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/06/02/Android开发艺术探索笔记第10章/" class="archive-article-date">
-	  <time datetime="2017-06-02T10:37:00.000Z" itemprop="datePublished">2017-06-02</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/06/02/Android开发艺术探索笔记第10章/">Android开发艺术探索笔记-第10章 Android的消息机制</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/05/31/Android开发艺术探索笔记第4章/" class="archive-article-date">
-	  <time datetime="2017-05-31T10:37:00.000Z" itemprop="datePublished">2017-05-31</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/05/31/Android开发艺术探索笔记第4章/">Android开发艺术探索笔记-第4章 View的工作原理</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      
-	<a href="/2017/05/24/yishuyansuo3/" class="archive-article-date">
-	  <time datetime="2017-05-24T03:17:00.000Z" itemprop="datePublished">2017-05-24</time>
-	</a>
-
-      
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/05/24/yishuyansuo3/">Android开发艺术探索笔记-第3章 View的事件体系</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/categories/Android/page/2/">2</a><a class="extend next" rel="next" href="/categories/Android/page/2/">下一页 &raquo;</a>
-  </nav>
-
+    </div>
+  </aside>
 </section>
         
       </div>
@@ -477,6 +371,8 @@
 
 
 
+  <script src="/js/dialog.js"></script>
+
 
 
 
@@ -560,6 +456,8 @@
   
   <a id="rocket" href="#top" class=""></a>
   <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
   
 </body>
 </html>
