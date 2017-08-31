@@ -151,6 +151,56 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-butterknife‘s_theory"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/08/31/butterknife‘s_theory/">ButterKnife 的工作原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/08/31/butterknife‘s_theory/" class="article-date">
+	  <time datetime="2017-08-31T09:12:00.000Z" itemprop="datePublished">2017-08-31</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://upload-images.jianshu.io/upload_images/675088-f30f81ab6031ef4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="butterKnife"></p>
+<p>使用 butterknife 很简单。<br>在 Activity 中只需在<code>setContentView()</code> 之后配置一句 <code>ButterKnife.bind(this)</code>，就可以省略繁琐的 <code>findViewById</code> 代码。可以推测它肯定是在内部帮我们处理然后生成了 <code>findViewById</code> 代码。它是如何生成的呢？<br>使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 APT(Annotation Processing Tool) 编译时解析技术，动态生成<code>findViewById</code> 代码。很多著名的开源库都使用了 APT，比如 <a href="https://github.com/google/dagger" target="_blank" rel="external">Dagger2</a>，<a href="https://github.com/airbnb/DeepLinkDispatch" target="_blank" rel="external">DeepLinkDispatch</a>。<br>
+        <!-- 
+使用 butterknife 很简单。在 Activity 中只需在setContentView() 之后配置一句 ButterKnife.bind(this)，就可以省略繁琐的 findViewById 代码。可以推测它肯定是在内部帮我们处理然后生成了 findViewById 代码。它是如何生成的呢？使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 ......  -->
+        <p class="article-more-link">
+          <a href="/2017/08/31/butterknife‘s_theory/#more">阅读全文</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源库源码解析/">开源库源码解析</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+  
     <article id="post-androidArt15"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
@@ -626,57 +676,6 @@ Handler是Android消息机制的上层接口。很多人认为Handler的作用�
 ViewRoot 和 DecoreViewViewRootImplViewRoot对应android.view.ViewRootImpl类，它是连接WindowManager和Deco......  -->
         <p class="article-more-link">
           <a href="/2017/05/31/Android开发艺术探索笔记第4章/#more">阅读全文</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-yishuyansuo3"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/05/24/yishuyansuo3/">Android开发艺术探索笔记-第3章 View的事件体系</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/05/24/yishuyansuo3/" class="article-date">
-	  <time datetime="2017-05-24T03:17:00.000Z" itemprop="datePublished">2017-05-24</time>
-	</a>
-
-      
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根据需求进行新控件的定义，而控件的自定义就需要对Android的View体系有深入的理解，只有这样才能写出完美的自定义控件。  </p>
-</blockquote>
-        <!-- 
-本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要......  -->
-        <p class="article-more-link">
-          <a href="/2017/05/24/yishuyansuo3/#more">阅读全文</a>
         </p>
       
     </div>

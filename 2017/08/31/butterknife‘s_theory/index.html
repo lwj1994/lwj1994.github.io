@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>butterknife 的工作原理 | luwenjie&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="开源库源码解析" />
+  
+  
+  
+  
+  <meta name="description" content="使用 butterknife 很简单。在 Activity 中只需在setContentView() 之后配置一句 ButterKnife.bind(this)，就可以省略繁琐的 findViewById 代码。可以推测它肯定是在内部帮我们处理然后生成了 findViewById 代码。它是如何生成的呢？使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 APT">
+<meta name="keywords" content="开源库源码解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ButterKnife 的工作原理">
+<meta property="og:url" content="https://luwenjie.me/2017/08/31/butterknife‘s_theory/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="使用 butterknife 很简单。在 Activity 中只需在setContentView() 之后配置一句 ButterKnife.bind(this)，就可以省略繁琐的 findViewById 代码。可以推测它肯定是在内部帮我们处理然后生成了 findViewById 代码。它是如何生成的呢？使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 APT">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/675088-f30f81ab6031ef4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/675088-613d6d411cfd14e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/675088-bb2cee35841bc18d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/675088-64ec8b02f578f2fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-08-31T09:13:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ButterKnife 的工作原理">
+<meta name="twitter:description" content="使用 butterknife 很简单。在 Activity 中只需在setContentView() 之后配置一句 ButterKnife.bind(this)，就可以省略繁琐的 findViewById 代码。可以推测它肯定是在内部帮我们处理然后生成了 findViewById 代码。它是如何生成的呢？使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 APT">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/675088-f30f81ab6031ef4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/css/dialog.css">
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css" >
+  
+
+  
+  
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/">首页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives">归档</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-butterknife‘s_theory" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      ButterKnife 的工作原理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/08/31/butterknife‘s_theory/" class="article-date">
+	  <time datetime="2017-08-31T09:12:00.000Z" itemprop="datePublished">2017-08-31</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		阅读量<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://upload-images.jianshu.io/upload_images/675088-f30f81ab6031ef4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="butterKnife"></p>
+<p>使用 butterknife 很简单。<br>在 Activity 中只需在<code>setContentView()</code> 之后配置一句 <code>ButterKnife.bind(this)</code>，就可以省略繁琐的 <code>findViewById</code> 代码。可以推测它肯定是在内部帮我们处理然后生成了 <code>findViewById</code> 代码。它是如何生成的呢？<br>使用反射是可以达到这个目的的，但是一定存在性能问题。Butterknife 使用的是 APT(Annotation Processing Tool) 编译时解析技术，动态生成<code>findViewById</code> 代码。很多著名的开源库都使用了 APT，比如 <a href="https://github.com/google/dagger" target="_blank" rel="external">Dagger2</a>，<a href="https://github.com/airbnb/DeepLinkDispatch" target="_blank" rel="external">DeepLinkDispatch</a>。<br><a id="more"></a></p>
+<h2 id="APT-Annotation-Processing-Tool"><a href="#APT-Annotation-Processing-Tool" class="headerlink" title="APT(Annotation Processing Tool)"></a>APT(Annotation Processing Tool)</h2><p><img src="http://upload-images.jianshu.io/upload_images/675088-613d6d411cfd14e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>首先需要了解一下 Annotation Processing。<br>Annotation Processing 发布于 java 1.5，是一个年代久远但是十分牛逼的 API。</p>
+<p>APT 的作用是根据注解帮助我们生成一些模板代码，减少我们的重复工作。代码生成的时机发生在 <strong>编译时</strong>，javac 会 build 所有的注解，并且在编译时扫描且处理它们。<br>我们使用 Annotation Processor 用来定制我们处理注解生成代码的规则。 具体使用规则可以看<a href="http://docs.oracle.com/javase/8/docs/api/" target="_blank" rel="external">文档</a> 中的 <code>AbstractProcessor</code>类。  </p>
+<p>可以用 6 步来概括这个过程：  </p>
+<ol>
+<li>java compiler 开始 build</li>
+<li>Annotation Processors 开始工作</li>
+<li>轮询内部所有的注解，找到注解的类、方法、变量</li>
+<li>利用刚刚解析的数据生成一个新类（这里就会生成新的代码）</li>
+<li>创建一个文件，将生成的代码写入</li>
+<li>编译检查是否所有的 annotation processors 都执行了，如果还有没有执行的，就继续循环。</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/675088-bb2cee35841bc18d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="pic from Mert Şimşek"></p>
+<h2 id="ButterKnife-的工作过程"><a href="#ButterKnife-的工作过程" class="headerlink" title="ButterKnife 的工作过程"></a>ButterKnife 的工作过程</h2><p>不难推测完成 <code>findViewById</code> 的过程肯定是由<code>ButterKnife.bind(this)</code> 这句代码完成的。<br>我们着手看看它的内部做了什么。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@NonNull</span> <span class="meta">@UiThread</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Unbinder <span class="title">bind</span><span class="params">(@NonNull Activity target)</span> </span>&#123;</div><div class="line">  <span class="comment">// 得到当前 Activity 的顶级 View，即 DecorView</span></div><div class="line">  View sourceView = target.getWindow().getDecorView();</div><div class="line">  <span class="keyword">return</span> createBinding(target, sourceView);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Unbinder <span class="title">createBinding</span><span class="params">(@NonNull Object target, @NonNull View source)</span> </span>&#123;</div><div class="line">   Class&lt;?&gt; targetClass = target.getClass();</div><div class="line">   <span class="comment">// 根据 class 创建构造器</span></div><div class="line">   Constructor&lt;? extends Unbinder&gt; constructor = findBindingConstructorForClass(targetClass);</div><div class="line"></div><div class="line">   <span class="keyword">if</span> (constructor == <span class="keyword">null</span>) &#123;</div><div class="line">     <span class="keyword">return</span> Unbinder.EMPTY;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">//noinspection TryWithIdenticalCatches Resolves to API 19+ only type.</span></div><div class="line">   </div><div class="line">   </div><div class="line">   <span class="keyword">return</span> constructor.newInstance(target, source);</div><div class="line">   <span class="comment">// ...</span></div><div class="line">    </div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Constructor&lt;? extends Unbinder&gt; findBindingConstructorForClass(Class&lt;?&gt; cls) &#123;</div><div class="line">   Constructor&lt;? extends Unbinder&gt;</div><div class="line">   <span class="comment">// 先从 map 表里找，有的话直接返回</span></div><div class="line">   <span class="comment">// 这里将构造器缓存起来了</span></div><div class="line">   bindingCtor = BINDINGS.get(cls);</div><div class="line">   <span class="keyword">if</span> (bindingCtor != <span class="keyword">null</span>) &#123;</div><div class="line">     <span class="keyword">return</span> bindingCtor;</div><div class="line">   &#125;</div><div class="line">  </div><div class="line">  </div><div class="line">   String clsName = cls.getName();</div><div class="line">   <span class="comment">// 过滤以 android. 和 java. 开头的类</span></div><div class="line">   <span class="comment">// 这些是 framework 的类，不处理</span></div><div class="line">   <span class="keyword">if</span> (clsName.startsWith(<span class="string">"android."</span>) || clsName.startsWith(<span class="string">"java."</span>)) &#123;</div><div class="line">     <span class="keyword">if</span> (debug) Log.d(TAG, <span class="string">"MISS: Reached framework class. Abandoning search."</span>);</div><div class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   </div><div class="line">   <span class="keyword">try</span> &#123;</div><div class="line">   <span class="comment">// 获取APT生成的类 clsName</span></div><div class="line">     Class&lt;?&gt; bindingClass = Class.forName(clsName + <span class="string">"_ViewBinding"</span>);</div><div class="line">     <span class="comment">//noinspection unchecked</span></div><div class="line">     <span class="comment">// 然后得到这个新类的构造器对象</span></div><div class="line">     bindingCtor = (Constructor&lt;? extends Unbinder&gt;) bindingClass.getConstructor(cls, View.class);</div><div class="line">     <span class="keyword">if</span> (debug) Log.d(TAG, <span class="string">"HIT: Loaded binding class and constructor."</span>);</div><div class="line">   &#125; </div><div class="line">   <span class="comment">// .. 省略异常</span></div><div class="line">   </div><div class="line">   <span class="comment">// 将新生成的构造器存入 map </span></div><div class="line">   BINDINGS.put(cls, bindingCtor);</div><div class="line">   <span class="keyword">return</span> bindingCtor;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>到这里我们知道<code>ButterKnife.bind(this)</code> 做的事就是找到 apt 生成的那个类的构造器然后通过构造器创建那个类的实例。其中用 LinkedHashMap 缓存了这些实例，提高性能。</p>
+<p>ButterKnife 生成的代码位于：<code>app/build/generated/source/apt</code> 路径下。</p>
+<p>我们来看看这个新生成的类:</p>
+<p>它实现了 <code>Unbinder</code> 接口, 类的命名以原类名加后缀 “_ViewBinding”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Unbinder</span> </span>&#123;</div><div class="line">  <span class="meta">@UiThread</span> <span class="function"><span class="keyword">void</span> <span class="title">unbind</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  Unbinder EMPTY = <span class="keyword">new</span> Unbinder() &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unbind</span><span class="params">()</span> </span>&#123; &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginActivity_ViewBinding</span> <span class="keyword">implements</span> <span class="title">Unbinder</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> LoginActivity target;</div><div class="line"></div><div class="line">  <span class="meta">@UiThread</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">LoginActivity_ViewBinding</span><span class="params">(LoginActivity target)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(target, target.getWindow().getDecorView());</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@UiThread</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">LoginActivity_ViewBinding</span><span class="params">(LoginActivity target, View source)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获得原来的 Activity 对象</span></div><div class="line">    <span class="keyword">this</span>.target = target;</div><div class="line"></div><div class="line">    <span class="comment">// 这里 findViewById 就由 Utils.findRequiredViewAsType这个方法封装了，直接返回类型转换后的对象。</span></div><div class="line">    <span class="comment">// 这里为了能访问到 target 中的变量，mContainer 是不能为 private 的，否则会报错访问不到。</span></div><div class="line">    target.mContainer = Utils.findRequiredViewAsType(source, R.id.login_container, <span class="string">"field 'mContainer'"</span>, FrameLayout.class);</div><div class="line">&#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="meta">@CallSuper</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unbind</span><span class="params">()</span> </span>&#123;</div><div class="line">    LoginActivity target = <span class="keyword">this</span>.target;</div><div class="line">    </div><div class="line">    <span class="comment">// 解绑时注意 target 不能为空</span></div><div class="line">    <span class="keyword">if</span> (target == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Bindings already cleared."</span>);</div><div class="line">    <span class="keyword">this</span>.target = <span class="keyword">null</span>;</div><div class="line">    <span class="comment">// 将所有变量置为空</span></div><div class="line">    target.mContainer = <span class="keyword">null</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>它做的事非常简单，构造器中传入了原来的 Activity 对象和当前 Activity 的顶级 View，使用封装后的方法完成了 <code>findViewById</code> 的代码。如此一来整个过程就明白了。</p>
+<p>findRequiredViewAsType() 方法做的事就是平常我们天天需要手写的 findViewById，这里将其做了封装处理。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">findRequiredViewAsType</span><span class="params">(View source, @IdRes <span class="keyword">int</span> id, String who,</span></span></div><div class="line">     Class&lt;T&gt; cls) &#123;</div><div class="line">   View view = findRequiredView(source, id, who);</div><div class="line">   <span class="keyword">return</span> castView(view, id, who, cls);</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>一图胜千言：<br><img src="http://upload-images.jianshu.io/upload_images/675088-64ec8b02f578f2fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://jakewharton.github.io/butterknife/" target="_blank" rel="external">http://jakewharton.github.io/butterknife/</a></p>
+<p><a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="external">https://github.com/JakeWharton/butterknife</a></p>
+<p>Annotation Processing : Don’t Repeat Yourself, Generate Your Code.：<a href="https://medium.com/@iammert/annotation-processing-dont-repeat-yourself-generate-your-code-8425e60c6657" target="_blank" rel="external">https://medium.com/@iammert/annotation-processing-dont-repeat-yourself-generate-your-code-8425e60c6657</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源库源码解析/">开源库源码解析</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/08/29/androidArt15/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Android开发艺术探索笔记-第15章 性能优化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#APT-Annotation-Processing-Tool"><span class="nav-number">1.</span> <span class="nav-text">APT(Annotation Processing Tool)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ButterKnife-的工作过程"><span class="nav-number">2.</span> <span class="nav-text">ButterKnife 的工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol>
+    
+    </div>
+  </aside>
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 luwenjie&#39;s Blog All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客数 : <span id="busuanzi_value_site_uv"></span> |  
+				访问量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/scripts.js"></script>
+
+
+  <script src="/js/home.js"></script>
+
+
+
+  <script src="/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            luwenjie&#39;s Blog
+          </div>
+          <div class="panel-body">
+            Copyright © 2017 luwenjie All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
