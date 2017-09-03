@@ -151,6 +151,62 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-eventbus"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/09/03/eventbus/">EventBus 3.0 的工作原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/2017/09/03/eventbus/" class="article-date">
+	  <time datetime="2017-09-03T13:44:00.000Z" itemprop="datePublished">2017-09-03</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://7xt4re.com1.z0.glb.clouddn.com/20170901150425136182814.jpg" alt=""></p>
+<p>EventBus 是一个 Android 事件发布/订阅框架，解耦代码利器。如此优秀的库，它的内部是如何工作的？  </p>
+<p>整体的架构可以看官方给的这张图，Event 通过 EventBus 中转分发到对应的订阅者（Sucscriber）。</p>
+<p><img src="http://i.imgur.com/BNtzhB7.png?_=5475034" alt=""><br>
+        <!-- 
+EventBus 是一个 Android 事件发布/订阅框架，解耦代码利器。如此优秀的库，它的内部是如何工作的？  
+整体的架构可以看官方给的这张图，Event 通过 EventBus 中转分发到对应的订阅者（Sucscriber）。
+
+初始化从 Eventbus.getDeafult() 着手：
+12345678910 public static EventBus getDefault(......  -->
+        <p class="article-more-link">
+          <a href="/2017/09/03/eventbus/#more">阅读全文</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源库源码解析/">开源库源码解析</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+  
     <article id="post-butterknife‘s_theory"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
@@ -622,60 +678,6 @@ Drawable表示的是一种可以在Canvas上进行绘制的抽象的概念，它
 Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候......  -->
         <p class="article-more-link">
           <a href="/2017/06/02/Android开发艺术探索笔记第10章/#more">阅读全文</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-  
-    <article id="post-Android开发艺术探索笔记第4章"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/05/31/Android开发艺术探索笔记第4章/">Android开发艺术探索笔记-第4章 View的工作原理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="/2017/05/31/Android开发艺术探索笔记第4章/" class="article-date">
-	  <time datetime="2017-05-31T10:37:00.000Z" itemprop="datePublished">2017-05-31</time>
-	</a>
-
-      
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。</p>
-</blockquote>
-        <!-- 
-在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。
-
-
-ViewRoot 和 DecoreViewViewRootImplViewRoot对应android.view.ViewRootImpl类，它是连接WindowManager和Deco......  -->
-        <p class="article-more-link">
-          <a href="/2017/05/31/Android开发艺术探索笔记第4章/#more">阅读全文</a>
         </p>
       
     </div>
