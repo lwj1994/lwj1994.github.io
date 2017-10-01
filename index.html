@@ -181,19 +181,16 @@
         <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1506859062344&amp;di=eba9fb41f4c66003df4851aaed28fb5e&amp;imgtype=0&amp;src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F86%2F76%2F06J58PICsYh_1024.jpg" alt=""><br>分析源码前我自己想了几个问题，带着目的去看。  </p>
 <ol>
 <li>Activity 是如何与 Fragment 关联，如何操作 fragment 的？</li>
-<li>Fragment 的本质是一个 View 吗？</li>
-</ol>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Activity 和 Fragment 密不可分, 分析 Fragment 必须去从 Activity 的生命周期着手去分析其中和 Fragment 的关联。  </p>
-<p><img src="http://hi.csdn.net/attachment/201007/28/0_12803210018q71.gif" alt="">  </p>
-<p>我们在 Activity 操作 Fragment 通过如下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">getSupportFragmentManager()</div><div class="line">    .beginTransaction()</div><div class="line">    .add(R.id.container, <span class="keyword">new</span> MyFragment())</div><div class="line">    .commit();</div></pre></td></tr></table></figure></p>
+<li>Fragment 的本质是一个 View 吗？
         <!-- 分析源码前我自己想了几个问题，带着目的去看。  
 
 Activity 是如何与 Fragment 关联，如何操作 fragment 的？
 Fragment 的本质是一个 View 吗？
 
+
 前言Activity 和 Fragment 密不可分, 分析 Fragment 必须去从 Activity 的生命周期着手去分析其中和 Fragment 的关联。  
   
-我们在 Activity 操作 ......  -->
+我们在 Activity 操作......  -->
         <p class="article-more-link">
           <a href="/2017/10/01/fragmentSouceCodeAna/#more">阅读全文</a>
         </p>
