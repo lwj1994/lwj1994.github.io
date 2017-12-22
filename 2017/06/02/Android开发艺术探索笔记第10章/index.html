@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html>
+
+
+  <html class="light page-post">
+
+
 <head>
   <meta charset="utf-8">
   
-  <title>android开发艺术探索笔记-第10章 android的消息机制 | luwenjie&#39;s Blog</title>
+  <title>Android开发艺术探索笔记-第10章 Android的消息机制 | luwenjie&#39;s Blog</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
   
-  <meta name="keywords" content="Android开发艺术探索" />
+    <meta name="keywords" content="Android开发艺术探索," />
   
-  
-  
-  
+
   <meta name="description" content="Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过H">
 <meta name="keywords" content="Android开发艺术探索">
 <meta property="og:type" content="article">
@@ -24,171 +28,185 @@
 <meta name="twitter:title" content="Android开发艺术探索笔记-第10章 Android的消息机制">
 <meta name="twitter:description" content="Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过H">
 <meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01f1zjmfFPH/SKMT4VQzA7SRjU.jpg?thumb=1024x&scale=auto">
+
   
-    <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
   
 
   
 
-  <link rel="icon" href="/css/images/mylogo.jpg">
-  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
   
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
-  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-  <style type="text/css">
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
-  <link rel="stylesheet" href="/css/style.css">
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
-  <script src="/js/jquery-3.1.1.min.js"></script>
-  <script src="/js/bootstrap.js"></script>
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.css" >
 
   
-    <link rel="stylesheet" href="/css/dialog.css">
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
 
   
-    <link rel="stylesheet" href="/css/header-post.css" >
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
   
-
-  
-  
-  
-
 </head>
 
-
-
-  <body data-spy="scroll" data-target="#toc" data-offset="50">
+<body>
 
 
   
-  <div id="container">
-    <div id="wrap">
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
       
-        <header>
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/categories/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tags/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
 
-    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="navbar-inner">
-          
-          <div class="container"> 
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
 
-            
-              <a class="brand" style="
-                 margin-top: 0px;"  
-                href="#" data-toggle="modal" data-target="#myModal" >
-                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
-              </a>
-            
-            
-            <div class="navbar-collapse collapse">
-              <ul class="hnav navbar-nav">
-                
-                  <li> <a class="main-nav-link" href="/">首页</a> </li>
-                
-                  <li> <a class="main-nav-link" href="/archives">归档</a> </li>
-                
-                  <li> <a class="main-nav-link" href="/about">关于</a> </li>
-                
-                  <li><div id="search-form-wrap">
-
-    <form class="search-form">
-        <input type="text" class="ins-search-input search-form-input" placeholder="" />
-        <button type="submit" class="search-form-submit"></button>
-    </form>
-    <div class="ins-search">
-    <div class="ins-search-mask"></div>
-    <div class="ins-search-container">
-        <div class="ins-input-wrapper">
-            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
-            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
-        </div>
-        <div class="ins-section-wrapper">
-            <div class="ins-section-container"></div>
-        </div>
-    </div>
 </div>
-<script>
-(function (window) {
-    var INSIGHT_CONFIG = {
-        TRANSLATION: {
-            POSTS: '文章',
-            PAGES: '页面',
-            CATEGORIES: '分类',
-            TAGS: '标签',
-            UNTITLED: '(无标题)',
-        },
-        ROOT_URL: '/',
-        CONTENT_URL: '/content.json',
-    };
-    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-})(window);
-</script>
-<script src="/js/insight.js"></script>
 
-</div></li>
-            </div>
-          </div>
-                
-      </div>
-    </div>
 
-</header>
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadLocal-工作原理"><span class="toc-text">ThreadLocal 工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#消息队列的工作原理"><span class="toc-text">消息队列的工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Looper的工作原理"><span class="toc-text">Looper的工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#构造方法"><span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Looper-prepare"><span class="toc-text">Looper#prepare()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Looper的退出"><span class="toc-text">Looper的退出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#loop"><span class="toc-text">loop</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Handler-的工作原理"><span class="toc-text">Handler 的工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主线程的消息循环"><span class="toc-text">主线程的消息循环</span></a></li></ol></li></ol>
+  </div>
 
 
 
-      
-            
-      <div id="content" class="outer">
-        
-          <section id="main" style="float:none;"><article id="post-Android开发艺术探索笔记第10章" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" class="article-title" itemprop="name">
-      Android开发艺术探索笔记-第10章 Android的消息机制
-    </h1>
-  
+<div class="content content-post CENTER">
+   <article id="post-Android开发艺术探索笔记第10章" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Android开发艺术探索笔记-第10章 Android的消息机制</h1>
 
-      </header>
-    
     <div class="article-meta">
-      
-	<a href="/2017/06/02/Android开发艺术探索笔记第10章/" class="article-date">
-	  <time datetime="2017-06-02T10:37:00.000Z" itemprop="datePublished">2017-06-02</time>
-	</a>
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.06.02</span>
+      </span>
 
       
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>luwenjie</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
     <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+
 
       
-	<a class="article-views">
-	<span id="busuanzi_container_page_pv">
-		阅读量<span id="busuanzi_value_page_pv"></span>
-	</span>
-	</a>
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://luwenjie.me/2017/06/02/Android开发艺术探索笔记第10章/#disqus_thread"></a>
+        </span>
+      
 
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
     </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
 <p>Handler是Android消息机制的上层接口。很多人认为Handler的作用是更新UI，这的确没错，但是更新UI仅仅是Handler的一个特殊的使用场景。具体来说是这样的：有时候需要在子线程中进行耗时的I/O操作，可能是读取文件或者访问网络等，当耗时操作完成以后可能需要在UI上做一些改变，由于Android开发规范的限制，我们并不能在主线程中访问UI控件，否则就会触发程序异常，这个时候通过Handler就可以将更新UI的操作切换到主线程中执行。</p>
 </blockquote>
 <a id="more"></a>
@@ -248,231 +266,169 @@
 <p>ActivityThread#H<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div><div class="line">263</div><div class="line">264</div><div class="line">265</div><div class="line">266</div><div class="line">267</div><div class="line">268</div><div class="line">269</div><div class="line">270</div><div class="line">271</div><div class="line">272</div><div class="line">273</div><div class="line">274</div><div class="line">275</div><div class="line">276</div><div class="line">277</div><div class="line">278</div><div class="line">279</div><div class="line">280</div><div class="line">281</div><div class="line">282</div><div class="line">283</div><div class="line">284</div><div class="line">285</div><div class="line">286</div><div class="line">287</div><div class="line">288</div><div class="line">289</div><div class="line">290</div><div class="line">291</div><div class="line">292</div><div class="line">293</div><div class="line">294</div><div class="line">295</div><div class="line">296</div><div class="line">297</div><div class="line">298</div><div class="line">299</div><div class="line">300</div><div class="line">301</div><div class="line">302</div><div class="line">303</div><div class="line">304</div><div class="line">305</div><div class="line">306</div><div class="line">307</div><div class="line">308</div><div class="line">309</div><div class="line">310</div><div class="line">311</div><div class="line">312</div><div class="line">313</div><div class="line">314</div><div class="line">315</div><div class="line">316</div><div class="line">317</div><div class="line">318</div><div class="line">319</div><div class="line">320</div><div class="line">321</div><div class="line">322</div><div class="line">323</div><div class="line">324</div><div class="line">325</div><div class="line">326</div><div class="line">327</div><div class="line">328</div><div class="line">329</div><div class="line">330</div><div class="line">331</div><div class="line">332</div><div class="line">333</div><div class="line">334</div><div class="line">335</div><div class="line">336</div><div class="line">337</div><div class="line">338</div><div class="line">339</div><div class="line">340</div><div class="line">341</div><div class="line">342</div><div class="line">343</div><div class="line">344</div><div class="line">345</div><div class="line">346</div><div class="line">347</div><div class="line">348</div><div class="line">349</div><div class="line">350</div><div class="line">351</div><div class="line">352</div><div class="line">353</div><div class="line">354</div><div class="line">355</div><div class="line">356</div><div class="line">357</div><div class="line">358</div><div class="line">359</div><div class="line">360</div><div class="line">361</div><div class="line">362</div><div class="line">363</div><div class="line">364</div><div class="line">365</div><div class="line">366</div><div class="line">367</div><div class="line">368</div><div class="line">369</div><div class="line">370</div><div class="line">371</div><div class="line">372</div><div class="line">373</div><div class="line">374</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">H</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LAUNCH_ACTIVITY         = <span class="number">100</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PAUSE_ACTIVITY          = <span class="number">101</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PAUSE_ACTIVITY_FINISHING= <span class="number">102</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> STOP_ACTIVITY_SHOW      = <span class="number">103</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> STOP_ACTIVITY_HIDE      = <span class="number">104</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SHOW_WINDOW             = <span class="number">105</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HIDE_WINDOW             = <span class="number">106</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RESUME_ACTIVITY         = <span class="number">107</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SEND_RESULT             = <span class="number">108</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DESTROY_ACTIVITY        = <span class="number">109</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BIND_APPLICATION        = <span class="number">110</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EXIT_APPLICATION        = <span class="number">111</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NEW_INTENT              = <span class="number">112</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RECEIVER                = <span class="number">113</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CREATE_SERVICE          = <span class="number">114</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SERVICE_ARGS            = <span class="number">115</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> STOP_SERVICE            = <span class="number">116</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CONFIGURATION_CHANGED   = <span class="number">118</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CLEAN_UP_CONTEXT        = <span class="number">119</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> GC_WHEN_IDLE            = <span class="number">120</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BIND_SERVICE            = <span class="number">121</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UNBIND_SERVICE          = <span class="number">122</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DUMP_SERVICE            = <span class="number">123</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LOW_MEMORY              = <span class="number">124</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ACTIVITY_CONFIGURATION_CHANGED = <span class="number">125</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RELAUNCH_ACTIVITY       = <span class="number">126</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PROFILER_CONTROL        = <span class="number">127</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CREATE_BACKUP_AGENT     = <span class="number">128</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DESTROY_BACKUP_AGENT    = <span class="number">129</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SUICIDE                 = <span class="number">130</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> REMOVE_PROVIDER         = <span class="number">131</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ENABLE_JIT              = <span class="number">132</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DISPATCH_PACKAGE_BROADCAST = <span class="number">133</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SCHEDULE_CRASH          = <span class="number">134</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DUMP_HEAP               = <span class="number">135</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DUMP_ACTIVITY           = <span class="number">136</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SLEEPING                = <span class="number">137</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SET_CORE_SETTINGS       = <span class="number">138</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UPDATE_PACKAGE_COMPATIBILITY_INFO = <span class="number">139</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRIM_MEMORY             = <span class="number">140</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DUMP_PROVIDER           = <span class="number">141</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UNSTABLE_PROVIDER_DIED  = <span class="number">142</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> REQUEST_ASSIST_CONTEXT_EXTRAS = <span class="number">143</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSLUCENT_CONVERSION_COMPLETE = <span class="number">144</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INSTALL_PROVIDER        = <span class="number">145</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ON_NEW_ACTIVITY_OPTIONS = <span class="number">146</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CANCEL_VISIBLE_BEHIND = <span class="number">147</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BACKGROUND_VISIBLE_BEHIND_CHANGED = <span class="number">148</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ENTER_ANIMATION_COMPLETE = <span class="number">149</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> START_BINDER_TRACKING = <span class="number">150</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> STOP_BINDER_TRACKING_AND_DUMP = <span class="number">151</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MULTI_WINDOW_MODE_CHANGED = <span class="number">152</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PICTURE_IN_PICTURE_MODE_CHANGED = <span class="number">153</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LOCAL_VOICE_INTERACTION_STARTED = <span class="number">154</span>;</div><div class="line"></div><div class="line">    <span class="function">String <span class="title">codeToString</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (DEBUG_MESSAGES) &#123;</div><div class="line">            <span class="keyword">switch</span> (code) &#123;</div><div class="line">                <span class="keyword">case</span> LAUNCH_ACTIVITY: <span class="keyword">return</span> <span class="string">"LAUNCH_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> PAUSE_ACTIVITY: <span class="keyword">return</span> <span class="string">"PAUSE_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> PAUSE_ACTIVITY_FINISHING: <span class="keyword">return</span> <span class="string">"PAUSE_ACTIVITY_FINISHING"</span>;</div><div class="line">                <span class="keyword">case</span> STOP_ACTIVITY_SHOW: <span class="keyword">return</span> <span class="string">"STOP_ACTIVITY_SHOW"</span>;</div><div class="line">                <span class="keyword">case</span> STOP_ACTIVITY_HIDE: <span class="keyword">return</span> <span class="string">"STOP_ACTIVITY_HIDE"</span>;</div><div class="line">                <span class="keyword">case</span> SHOW_WINDOW: <span class="keyword">return</span> <span class="string">"SHOW_WINDOW"</span>;</div><div class="line">                <span class="keyword">case</span> HIDE_WINDOW: <span class="keyword">return</span> <span class="string">"HIDE_WINDOW"</span>;</div><div class="line">                <span class="keyword">case</span> RESUME_ACTIVITY: <span class="keyword">return</span> <span class="string">"RESUME_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> SEND_RESULT: <span class="keyword">return</span> <span class="string">"SEND_RESULT"</span>;</div><div class="line">                <span class="keyword">case</span> DESTROY_ACTIVITY: <span class="keyword">return</span> <span class="string">"DESTROY_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> BIND_APPLICATION: <span class="keyword">return</span> <span class="string">"BIND_APPLICATION"</span>;</div><div class="line">                <span class="keyword">case</span> EXIT_APPLICATION: <span class="keyword">return</span> <span class="string">"EXIT_APPLICATION"</span>;</div><div class="line">                <span class="keyword">case</span> NEW_INTENT: <span class="keyword">return</span> <span class="string">"NEW_INTENT"</span>;</div><div class="line">                <span class="keyword">case</span> RECEIVER: <span class="keyword">return</span> <span class="string">"RECEIVER"</span>;</div><div class="line">                <span class="keyword">case</span> CREATE_SERVICE: <span class="keyword">return</span> <span class="string">"CREATE_SERVICE"</span>;</div><div class="line">                <span class="keyword">case</span> SERVICE_ARGS: <span class="keyword">return</span> <span class="string">"SERVICE_ARGS"</span>;</div><div class="line">                <span class="keyword">case</span> STOP_SERVICE: <span class="keyword">return</span> <span class="string">"STOP_SERVICE"</span>;</div><div class="line">                <span class="keyword">case</span> CONFIGURATION_CHANGED: <span class="keyword">return</span> <span class="string">"CONFIGURATION_CHANGED"</span>;</div><div class="line">                <span class="keyword">case</span> CLEAN_UP_CONTEXT: <span class="keyword">return</span> <span class="string">"CLEAN_UP_CONTEXT"</span>;</div><div class="line">                <span class="keyword">case</span> GC_WHEN_IDLE: <span class="keyword">return</span> <span class="string">"GC_WHEN_IDLE"</span>;</div><div class="line">                <span class="keyword">case</span> BIND_SERVICE: <span class="keyword">return</span> <span class="string">"BIND_SERVICE"</span>;</div><div class="line">                <span class="keyword">case</span> UNBIND_SERVICE: <span class="keyword">return</span> <span class="string">"UNBIND_SERVICE"</span>;</div><div class="line">                <span class="keyword">case</span> DUMP_SERVICE: <span class="keyword">return</span> <span class="string">"DUMP_SERVICE"</span>;</div><div class="line">                <span class="keyword">case</span> LOW_MEMORY: <span class="keyword">return</span> <span class="string">"LOW_MEMORY"</span>;</div><div class="line">                <span class="keyword">case</span> ACTIVITY_CONFIGURATION_CHANGED: <span class="keyword">return</span> <span class="string">"ACTIVITY_CONFIGURATION_CHANGED"</span>;</div><div class="line">                <span class="keyword">case</span> RELAUNCH_ACTIVITY: <span class="keyword">return</span> <span class="string">"RELAUNCH_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> PROFILER_CONTROL: <span class="keyword">return</span> <span class="string">"PROFILER_CONTROL"</span>;</div><div class="line">                <span class="keyword">case</span> CREATE_BACKUP_AGENT: <span class="keyword">return</span> <span class="string">"CREATE_BACKUP_AGENT"</span>;</div><div class="line">                <span class="keyword">case</span> DESTROY_BACKUP_AGENT: <span class="keyword">return</span> <span class="string">"DESTROY_BACKUP_AGENT"</span>;</div><div class="line">                <span class="keyword">case</span> SUICIDE: <span class="keyword">return</span> <span class="string">"SUICIDE"</span>;</div><div class="line">                <span class="keyword">case</span> REMOVE_PROVIDER: <span class="keyword">return</span> <span class="string">"REMOVE_PROVIDER"</span>;</div><div class="line">                <span class="keyword">case</span> ENABLE_JIT: <span class="keyword">return</span> <span class="string">"ENABLE_JIT"</span>;</div><div class="line">                <span class="keyword">case</span> DISPATCH_PACKAGE_BROADCAST: <span class="keyword">return</span> <span class="string">"DISPATCH_PACKAGE_BROADCAST"</span>;</div><div class="line">                <span class="keyword">case</span> SCHEDULE_CRASH: <span class="keyword">return</span> <span class="string">"SCHEDULE_CRASH"</span>;</div><div class="line">                <span class="keyword">case</span> DUMP_HEAP: <span class="keyword">return</span> <span class="string">"DUMP_HEAP"</span>;</div><div class="line">                <span class="keyword">case</span> DUMP_ACTIVITY: <span class="keyword">return</span> <span class="string">"DUMP_ACTIVITY"</span>;</div><div class="line">                <span class="keyword">case</span> SLEEPING: <span class="keyword">return</span> <span class="string">"SLEEPING"</span>;</div><div class="line">                <span class="keyword">case</span> SET_CORE_SETTINGS: <span class="keyword">return</span> <span class="string">"SET_CORE_SETTINGS"</span>;</div><div class="line">                <span class="keyword">case</span> UPDATE_PACKAGE_COMPATIBILITY_INFO: <span class="keyword">return</span> <span class="string">"UPDATE_PACKAGE_COMPATIBILITY_INFO"</span>;</div><div class="line">                <span class="keyword">case</span> TRIM_MEMORY: <span class="keyword">return</span> <span class="string">"TRIM_MEMORY"</span>;</div><div class="line">                <span class="keyword">case</span> DUMP_PROVIDER: <span class="keyword">return</span> <span class="string">"DUMP_PROVIDER"</span>;</div><div class="line">                <span class="keyword">case</span> UNSTABLE_PROVIDER_DIED: <span class="keyword">return</span> <span class="string">"UNSTABLE_PROVIDER_DIED"</span>;</div><div class="line">                <span class="keyword">case</span> REQUEST_ASSIST_CONTEXT_EXTRAS: <span class="keyword">return</span> <span class="string">"REQUEST_ASSIST_CONTEXT_EXTRAS"</span>;</div><div class="line">                <span class="keyword">case</span> TRANSLUCENT_CONVERSION_COMPLETE: <span class="keyword">return</span> <span class="string">"TRANSLUCENT_CONVERSION_COMPLETE"</span>;</div><div class="line">                <span class="keyword">case</span> INSTALL_PROVIDER: <span class="keyword">return</span> <span class="string">"INSTALL_PROVIDER"</span>;</div><div class="line">                <span class="keyword">case</span> ON_NEW_ACTIVITY_OPTIONS: <span class="keyword">return</span> <span class="string">"ON_NEW_ACTIVITY_OPTIONS"</span>;</div><div class="line">                <span class="keyword">case</span> CANCEL_VISIBLE_BEHIND: <span class="keyword">return</span> <span class="string">"CANCEL_VISIBLE_BEHIND"</span>;</div><div class="line">                <span class="keyword">case</span> BACKGROUND_VISIBLE_BEHIND_CHANGED: <span class="keyword">return</span> <span class="string">"BACKGROUND_VISIBLE_BEHIND_CHANGED"</span>;</div><div class="line">                <span class="keyword">case</span> ENTER_ANIMATION_COMPLETE: <span class="keyword">return</span> <span class="string">"ENTER_ANIMATION_COMPLETE"</span>;</div><div class="line">                <span class="keyword">case</span> MULTI_WINDOW_MODE_CHANGED: <span class="keyword">return</span> <span class="string">"MULTI_WINDOW_MODE_CHANGED"</span>;</div><div class="line">                <span class="keyword">case</span> PICTURE_IN_PICTURE_MODE_CHANGED: <span class="keyword">return</span> <span class="string">"PICTURE_IN_PICTURE_MODE_CHANGED"</span>;</div><div class="line">                <span class="keyword">case</span> LOCAL_VOICE_INTERACTION_STARTED: <span class="keyword">return</span> <span class="string">"LOCAL_VOICE_INTERACTION_STARTED"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> Integer.toString(code);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(TAG, <span class="string">"&gt;&gt;&gt; handling: "</span> + codeToString(msg.what));</div><div class="line">        <span class="keyword">switch</span> (msg.what) &#123;</div><div class="line">            <span class="keyword">case</span> LAUNCH_ACTIVITY: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityStart"</span>);</div><div class="line">                <span class="keyword">final</span> ActivityClientRecord r = (ActivityClientRecord) msg.obj;</div><div class="line"></div><div class="line">                r.packageInfo = getPackageInfoNoCheck(</div><div class="line">                        r.activityInfo.applicationInfo, r.compatInfo);</div><div class="line">                handleLaunchActivity(r, <span class="keyword">null</span>, <span class="string">"LAUNCH_ACTIVITY"</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> RELAUNCH_ACTIVITY: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityRestart"</span>);</div><div class="line">                ActivityClientRecord r = (ActivityClientRecord)msg.obj;</div><div class="line">                handleRelaunchActivity(r);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> PAUSE_ACTIVITY: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityPause"</span>);</div><div class="line">                SomeArgs args = (SomeArgs) msg.obj;</div><div class="line">                handlePauseActivity((IBinder) args.arg1, <span class="keyword">false</span>,</div><div class="line">                        (args.argi1 &amp; USER_LEAVING) != <span class="number">0</span>, args.argi2,</div><div class="line">                        (args.argi1 &amp; DONT_REPORT) != <span class="number">0</span>, args.argi3);</div><div class="line">                maybeSnapshot();</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> PAUSE_ACTIVITY_FINISHING: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityPause"</span>);</div><div class="line">                SomeArgs args = (SomeArgs) msg.obj;</div><div class="line">                handlePauseActivity((IBinder) args.arg1, <span class="keyword">true</span>, (args.argi1 &amp; USER_LEAVING) != <span class="number">0</span>,</div><div class="line">                        args.argi2, (args.argi1 &amp; DONT_REPORT) != <span class="number">0</span>, args.argi3);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> STOP_ACTIVITY_SHOW: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityStop"</span>);</div><div class="line">                SomeArgs args = (SomeArgs) msg.obj;</div><div class="line">                handleStopActivity((IBinder) args.arg1, <span class="keyword">true</span>, args.argi2, args.argi3);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> STOP_ACTIVITY_HIDE: &#123;</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityStop"</span>);</div><div class="line">                SomeArgs args = (SomeArgs) msg.obj;</div><div class="line">                handleStopActivity((IBinder) args.arg1, <span class="keyword">false</span>, args.argi2, args.argi3);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">            &#125; <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SHOW_WINDOW:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityShowWindow"</span>);</div><div class="line">                handleWindowVisibility((IBinder)msg.obj, <span class="keyword">true</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> HIDE_WINDOW:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityHideWindow"</span>);</div><div class="line">                handleWindowVisibility((IBinder)msg.obj, <span class="keyword">false</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> RESUME_ACTIVITY:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityResume"</span>);</div><div class="line">                SomeArgs args = (SomeArgs) msg.obj;</div><div class="line">                handleResumeActivity((IBinder) args.arg1, <span class="keyword">true</span>, args.argi1 != <span class="number">0</span>, <span class="keyword">true</span>,</div><div class="line">                        args.argi3, <span class="string">"RESUME_ACTIVITY"</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SEND_RESULT:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityDeliverResult"</span>);</div><div class="line">                handleSendResult((ResultData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DESTROY_ACTIVITY:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityDestroy"</span>);</div><div class="line">                handleDestroyActivity((IBinder)msg.obj, msg.arg1 != <span class="number">0</span>,</div><div class="line">                        msg.arg2, <span class="keyword">false</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> BIND_APPLICATION:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"bindApplication"</span>);</div><div class="line">                AppBindData data = (AppBindData)msg.obj;</div><div class="line">                handleBindApplication(data);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> EXIT_APPLICATION:</div><div class="line">                <span class="keyword">if</span> (mInitialApplication != <span class="keyword">null</span>) &#123;</div><div class="line">                    mInitialApplication.onTerminate();</div><div class="line">                &#125;</div><div class="line">                Looper.myLooper().quit();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> NEW_INTENT:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityNewIntent"</span>);</div><div class="line">                handleNewIntent((NewIntentData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> RECEIVER:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"broadcastReceiveComp"</span>);</div><div class="line">                handleReceiver((ReceiverData)msg.obj);</div><div class="line">                maybeSnapshot();</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> CREATE_SERVICE:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, (<span class="string">"serviceCreate: "</span> + String.valueOf(msg.obj)));</div><div class="line">                handleCreateService((CreateServiceData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> BIND_SERVICE:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"serviceBind"</span>);</div><div class="line">                handleBindService((BindServiceData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> UNBIND_SERVICE:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"serviceUnbind"</span>);</div><div class="line">                handleUnbindService((BindServiceData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SERVICE_ARGS:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, (<span class="string">"serviceStart: "</span> + String.valueOf(msg.obj)));</div><div class="line">                handleServiceArgs((ServiceArgsData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> STOP_SERVICE:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"serviceStop"</span>);</div><div class="line">                handleStopService((IBinder)msg.obj);</div><div class="line">                maybeSnapshot();</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> CONFIGURATION_CHANGED:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"configChanged"</span>);</div><div class="line">                mCurDefaultDisplayDpi = ((Configuration)msg.obj).densityDpi;</div><div class="line">                mUpdatingSystemConfig = <span class="keyword">true</span>;</div><div class="line">                handleConfigurationChanged((Configuration)msg.obj, <span class="keyword">null</span>);</div><div class="line">                mUpdatingSystemConfig = <span class="keyword">false</span>;</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> CLEAN_UP_CONTEXT:</div><div class="line">                ContextCleanupInfo cci = (ContextCleanupInfo)msg.obj;</div><div class="line">                cci.context.performFinalCleanup(cci.who, cci.what);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> GC_WHEN_IDLE:</div><div class="line">                scheduleGcIdler();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DUMP_SERVICE:</div><div class="line">                handleDumpService((DumpComponentInfo)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> LOW_MEMORY:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"lowMemory"</span>);</div><div class="line">                handleLowMemory();</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> ACTIVITY_CONFIGURATION_CHANGED:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityConfigChanged"</span>);</div><div class="line">                handleActivityConfigurationChanged((ActivityConfigChangeData) msg.obj,</div><div class="line">                        msg.arg1 == <span class="number">1</span> ? REPORT_TO_ACTIVITY : !REPORT_TO_ACTIVITY);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> PROFILER_CONTROL:</div><div class="line">                handleProfilerControl(msg.arg1 != <span class="number">0</span>, (ProfilerInfo)msg.obj, msg.arg2);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> CREATE_BACKUP_AGENT:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"backupCreateAgent"</span>);</div><div class="line">                handleCreateBackupAgent((CreateBackupAgentData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DESTROY_BACKUP_AGENT:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"backupDestroyAgent"</span>);</div><div class="line">                handleDestroyBackupAgent((CreateBackupAgentData)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SUICIDE:</div><div class="line">                Process.killProcess(Process.myPid());</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> REMOVE_PROVIDER:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"providerRemove"</span>);</div><div class="line">                completeRemoveProvider((ProviderRefCount)msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> ENABLE_JIT:</div><div class="line">                ensureJitEnabled();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DISPATCH_PACKAGE_BROADCAST:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"broadcastPackage"</span>);</div><div class="line">                handleDispatchPackageBroadcast(msg.arg1, (String[])msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SCHEDULE_CRASH:</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RemoteServiceException((String)msg.obj);</div><div class="line">            <span class="keyword">case</span> DUMP_HEAP:</div><div class="line">                handleDumpHeap(msg.arg1 != <span class="number">0</span>, (DumpHeapData)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DUMP_ACTIVITY:</div><div class="line">                handleDumpActivity((DumpComponentInfo)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> DUMP_PROVIDER:</div><div class="line">                handleDumpProvider((DumpComponentInfo)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SLEEPING:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"sleeping"</span>);</div><div class="line">                handleSleeping((IBinder)msg.obj, msg.arg1 != <span class="number">0</span>);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> SET_CORE_SETTINGS:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"setCoreSettings"</span>);</div><div class="line">                handleSetCoreSettings((Bundle) msg.obj);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> UPDATE_PACKAGE_COMPATIBILITY_INFO:</div><div class="line">                handleUpdatePackageCompatibilityInfo((UpdateCompatibilityData)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> TRIM_MEMORY:</div><div class="line">                Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"trimMemory"</span>);</div><div class="line">                handleTrimMemory(msg.arg1);</div><div class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> UNSTABLE_PROVIDER_DIED:</div><div class="line">                handleUnstableProviderDied((IBinder)msg.obj, <span class="keyword">false</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> REQUEST_ASSIST_CONTEXT_EXTRAS:</div><div class="line">                handleRequestAssistContextExtras((RequestAssistContextExtras)msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> TRANSLUCENT_CONVERSION_COMPLETE:</div><div class="line">                handleTranslucentConversionComplete((IBinder)msg.obj, msg.arg1 == <span class="number">1</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> INSTALL_PROVIDER:</div><div class="line">                handleInstallProvider((ProviderInfo) msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> ON_NEW_ACTIVITY_OPTIONS:</div><div class="line">                Pair&lt;IBinder, ActivityOptions&gt; pair = (Pair&lt;IBinder, ActivityOptions&gt;) msg.obj;</div><div class="line">                onNewActivityOptions(pair.first, pair.second);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> CANCEL_VISIBLE_BEHIND:</div><div class="line">                handleCancelVisibleBehind((IBinder) msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> BACKGROUND_VISIBLE_BEHIND_CHANGED:</div><div class="line">                handleOnBackgroundVisibleBehindChanged((IBinder) msg.obj, msg.arg1 &gt; <span class="number">0</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> ENTER_ANIMATION_COMPLETE:</div><div class="line">                handleEnterAnimationComplete((IBinder) msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> START_BINDER_TRACKING:</div><div class="line">                handleStartBinderTracking();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> STOP_BINDER_TRACKING_AND_DUMP:</div><div class="line">                handleStopBinderTrackingAndDump((ParcelFileDescriptor) msg.obj);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> MULTI_WINDOW_MODE_CHANGED:</div><div class="line">                handleMultiWindowModeChanged((IBinder) msg.obj, msg.arg1 == <span class="number">1</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> PICTURE_IN_PICTURE_MODE_CHANGED:</div><div class="line">                handlePictureInPictureModeChanged((IBinder) msg.obj, msg.arg1 == <span class="number">1</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> LOCAL_VOICE_INTERACTION_STARTED:</div><div class="line">                handleLocalVoiceInteractionStarted((IBinder) ((SomeArgs) msg.obj).arg1,</div><div class="line">                        (IVoiceInteractor) ((SomeArgs) msg.obj).arg2);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        Object obj = msg.obj;</div><div class="line">        <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> SomeArgs) &#123;</div><div class="line">            ((SomeArgs) obj).recycle();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(TAG, <span class="string">"&lt;&lt;&lt; done: "</span> + codeToString(msg.what));</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
 <p>ActiviyThread 通过 ApplicationThread 和 AMS 进行进程间通信，AMS 以进程间通信的方式完成 ActivityThread 的请求后会回调 ApplicationThread 中的 Binder 方法，然后 ApplicationThread 会向 H 发送消息，H 收到消息后会将 ApplicationThread 中的逻辑切换到 ActivityThread 中去执行，即在主线程中执行，这就是主线程的消息循环模型。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
-
-    </footer>
-  </div>
-  
     
-<nav id="article-nav">
-  
-    <a href="/2017/06/19/Android开发艺术探索笔记第6章/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">上一篇</strong>
-      <div class="article-nav-title">
-        
-          Android开发艺术探索笔记-第6章 Android的Drawable
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/05/31/Android开发艺术探索笔记第4章/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">下一篇</strong>
-      <div class="article-nav-title">Android开发艺术探索笔记-第4章 View的工作原理</div>
-    </a>
-  
-</nav>
-
-  
+  </div>
 </article>
 
-<!-- Table of Contents -->
 
-  <aside id="toc-sidebar">
-    <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal-工作原理"><span class="nav-number">2.1.</span> <span class="nav-text">ThreadLocal 工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列的工作原理"><span class="nav-number">2.2.</span> <span class="nav-text">消息队列的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Looper的工作原理"><span class="nav-number">2.3.</span> <span class="nav-text">Looper的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法"><span class="nav-number">2.3.1.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Looper-prepare"><span class="nav-number">2.3.2.</span> <span class="nav-text">Looper#prepare()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Looper的退出"><span class="nav-number">2.3.3.</span> <span class="nav-text">Looper的退出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loop"><span class="nav-number">2.3.4.</span> <span class="nav-text">loop</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler-的工作原理"><span class="nav-number">2.4.</span> <span class="nav-text">Handler 的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主线程的消息循环"><span class="nav-number">2.5.</span> <span class="nav-text">主线程的消息循环</span></a></li></ol></li></ol>
-    
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/05/31/Android开发艺术探索笔记第4章/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/06/19/Android开发艺术探索笔记第6章/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
     </div>
-  </aside>
-</section>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
         
-      </div>
-      
-      <footer id="footer">
-  
-
-  <div class="container">
-      	<div class="row">
-	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
-	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 luwenjie&#39;s Blog All Rights Reserved.</p>
-	      
-	      
-    		<p class="busuanzi_uv">
-				访客数 : <span id="busuanzi_value_site_uv"></span> |  
-				访问量 : <span id="busuanzi_value_site_pv"></span>
-		    </p>
-  		   
-		</div>
-
-		
-  </div>
-</footer>
-
-
-<!-- min height -->
-
-<script>
-    var wrapdiv = document.getElementById("wrap");
-    var contentdiv = document.getElementById("content");
-    var allheader = document.getElementById("allheader");
-
-    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
-    if (allheader != null) {
-      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
-    } else {
-      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
-    }
-</script>
-    </div>
-    <!-- <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/about" class="mobile-nav-link">About</a>
-  
-</nav> -->
-    
-
-<!-- mathjax config similar to math.stackexchange -->
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
-    }
-  });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/scripts.js"></script>
-
-
-  <script src="/js/home.js"></script>
-
-
-
-  <script src="/js/dialog.js"></script>
-
-
-
-
-
-
-
-
-	<div style="display: none;">
-    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
-  </div>
-
-
-
-	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-	</script>
-
-
-
-
-
-
-  </div>
-
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="myModalLabel">设置</h2>
-      </div>
-      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
-      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
-
-
-      <div class="modal-body">
-          <div style="margin:6px;">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
-              正文字号大小
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
             </a>
-          </div>
-          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-          <div class="panel-body">
-            您已调整页面字体大小
-          </div>
-        </div>
-      
-
-
-          <div style="margin:6px;">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
-              夜间护眼模式
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/categories/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
             </a>
-        </div>
-          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-          <div class="panel-body">
-            夜间模式已经开启，再次单击按钮即可关闭 
-          </div>
-        </div>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tags/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
 
-        <div>
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-        </div>
-         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-          <div class="panel-body">
-            luwenjie&#39;s Blog
-          </div>
-          <div class="panel-body">
-            Copyright © 2017 luwenjie All Rights Reserved.
-          </div>
-        </div>
-      </div>
-
-
-      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
-      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
-      <div class="modal-footer">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-      </div>
     </div>
   </div>
 </div>
+
+
+
   
-  <a id="rocket" href="#top" class=""></a>
-  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://luwenjie.me/2017/06/02/Android开发艺术探索笔记第10章/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+    
+	
+    
+	
+  </div>
+
   
-    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
-  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
 </body>
 </html>

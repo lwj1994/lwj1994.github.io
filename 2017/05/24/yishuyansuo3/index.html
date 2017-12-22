@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html>
+
+
+  <html class="light page-post">
+
+
 <head>
   <meta charset="utf-8">
   
-  <title>android开发艺术探索笔记-第3章 view的事件体系 | luwenjie&#39;s Blog</title>
+  <title>Android开发艺术探索笔记-第3章 View的事件体系 | luwenjie&#39;s Blog</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
   
-  <meta name="keywords" content="Android开发艺术探索" />
+    <meta name="keywords" content="Android开发艺术探索," />
   
-  
-  
-  
+
   <meta name="description" content="本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根">
 <meta name="keywords" content="Android开发艺术探索">
 <meta property="og:type" content="article">
@@ -29,171 +33,185 @@
 <meta name="twitter:title" content="Android开发艺术探索笔记-第3章 View的事件体系">
 <meta name="twitter:description" content="本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根">
 <meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01Qegi1JW91/o6LcfD39TadSwj.jpg?thumb=1024x&scale=auto">
+
   
-    <link rel="alternate" href="/atom.xml" title="luwenjie&#39;s Blog" type="application/atom+xml">
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
   
 
   
 
-  <link rel="icon" href="/css/images/mylogo.jpg">
-  <link rel="apple-touch-icon" href="/css/images/mylogo.jpg">
   
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
-  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-  <style type="text/css">
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
-    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
-  <link rel="stylesheet" href="/css/style.css">
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
-  <script src="/js/jquery-3.1.1.min.js"></script>
-  <script src="/js/bootstrap.js"></script>
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.css" >
 
   
-    <link rel="stylesheet" href="/css/dialog.css">
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
 
   
-    <link rel="stylesheet" href="/css/header-post.css" >
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
   
-
-  
-  
-  
-
 </head>
 
-
-
-  <body data-spy="scroll" data-target="#toc" data-offset="50">
+<body>
 
 
   
-  <div id="container">
-    <div id="wrap">
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
       
-        <header>
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/categories/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tags/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
 
-    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="navbar-inner">
-          
-          <div class="container"> 
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
 
-            
-              <a class="brand" style="
-                 margin-top: 0px;"  
-                href="#" data-toggle="modal" data-target="#myModal" >
-                  <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
-              </a>
-            
-            
-            <div class="navbar-collapse collapse">
-              <ul class="hnav navbar-nav">
-                
-                  <li> <a class="main-nav-link" href="/">首页</a> </li>
-                
-                  <li> <a class="main-nav-link" href="/archives">归档</a> </li>
-                
-                  <li> <a class="main-nav-link" href="/about">关于</a> </li>
-                
-                  <li><div id="search-form-wrap">
-
-    <form class="search-form">
-        <input type="text" class="ins-search-input search-form-input" placeholder="" />
-        <button type="submit" class="search-form-submit"></button>
-    </form>
-    <div class="ins-search">
-    <div class="ins-search-mask"></div>
-    <div class="ins-search-container">
-        <div class="ins-input-wrapper">
-            <input type="text" class="ins-search-input" placeholder="请输入关键词..." />
-            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
-        </div>
-        <div class="ins-section-wrapper">
-            <div class="ins-section-container"></div>
-        </div>
-    </div>
 </div>
-<script>
-(function (window) {
-    var INSIGHT_CONFIG = {
-        TRANSLATION: {
-            POSTS: '文章',
-            PAGES: '页面',
-            CATEGORIES: '分类',
-            TAGS: '标签',
-            UNTITLED: '(无标题)',
-        },
-        ROOT_URL: '/',
-        CONTENT_URL: '/content.json',
-    };
-    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-})(window);
-</script>
-<script src="/js/insight.js"></script>
 
-</div></li>
-            </div>
-          </div>
-                
-      </div>
-    </div>
 
-</header>
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#View的基础知识"><span class="toc-text">View的基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#View-的位置参数"><span class="toc-text">View 的位置参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MotionEvent和TouchSlop"><span class="toc-text">MotionEvent和TouchSlop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MotionEvent"><span class="toc-text">MotionEvent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TouchSlop"><span class="toc-text">TouchSlop</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VelocityTracker、GestureDetector和Scroller"><span class="toc-text">VelocityTracker、GestureDetector和Scroller</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VelocityTracker"><span class="toc-text">VelocityTracker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GestureDetector"><span class="toc-text">GestureDetector</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Scroller"><span class="toc-text">Scroller</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View-的滑动"><span class="toc-text">View 的滑动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用scrollTo-scrollBy"><span class="toc-text">使用scrollTo/scrollBy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用动画"><span class="toc-text">使用动画</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#改变布局参数"><span class="toc-text">改变布局参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#各种滑动方式对比"><span class="toc-text">各种滑动方式对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#跟手滑动的例子"><span class="toc-text">跟手滑动的例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弹性滑动"><span class="toc-text">弹性滑动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scroller-1"><span class="toc-text">Scroller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动画"><span class="toc-text">动画</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#延迟策略"><span class="toc-text">延迟策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View的事件分发机制"><span class="toc-text">View的事件分发机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#onTouchListener"><span class="toc-text">onTouchListener</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事件传递过程"><span class="toc-text">事件传递过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一些结论"><span class="toc-text">一些结论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源码解析"><span class="toc-text">源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Activity对点击事件的分发过程"><span class="toc-text">Activity对点击事件的分发过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#顶级View的分发"><span class="toc-text">顶级View的分发</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#ViewGroup的拦截"><span class="toc-text">ViewGroup的拦截</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ViewGroup不拦截事件时，事件的分发过程"><span class="toc-text">ViewGroup不拦截事件时，事件的分发过程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#mFirstTouchTarget-的赋值过程"><span class="toc-text">mFirstTouchTarget 的赋值过程</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#遍历所有的子元素后事件都没有被合适地处理"><span class="toc-text">遍历所有的子元素后事件都没有被合适地处理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#View对点击事件的处理过程"><span class="toc-text">View对点击事件的处理过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#分发dispatchTouchEvent"><span class="toc-text">分发dispatchTouchEvent</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#onTouchEvent"><span class="toc-text">onTouchEvent</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#View的LONG-CLICKABLE和CLICKABLE"><span class="toc-text">View的LONG_CLICKABLE和CLICKABLE</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View的滑动冲突"><span class="toc-text">View的滑动冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见冲突"><span class="toc-text">常见冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景1"><span class="toc-text">场景1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#场景2"><span class="toc-text">场景2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#场景3"><span class="toc-text">场景3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#处理规则"><span class="toc-text">处理规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方式"><span class="toc-text">解决方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#外部拦截法"><span class="toc-text">外部拦截法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内部拦截法"><span class="toc-text">内部拦截法</span></a></li></ol></li></ol></li></ol>
+  </div>
 
 
 
-      
-            
-      <div id="content" class="outer">
-        
-          <section id="main" style="float:none;"><article id="post-yishuyansuo3" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" class="article-title" itemprop="name">
-      Android开发艺术探索笔记-第3章 View的事件体系
-    </h1>
-  
+<div class="content content-post CENTER">
+   <article id="post-yishuyansuo3" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Android开发艺术探索笔记-第3章 View的事件体系</h1>
 
-      </header>
-    
     <div class="article-meta">
-      
-	<a href="/2017/05/24/yishuyansuo3/" class="article-date">
-	  <time datetime="2017-05-24T03:17:00.000Z" itemprop="datePublished">2017-05-24</time>
-	</a>
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.05.24</span>
+      </span>
 
       
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>luwenjie</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
     <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+
 
       
-	<a class="article-views">
-	<span id="busuanzi_container_page_pv">
-		阅读量<span id="busuanzi_value_page_pv"></span>
-	</span>
-	</a>
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://luwenjie.me/2017/05/24/yishuyansuo3/#disqus_thread"></a>
+        </span>
+      
 
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
     </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
 <p>本章将介绍Android中十分重要的一个概念：View，虽然说View不属于四大组件，但是它的作用堪比四大组件，甚至比Receiver和Provider的重要性都要大。在Android开发中，Activity承担这可视化的功能，同时Android系统提供了很多基础控件，常见的有Button、TextView、CheckBox等。很多时候仅仅使用系统提供的控件是不能满足需求的，因此我们就需要能够根据需求进行新控件的定义，而控件的自定义就需要对Android的View体系有深入的理解，只有这样才能写出完美的自定义控件。  </p>
 </blockquote>
 <a id="more"></a>  
@@ -394,231 +412,169 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">   <span class="keyword">float</span> x = event.getX();</div><div class="line">   <span class="keyword">float</span> y = event.getY();</div><div class="line"></div><div class="line">   <span class="keyword">switch</span> (event.getAction()) &#123;</div><div class="line">     <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</div><div class="line">       <span class="comment">// 设置不拦截</span></div><div class="line">       mViewGroup.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);</div><div class="line">       <span class="keyword">break</span>;</div><div class="line"></div><div class="line">     <span class="keyword">case</span> MotionEvent.ACTION_MOVE:</div><div class="line">         <span class="keyword">if</span> (mViewGroup.isNeedEvent())&#123;</div><div class="line">           mViewGroup.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);</div><div class="line">         &#125;</div><div class="line"></div><div class="line">       <span class="keyword">break</span>;</div><div class="line"></div><div class="line">     <span class="keyword">case</span> MotionEvent.ACTION_UP:</div><div class="line">       <span class="keyword">break</span>;</div><div class="line"></div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span>;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   mLastX = x;</div><div class="line">   mLastY = y;</div><div class="line">   <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(event);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <p>父View需要设置默认拦截除了DOWN事件以外的事件。 ACTION_DOWN事件并不受FLAG_DISALLOW_INTERCEPT这个标记位的控制，所以一旦父容器拦截AC-TION_DOWN事件，那么所有的事件都无法传递到子元素中去。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> ev.getAction() != MotionEvent.ACTION_DOWN;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
-
-    </footer>
-  </div>
-  
     
-<nav id="article-nav">
-  
-    <a href="/2017/05/31/Android开发艺术探索笔记第4章/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">上一篇</strong>
-      <div class="article-nav-title">
-        
-          Android开发艺术探索笔记-第4章 View的工作原理
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/05/16/deepInRetrofit/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">下一篇</strong>
-      <div class="article-nav-title">Retrofit 源码阅读笔记</div>
-    </a>
-  
-</nav>
-
-  
+  </div>
 </article>
 
-<!-- Table of Contents -->
 
-  <aside id="toc-sidebar">
-    <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#View的基础知识"><span class="nav-number">1.</span> <span class="nav-text">View的基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#View-的位置参数"><span class="nav-number">1.1.</span> <span class="nav-text">View 的位置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MotionEvent和TouchSlop"><span class="nav-number">1.2.</span> <span class="nav-text">MotionEvent和TouchSlop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MotionEvent"><span class="nav-number">1.2.1.</span> <span class="nav-text">MotionEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TouchSlop"><span class="nav-number">1.2.2.</span> <span class="nav-text">TouchSlop</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VelocityTracker、GestureDetector和Scroller"><span class="nav-number">1.3.</span> <span class="nav-text">VelocityTracker、GestureDetector和Scroller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VelocityTracker"><span class="nav-number">1.3.1.</span> <span class="nav-text">VelocityTracker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GestureDetector"><span class="nav-number">1.3.2.</span> <span class="nav-text">GestureDetector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scroller"><span class="nav-number">1.3.3.</span> <span class="nav-text">Scroller</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的滑动"><span class="nav-number">2.</span> <span class="nav-text">View 的滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用scrollTo-scrollBy"><span class="nav-number">2.1.</span> <span class="nav-text">使用scrollTo/scrollBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用动画"><span class="nav-number">2.2.</span> <span class="nav-text">使用动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变布局参数"><span class="nav-number">2.3.</span> <span class="nav-text">改变布局参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各种滑动方式对比"><span class="nav-number">2.4.</span> <span class="nav-text">各种滑动方式对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#跟手滑动的例子"><span class="nav-number">2.5.</span> <span class="nav-text">跟手滑动的例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性滑动"><span class="nav-number">3.</span> <span class="nav-text">弹性滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scroller-1"><span class="nav-number">3.1.</span> <span class="nav-text">Scroller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动画"><span class="nav-number">3.2.</span> <span class="nav-text">动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟策略"><span class="nav-number">3.3.</span> <span class="nav-text">延迟策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的事件分发机制"><span class="nav-number">4.</span> <span class="nav-text">View的事件分发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onTouchListener"><span class="nav-number">4.1.</span> <span class="nav-text">onTouchListener</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件传递过程"><span class="nav-number">4.2.</span> <span class="nav-text">事件传递过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些结论"><span class="nav-number">4.3.</span> <span class="nav-text">一些结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码解析"><span class="nav-number">4.4.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity对点击事件的分发过程"><span class="nav-number">4.4.1.</span> <span class="nav-text">Activity对点击事件的分发过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#顶级View的分发"><span class="nav-number">4.4.2.</span> <span class="nav-text">顶级View的分发</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewGroup的拦截"><span class="nav-number">4.4.2.1.</span> <span class="nav-text">ViewGroup的拦截</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewGroup不拦截事件时，事件的分发过程"><span class="nav-number">4.4.2.2.</span> <span class="nav-text">ViewGroup不拦截事件时，事件的分发过程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#mFirstTouchTarget-的赋值过程"><span class="nav-number">4.4.2.2.1.</span> <span class="nav-text">mFirstTouchTarget 的赋值过程</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#遍历所有的子元素后事件都没有被合适地处理"><span class="nav-number">4.4.2.3.</span> <span class="nav-text">遍历所有的子元素后事件都没有被合适地处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#View对点击事件的处理过程"><span class="nav-number">4.4.3.</span> <span class="nav-text">View对点击事件的处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#分发dispatchTouchEvent"><span class="nav-number">4.4.3.1.</span> <span class="nav-text">分发dispatchTouchEvent</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onTouchEvent"><span class="nav-number">4.4.3.2.</span> <span class="nav-text">onTouchEvent</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#View的LONG-CLICKABLE和CLICKABLE"><span class="nav-number">4.4.3.3.</span> <span class="nav-text">View的LONG_CLICKABLE和CLICKABLE</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的滑动冲突"><span class="nav-number">5.</span> <span class="nav-text">View的滑动冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见冲突"><span class="nav-number">5.1.</span> <span class="nav-text">常见冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#场景1"><span class="nav-number">5.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景2"><span class="nav-number">5.1.2.</span> <span class="nav-text">场景2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景3"><span class="nav-number">5.1.3.</span> <span class="nav-text">场景3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理规则"><span class="nav-number">5.2.</span> <span class="nav-text">处理规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方式"><span class="nav-number">5.3.</span> <span class="nav-text">解决方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#外部拦截法"><span class="nav-number">5.3.1.</span> <span class="nav-text">外部拦截法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部拦截法"><span class="nav-number">5.3.2.</span> <span class="nav-text">内部拦截法</span></a></li></ol></li></ol></li></ol>
-    
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/05/16/deepInRetrofit/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/05/31/Android开发艺术探索笔记第4章/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
     </div>
-  </aside>
-</section>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
         
-      </div>
-      
-      <footer id="footer">
-  
-
-  <div class="container">
-      	<div class="row">
-	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
-	      <p id="copyRightEn">Copyright &copy; 2013 - 2017 luwenjie&#39;s Blog All Rights Reserved.</p>
-	      
-	      
-    		<p class="busuanzi_uv">
-				访客数 : <span id="busuanzi_value_site_uv"></span> |  
-				访问量 : <span id="busuanzi_value_site_pv"></span>
-		    </p>
-  		   
-		</div>
-
-		
-  </div>
-</footer>
-
-
-<!-- min height -->
-
-<script>
-    var wrapdiv = document.getElementById("wrap");
-    var contentdiv = document.getElementById("content");
-    var allheader = document.getElementById("allheader");
-
-    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
-    if (allheader != null) {
-      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
-    } else {
-      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
-    }
-</script>
-    </div>
-    <!-- <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/about" class="mobile-nav-link">About</a>
-  
-</nav> -->
-    
-
-<!-- mathjax config similar to math.stackexchange -->
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
-    }
-  });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/scripts.js"></script>
-
-
-  <script src="/js/home.js"></script>
-
-
-
-  <script src="/js/dialog.js"></script>
-
-
-
-
-
-
-
-
-	<div style="display: none;">
-    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
-  </div>
-
-
-
-	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-	</script>
-
-
-
-
-
-
-  </div>
-
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="myModalLabel">设置</h2>
-      </div>
-      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
-      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
-
-
-      <div class="modal-body">
-          <div style="margin:6px;">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
-              正文字号大小
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
             </a>
-          </div>
-          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-          <div class="panel-body">
-            您已调整页面字体大小
-          </div>
-        </div>
-      
-
-
-          <div style="margin:6px;">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
-              夜间护眼模式
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/categories/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
             </a>
-        </div>
-          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-          <div class="panel-body">
-            夜间模式已经开启，再次单击按钮即可关闭 
-          </div>
-        </div>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tags/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
 
-        <div>
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-        </div>
-         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-          <div class="panel-body">
-            luwenjie&#39;s Blog
-          </div>
-          <div class="panel-body">
-            Copyright © 2017 luwenjie All Rights Reserved.
-          </div>
-        </div>
-      </div>
-
-
-      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
-      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
-      <div class="modal-footer">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-      </div>
     </div>
   </div>
 </div>
+
+
+
   
-  <a id="rocket" href="#top" class=""></a>
-  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://luwenjie.me/2017/05/24/yishuyansuo3/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+    
+	
+    
+	
+  </div>
+
   
-    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
-  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
 </body>
 </html>

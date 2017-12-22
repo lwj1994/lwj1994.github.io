@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>View 点击事件的来源 | luwenjie&#39;s Blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
+  
+
+  <meta name="description" content="我们在屏幕上点击产生触摸事件，源头肯定是来自屏幕上点击硬件，然后硬件将点击事件传递给 Android 系统。在 Android 系统中又由底层 Linux 处理返回给上层 Framework。这里只讨论 Framework 的来源。 我们知道 Android 的 View 的事件传递顺序是：  Activity -&amp;gt; PhoneWindow -&amp;gt; DecorView -&amp;gt; Vie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="View 点击事件的来源">
+<meta property="og:url" content="https://luwenjie.me/2017/12/05/View 点击事件的来源/index.html">
+<meta property="og:site_name" content="luwenjie&#39;s Blog">
+<meta property="og:description" content="我们在屏幕上点击产生触摸事件，源头肯定是来自屏幕上点击硬件，然后硬件将点击事件传递给 Android 系统。在 Android 系统中又由底层 Linux 处理返回给上层 Framework。这里只讨论 Framework 的来源。 我们知道 Android 的 View 的事件传递顺序是：  Activity -&amp;gt; PhoneWindow -&amp;gt; DecorView -&amp;gt; Vie">
+<meta property="og:updated_time" content="2017-12-05T08:30:23.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="View 点击事件的来源">
+<meta name="twitter:description" content="我们在屏幕上点击产生触摸事件，源头肯定是来自屏幕上点击硬件，然后硬件将点击事件传递给 Android 系统。在 Android 系统中又由底层 Linux 处理返回给上层 Framework。这里只讨论 Framework 的来源。 我们知道 Android 的 View 的事件传递顺序是：  Activity -&amp;gt; PhoneWindow -&amp;gt; DecorView -&amp;gt; Vie">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/categories/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tags/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Window-分发事件的详细过程"><span class="toc-text">Window 分发事件的详细过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-View 点击事件的来源" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">View 点击事件的来源</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.12.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>luwenjie</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://luwenjie.me/2017/12/05/View 点击事件的来源/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>我们在屏幕上点击产生触摸事件，源头肯定是来自屏幕上点击硬件，然后硬件将点击事件传递给 Android 系统。在 Android 系统中又由底层 Linux 处理返回给上层 Framework。这里只讨论 Framework 的来源。</p>
+<p>我们知道 Android 的 View 的事件传递顺序是：</p>
+<blockquote>
+<p>Activity -&gt; PhoneWindow -&gt; DecorView -&gt; ViewGroup …</p>
+</blockquote>
+<p>但是 Activity 其实是作为一个控制器，按道理来说它不应该是一个源头。而且 Activity 是运行在 UI 线程的，这种来源是由系统产生，很有可能发生在系统进程，Android 中大量使用 Binder 来传输各种信息，这里的点击事件估计也是由系统通过 Binder 传输进来给 UI 线程处理。一起看看 Activity，找出和它有关联的点击事件的线索。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Activity 的 dispatchTouchEvent()</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">            onUserInteraction();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (getWindow().superDispatchTouchEvent(ev)) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> onTouchEvent(ev);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​    </p>
+<p>既然 Activity 不是源头，肯定是有其他人调用了这个 <code>dispatchTouchEvent()</code> ，我们找出这个人就可以了。</p>
+<p>找了半天… 发现 Activity 实现的 <code>Window.Callback</code> 接口中有一个同名的 <code>dispatchTouchEvent()</code>，那自然 Activity 的 <code>dispatchTouchEvent()</code> 就是实现自 <code>Window.Callback</code>接口，这是一个回调，我们只需找出谁持有了 <code>Activity</code> 实例，并调用了 <code>dispatchTouchEvent()</code>。源头就是它！ </p>
+<p>ps: 其实我是看的任主席的文章，知道了 Callback，Activity 的 <code>dispatchTouchEvent()</code> 也不注解一下 <code>@Override</code>，让人误解是 Activity 自己内部的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Activity</span> <span class="keyword">extends</span> <span class="title">ContextThemeWrapper</span></span></div><div class="line">        <span class="keyword">implements</span> <span class="title">LayoutInflater</span>.<span class="title">Factory2</span>,</div><div class="line">        <span class="title">Window</span>.<span class="title">Callback</span>, <span class="title">KeyEvent</span>.<span class="title">Callback</span>,</div><div class="line">        <span class="title">OnCreateContextMenuListener</span>, <span class="title">ComponentCallbacks2</span>,</div><div class="line">        <span class="title">Window</span>.<span class="title">OnWindowDismissedCallback</span>, <span class="title">WindowControllerCallback</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Window.Callback</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span> </span>&#123;</div><div class="line"> 	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent event)</span></span>;</div><div class="line">   	</div><div class="line">    <span class="comment">// ....</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>这个回调是在哪里设置的呢？按套路应该有个 <code>setCallback(activity)</code>。  </p>
+<p>回顾一下 Activity 的创建过程，在创建完 Activity 实例后，会调用 Activity 的 <code>attach（）</code>，具体的代码可以看 <code>ActivityThread#performLaunchActivity()</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></div><div class="line">         // 省略一堆参数....</div><div class="line">           Window window) &#123;</div><div class="line">       attachBaseContext(context);</div><div class="line">       mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</div><div class="line"></div><div class="line">       mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>, window);</div><div class="line">       mWindow.setWindowControllerCallback(<span class="keyword">this</span>);</div><div class="line">       mWindow.setCallback(<span class="keyword">this</span>);</div><div class="line">      </div><div class="line">      	<span class="comment">// 省略无关代码...</span></div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>我们惊喜的发现，在 <code>attach()</code> 中 <code>mWindow</code> 调用了我们猜测的 <code>setCallback()</code>。这里的 <code>mWindow</code> 就是 <code>PhoneWindow</code>。而 <code>setCallback()</code> 是在 <code>Window</code> 中就实现了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Window </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCallback</span><span class="params">(Callback callback)</span> </span>&#123;</div><div class="line">     mCallback = callback;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Callback <span class="title">getCallback</span><span class="params">()</span> </span>&#123;</div><div class="line">     <span class="keyword">return</span> mCallback;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以持有 Activity 实例的是 PhoneWindow 对象，是 Window 把事件分发给 Activity 的。</p>
+<h2 id="Window-分发事件的详细过程"><a href="#Window-分发事件的详细过程" class="headerlink" title="Window 分发事件的详细过程"></a>Window 分发事件的详细过程</h2><p>Activity 启动之后，在调用了 <code>onResume()</code>之后，Activity 才开始调用 <code>makeVisible()</code> 显示 <code>DecorView</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ActivityThread</span></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">handleResumeActivity</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="comment">// 执行 resume 过程</span></div><div class="line">	r = performResumeActivity(token, clearHide, reason);</div><div class="line">	<span class="comment">// ...</span></div><div class="line">	</div><div class="line">	</div><div class="line">	 <span class="keyword">if</span> (!r.activity.mFinished &amp;&amp; willBeVisible</div><div class="line">                    &amp;&amp; r.activity.mDecor != <span class="keyword">null</span> &amp;&amp; !r.hideForNow) &#123;</div><div class="line">     	<span class="comment">// ...</span></div><div class="line">        r.activity.mVisibleFromServer = <span class="keyword">true</span>;</div><div class="line">        mNumVisibleActivities++;</div><div class="line">        <span class="keyword">if</span> (r.activity.mVisibleFromClient) &#123;</div><div class="line">        	r.activity.makeVisible();</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Activity</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">makeVisible</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> (!mWindowAdded) &#123;</div><div class="line">    	ViewManager wm = getWindowManager();</div><div class="line">        wm.addView(mDecor, getWindow().getAttributes());</div><div class="line">        mWindowAdded = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    mDecor.setVisibility(View.VISIBLE);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>addView()</code> 是由 WindowManagerGlobal 实现的。在<code>addView()</code> 中 ViewRootImpl  被创建，同时调用它的 <code>setView(decorView,windowLayoutParams,panelParentView)</code> ，<code>setView()</code> 的作用就是跨进程调用系统进程中 WMS(WindowManagerService) 的 ``</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// WindowManagerGlobal</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View view, ViewGroup.LayoutParams params,</span></span></div><div class="line">            Display display, Window parentWindow) &#123;</div><div class="line">       </div><div class="line">        <span class="keyword">final</span> WindowManager.LayoutParams wparams = (WindowManager.LayoutParams) params;</div><div class="line">   </div><div class="line">        ViewRootImpl root;</div><div class="line">        View panelParentView = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        <span class="keyword">synchronized</span> (mLock) &#123;</div><div class="line">            root = <span class="keyword">new</span> ViewRootImpl(view.getContext(), display);</div><div class="line">            view.setLayoutParams(wparams);</div><div class="line">            mViews.add(view);</div><div class="line">            mRoots.add(root);</div><div class="line">            mParams.add(wparams);</div><div class="line"></div><div class="line">            <span class="comment">// do this last because it fires off messages to start doing things</span></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                root.setView(view, wparams, panelParentView);</div><div class="line">            &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</div><div class="line">                <span class="comment">// BadTokenException or InvalidDisplayException, clean up.</span></div><div class="line">                <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</div><div class="line">                    removeViewLocked(index, <span class="keyword">true</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">throw</span> e;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setView</span><span class="params">(View view, WindowManager.LayoutParams attrs, View panelParentView)</span> </span>&#123;</div><div class="line">       <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">           <span class="keyword">if</span> (mView == <span class="keyword">null</span>) &#123;</div><div class="line">           	<span class="comment">// ...</span></div><div class="line">            </div><div class="line">               <span class="keyword">int</span> res; <span class="comment">/* = WindowManagerImpl.ADD_OKAY; */</span></div><div class="line"></div><div class="line">               <span class="comment">// Schedule the first layout -before- adding to the window</span></div><div class="line">               <span class="comment">// manager, to make sure we do the relayout before receiving</span></div><div class="line">               <span class="comment">// any other events from the system.</span></div><div class="line">               requestLayout();</div><div class="line">             </div><div class="line">               mInputChannel = <span class="keyword">new</span> InputChannel();</div><div class="line">            </div><div class="line">              </div><div class="line">               <span class="keyword">if</span> (view <span class="keyword">instanceof</span> RootViewSurfaceTaker) &#123;</div><div class="line">                   mInputQueueCallback =</div><div class="line">                       ((RootViewSurfaceTaker)view).willYouTakeTheInputQueue();</div><div class="line">               &#125;</div><div class="line">             </div><div class="line">               <span class="keyword">if</span> (mInputChannel != <span class="keyword">null</span>) &#123;</div><div class="line">                   <span class="keyword">if</span> (mInputQueueCallback != <span class="keyword">null</span>) &#123;</div><div class="line">                       mInputQueue = <span class="keyword">new</span> InputQueue();</div><div class="line">                       mInputQueueCallback.onInputQueueCreated(mInputQueue);</div><div class="line">                   &#125;</div><div class="line">                   mInputEventReceiver = <span class="keyword">new</span> WindowInputEventReceiver(mInputChannel,</div><div class="line">                           Looper.myLooper());</div><div class="line">               &#125;</div><div class="line"></div><div class="line">             </div><div class="line"></div><div class="line">               <span class="comment">// 建立输入管道</span></div><div class="line">             	<span class="comment">// ...</span></div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/singwhatiwanna/article/details/50775201" target="_blank" rel="external">Android中MotionEvent的来源和ViewRootImpl</a></p>
+<p><a href="http://edu.csdn.net/course/play/1923/29827" target="_blank" rel="external">点击事件的分发规则</a></p>
+<p><a href="http://www.duokan.com/book/115158" target="_blank" rel="external">Android 开发艺术探索</a></p>
+
+    
+  </div>
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/10/01/fragmentSouceCodeAna/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/categories/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tags/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://luwenjie.me/2017/12/05/View 点击事件的来源/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+    
+	
+    
+	
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
