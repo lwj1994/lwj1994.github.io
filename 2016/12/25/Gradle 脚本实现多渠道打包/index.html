@@ -7,25 +7,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>避免 Android 的冷启动 | luwenjie&#39;s Blog</title>
+  <title>Gradle 脚本实现多渠道打包 | luwenjie&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="冷启动," />
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
-<meta name="keywords" content="冷启动">
+  <meta name="description" content="核心思路很简单就是通过脚本来在 gradle 处理 minafest 任务之后修改文件中的值。 需要用到 afterEvaluate 监听所有配置完成后，再设置每个渠道处理清单任务之后的监听。 运行 ./gradlew aR -Pchannel=213123 即可设置渠道号。12345678910111213141516171819202122232425project.afterEvaluate">
 <meta property="og:type" content="article">
-<meta property="og:title" content="避免 Android 的冷启动">
-<meta property="og:url" content="https://luwenjie.me/2016/12/21/避免-Android-的冷启动/index.html">
+<meta property="og:title" content="Gradle 脚本实现多渠道打包">
+<meta property="og:url" content="https://luwenjie.me/2016/12/25/Gradle 脚本实现多渠道打包/index.html">
 <meta property="og:site_name" content="luwenjie&#39;s Blog">
-<meta property="og:description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
-<meta property="og:updated_time" content="2017-01-21T09:50:39.000Z">
+<meta property="og:description" content="核心思路很简单就是通过脚本来在 gradle 处理 minafest 任务之后修改文件中的值。 需要用到 afterEvaluate 监听所有配置完成后，再设置每个渠道处理清单任务之后的监听。 运行 ./gradlew aR -Pchannel=213123 即可设置渠道号。12345678910111213141516171819202122232425project.afterEvaluate">
+<meta property="og:updated_time" content="2017-12-25T10:08:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="避免 Android 的冷启动">
-<meta name="twitter:description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
+<meta name="twitter:title" content="Gradle 脚本实现多渠道打包">
+<meta name="twitter:description" content="核心思路很简单就是通过脚本来在 gradle 处理 minafest 任务之后修改文件中的值。 需要用到 afterEvaluate 监听所有配置完成后，再设置每个渠道处理清单任务之后的监听。 运行 ./gradlew aR -Pchannel=213123 即可设置渠道号。12345678910111213141516171819202122232425project.afterEvaluate">
 
   
 
@@ -116,22 +115,17 @@
 </div>
 
 
-  <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#冷启动优化"><span class="toc-text">冷启动优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
-  </div>
-
 
 
 <div class="content content-post CENTER">
-   <article id="post-避免-Android-的冷启动" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Gradle 脚本实现多渠道打包" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">避免 Android 的冷启动</h1>
+    <h1 class="post-title">Gradle 脚本实现多渠道打包</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2016.12.21</span>
+        <span>2016.12.25</span>
       </span>
 
       
@@ -152,7 +146,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="http://luwenjie.me/2016/12/21/避免-Android-的冷启动/#disqus_thread"></a>
+          <a href="http://luwenjie.me/2016/12/25/Gradle 脚本实现多渠道打包/#disqus_thread"></a>
         </span>
       
 
@@ -171,10 +165,8 @@
 
   <div class="article-content">
     
-      <p>冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局<br>  <a id="more"></a></p>
-<h2 id="冷启动优化"><a href="#冷启动优化" class="headerlink" title="冷启动优化"></a>冷启动优化</h2><p><code>windowBackground</code> 这个属性只能指定一个颜色, 或者 <code>drawable</code> 文件, 但是图片是全屏的, 无法居中.  我们可以用<code>&lt;layer-list&gt;</code>  标签来设置一个 <code>bitmap</code> 让图片居中 .<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">layer-list</span></span></div><div class="line">	<span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">	<span class="attr">android:opacity</span>=<span class="string">"opaque"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/grey"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">bitmap</span></span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/img_pizza"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">layer-list</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>为了避免出现问题, <code>&lt;layer-list&gt;</code> 必须设置为不透明的, <code>android:opacity=&quot;opaque&quot;</code>.</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p> <a href="http://saulmm.github.io/avoding-android-cold-starts" target="_blank" rel="external">avoding-android-cold-starts</a><br> <a href="http://blog.waynell.com/2015/11/17/android-cold-start/" target="_blank" rel="external">Android 冷启动时间优化</a></p>
+      <p>核心思路很简单就是通过脚本来在 gradle 处理 minafest 任务之后修改文件中的值。 需要用到 afterEvaluate 监听所有配置完成后，再设置每个渠道处理清单任务之后的监听。</p>
+<p>运行 <code>./gradlew aR -Pchannel=213123</code> 即可设置渠道号。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">project.afterEvaluate &#123;</div><div class="line">  android.applicationVariants.each &#123; variant -&gt;</div><div class="line">    def variantName = variant.name.<span class="function">capit <span class="title">alize</span><span class="params">()</span></span></div><div class="line"></div><div class="line">    def mergeManifest = project.tasks.getByName(<span class="string">"process$&#123;variantName&#125;Manifest"</span>)</div><div class="line">    mergeManifest.doLast &#123; mm -&gt;</div><div class="line">      <span class="comment">// 获取 manifest 文件</span></div><div class="line">      def manifest = file(<span class="string">"$&#123;mm.manifestOutputDirectory&#125;/AndroidManifest.xml"</span>)</div><div class="line">      <span class="keyword">if</span> (project.hasProperty(<span class="string">"channel"</span>)) &#123;</div><div class="line">        addChannel(manifest)</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">addChannel</span><span class="params">(File manifest)</span> </span>&#123;</div><div class="line">  def channelNo = project.property(<span class="string">"channel"</span>)</div><div class="line"></div><div class="line">  def xml = <span class="keyword">new</span> XmlParser().parse(manifest)</div><div class="line">  xml.application[<span class="number">0</span>].appendNode(<span class="string">"meta-data"</span>,</div><div class="line">      [<span class="string">'android:name'</span>: <span class="string">'channel'</span>, <span class="string">'android:value'</span>: channelNo])</div><div class="line">  manifest.withPrintWriter(<span class="string">"UTF-8"</span>) &#123;</div><div class="line">    XmlUtil.serialize(xml, it)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 
     
   </div>
@@ -185,10 +177,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2016/12/21/初识 dagger/">
+    <a class="show pull-left" href="/2016/12/21/避免-Android-的冷启动/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2016/12/25/Gradle 脚本实现多渠道打包/">
+    <a class="show pull-right" href="/2016/12/28/String, StringBuffer 与 StringBuilder 的区别/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -247,7 +239,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://luwenjie.me/2016/12/21/避免-Android-的冷启动/';
+    var disqus_url = 'https://luwenjie.me/2016/12/25/Gradle 脚本实现多渠道打包/';
     
     (function(){
       var dsq = document.createElement('script');
