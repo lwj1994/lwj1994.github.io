@@ -7,25 +7,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>避免 Android 的冷启动 | luwenjie&#39;s Blog</title>
+  <title>My 2018 | luwenjie&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="冷启动," />
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
-<meta name="keywords" content="冷启动">
+  <meta name="description" content="2017 todo list Java 涨薪水 增肥 Android 开发艺术探索  2017 其实还可以，虽然我对我自己还有很多不满意，但是一口吃不出个胖子。 2018 todo list 临摹 Picasso Think In Java Effective Java Android Test Kotlin Android 源码设计模式解析与实战 健身增肥 学习一个 coding 以外的技能比如">
 <meta property="og:type" content="article">
-<meta property="og:title" content="避免 Android 的冷启动">
-<meta property="og:url" content="https://luwenjie.me/2016/12/21/避免-Android-的冷启动/index.html">
+<meta property="og:title" content="My 2018">
+<meta property="og:url" content="https://luwenjie.me/2018/01/01/My 2018/index.html">
 <meta property="og:site_name" content="luwenjie&#39;s Blog">
-<meta property="og:description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
-<meta property="og:updated_time" content="2017-01-21T09:50:39.000Z">
+<meta property="og:description" content="2017 todo list Java 涨薪水 增肥 Android 开发艺术探索  2017 其实还可以，虽然我对我自己还有很多不满意，但是一口吃不出个胖子。 2018 todo list 临摹 Picasso Think In Java Effective Java Android Test Kotlin Android 源码设计模式解析与实战 健身增肥 学习一个 coding 以外的技能比如">
+<meta property="og:updated_time" content="2018-01-01T15:48:58.212Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="避免 Android 的冷启动">
-<meta name="twitter:description" content="冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局">
+<meta name="twitter:title" content="My 2018">
+<meta name="twitter:description" content="2017 todo list Java 涨薪水 增肥 Android 开发艺术探索  2017 其实还可以，虽然我对我自己还有很多不满意，但是一口吃不出个胖子。 2018 todo list 临摹 Picasso Think In Java Effective Java Android Test Kotlin Android 源码设计模式解析与实战 健身增肥 学习一个 coding 以外的技能比如">
 
   
 
@@ -118,20 +117,20 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#冷启动优化"><span class="toc-text">冷启动优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2017-todo-list"><span class="toc-text">2017 todo list</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-todo-list"><span class="toc-text">2018 todo list</span></a></li></ol>
   </div>
 
 
 
 <div class="content content-post CENTER">
-   <article id="post-避免-Android-的冷启动" class="article article-type-post" itemprop="blogPost">
+   <article id="post-My 2018" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">避免 Android 的冷启动</h1>
+    <h1 class="post-title">My 2018</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2016.12.21</span>
+        <span>2018.01.01</span>
       </span>
 
       
@@ -152,7 +151,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="http://luwenjie.me/2016/12/21/避免-Android-的冷启动/#disqus_thread"></a>
+          <a href="http://luwenjie.me/2018/01/01/My 2018/#disqus_thread"></a>
         </span>
       
 
@@ -171,10 +170,28 @@
 
   <div class="article-content">
     
-      <p>冷启动时间是指当用户点击你的 app 那一刻到系统调用 Activity.onCreate() 之间的时间段。在这个时间段内，WindowManager 会先加载 app 主题样式中的 windowBackground 做为 app 的预览元素，然后再真正去加载 activity 的 layout 布局<br>  <a id="more"></a></p>
-<h2 id="冷启动优化"><a href="#冷启动优化" class="headerlink" title="冷启动优化"></a>冷启动优化</h2><p><code>windowBackground</code> 这个属性只能指定一个颜色, 或者 <code>drawable</code> 文件, 但是图片是全屏的, 无法居中.  我们可以用<code>&lt;layer-list&gt;</code>  标签来设置一个 <code>bitmap</code> 让图片居中 .<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">layer-list</span></span></div><div class="line">	<span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">	<span class="attr">android:opacity</span>=<span class="string">"opaque"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/grey"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">bitmap</span></span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/img_pizza"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">layer-list</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>为了避免出现问题, <code>&lt;layer-list&gt;</code> 必须设置为不透明的, <code>android:opacity=&quot;opaque&quot;</code>.</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p> <a href="http://saulmm.github.io/avoding-android-cold-starts" target="_blank" rel="external">avoding-android-cold-starts</a><br> <a href="http://blog.waynell.com/2015/11/17/android-cold-start/" target="_blank" rel="external">Android 冷启动时间优化</a></p>
+      <h2 id="2017-todo-list"><a href="#2017-todo-list" class="headerlink" title="2017 todo list"></a>2017 todo list</h2><ol>
+<li><del>Java</del></li>
+<li><del>涨薪水</del></li>
+<li><del>增肥</del></li>
+<li><del>Android 开发艺术探索</del></li>
+</ol>
+<p>2017 其实还可以，虽然我对我自己还有很多不满意，但是一口吃不出个胖子。</p>
+<h2 id="2018-todo-list"><a href="#2018-todo-list" class="headerlink" title="2018 todo list"></a>2018 todo list</h2><ol>
+<li>临摹 Picasso</li>
+<li>Think In Java</li>
+<li>Effective Java</li>
+<li>Android Test</li>
+<li>Kotlin</li>
+<li>Android 源码设计模式解析与实战</li>
+<li>健身增肥</li>
+<li>学习一个 coding 以外的技能比如乐器</li>
+<li>英语听说读写</li>
+<li>BAT 名企</li>
+</ol>
+<p>2018 需要花更多的时间沉淀自己，我的最大缺点是不能坚持，遇到一点小成就会沾沾自喜，需要克服。越来越觉得写代码对我的影响太大了，除了混了口饭吃，我的性格导致我的人生出现了很多 bug，我需要一点点去把这些 bug 修好。写代码使我安静，慢慢思考一些东西，虽然我现在的 coding 水平还是挺渣的，不过总体还是一直慢慢提高中。</p>
+<p>言太多的志没什么用，有的人从来不言志，他们一直努力在做正确的事，然后就成功了。</p>
+<p>说一尺不如干一寸，必须要把上面的 todo list 执行起来。</p>
 
     
   </div>
@@ -185,10 +202,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2016/12/21/初识 dagger/">
+    <a class="show pull-left" href="/2017/12/25/Gradle 脚本实现多渠道打包/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2016/12/28/String, StringBuffer 与 StringBuilder 的区别/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -247,7 +264,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://luwenjie.me/2016/12/21/避免-Android-的冷启动/';
+    var disqus_url = 'https://luwenjie.me/2018/01/01/My 2018/';
     
     (function(){
       var dsq = document.createElement('script');
