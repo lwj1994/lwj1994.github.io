@@ -1,21 +1,85 @@
 <!DOCTYPE html>
 
 
-  <html class="light page-post">
+
+  
 
 
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  
-  <title>Android开发艺术探索笔记-第2章 Android的IPC机制 | luwenjie&#39;s Blog</title>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
-    <meta name="keywords" content="Android开发艺术探索," />
   
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
-  <meta name="description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android开发艺术探索," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
 <meta name="keywords" content="Android开发艺术探索">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android开发艺术探索笔记-第2章 Android的IPC机制">
@@ -34,151 +98,267 @@
 <meta name="twitter:description" content="本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间">
 <meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01sbTujh7yS/SX5AJ9QwDfTjxD.jpg">
 
-  
-
-  
-    <link rel="icon" href="/favicon.ico">
-  
-
-  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
 
 
-  
-    <link rel="stylesheet" href="/css/personal-style.css">
-  
-
-  
-
-  
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-  
-  <script type="text/javascript">
-	(function(){
-	    var bp = document.createElement('script');
-	    var curProtocol = window.location.protocol.split(':')[0];
-	    if (curProtocol === 'https') {
-	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
-	    }
-	    else {
-	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-	    }
-	    var s = document.getElementsByTagName("script")[0];
-	    s.parentNode.insertBefore(bp, s);
-	})();
-  </script>
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
 
 
 
-  
-    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <link rel="canonical" href="https://luwenjie.me/2017/06/28/AndroidArtChapter2/"/>
+
+
+
+
+
+  <title>Android开发艺术探索笔记-第2章 Android的IPC机制 | luwenjie's Blog</title>
   
 
-  
-    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  
+
+
+
+
+
+
+
 </head>
 
-<body>
-
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
-    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+    
   
 
-  <div class="post-header CENTER">
-   
-  <div class="toolbox">
-    <a class="toolbox-entry" href="/">
-      <span class="toolbox-entry-text">盒子</span>
-      <i class="icon-angle-down"></i>
-      <i class="icon-home"></i>
-    </a>
-    <ul class="list-toolbox">
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">luwenjie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-        <li class="item-toolbox">
-          <a
-            class="CIRCLE"
-            href="/archives/"
-            rel="noopener noreferrer"
-            target="_self"
-            >
-            博客
+        <p class="site-subtitle">逃避可耻但很有用</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            Über
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Kategorien
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+
+      
     </ul>
-  </div>
+  
 
-
-</div>
-
-
-  <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#多进程"><span class="toc-text">多进程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-中的多进程模式"><span class="toc-text">Android 中的多进程模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#开启多进程"><span class="toc-text">开启多进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行机制"><span class="toc-text">运行机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#例子"><span class="toc-text">例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原因"><span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用多进程造成的问题"><span class="toc-text">使用多进程造成的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统提供跨进程方式解决"><span class="toc-text">系统提供跨进程方式解决</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IPC-基础概念"><span class="toc-text">IPC 基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Serializable-接口"><span class="toc-text">Serializable 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#例子-1"><span class="toc-text">例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#serialVersionUID-的工作机制"><span class="toc-text">serialVersionUID 的工作机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parcelable-接口"><span class="toc-text">Parcelable 接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parcel"><span class="toc-text">Parcel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#区别"><span class="toc-text">区别</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Binder"><span class="toc-text">Binder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#AIDL-的例子"><span class="toc-text">AIDL 的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Binder-的工作机制"><span class="toc-text">Binder 的工作机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手动实现-Binder"><span class="toc-text">手动实现 Binder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#linkToDeath-和-unlinkToDeath"><span class="toc-text">linkToDeath 和 unlinkToDeath</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中的-IPC-方式"><span class="toc-text">Android 中的 IPC 方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bundle"><span class="toc-text">Bundle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用文件共享"><span class="toc-text">使用文件共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Messenger"><span class="toc-text">使用 Messenger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-AIDL"><span class="toc-text">使用 AIDL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RemoteCallbackList"><span class="toc-text">RemoteCallbackList</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Binder-意外死亡"><span class="toc-text">Binder 意外死亡</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#权限"><span class="toc-text">权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。"><span class="toc-text">例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-ContentProvider"><span class="toc-text">使用 ContentProvider</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例子-2"><span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Socket"><span class="toc-text">使用 Socket</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Binder-连接池"><span class="toc-text">Binder 连接池</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选用合适的-IPC"><span class="toc-text">选用合适的 IPC</span></a></li></ol></li></ol>
-  </div>
+  
+</nav>
 
 
 
-<div class="content content-post CENTER">
-   <article id="post-AndroidArtChapter2" class="article article-type-post" itemprop="blogPost">
-  <header class="article-header">
-    <h1 class="post-title">Android开发艺术探索笔记-第2章 Android的IPC机制</h1>
+ </div>
+    </header>
 
-    <div class="article-meta">
-      <span>
-        <i class="icon-calendar"></i>
-        <span>2017.06.28</span>
-      </span>
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
-      
-        <span class="article-author">
-          <i class="icon-user"></i>
-          <span>luwenjie</span>
-        </span>
-      
-
-      
-  <span class="article-category">
-    <i class="icon-list"></i>
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </span>
-
-
-
-      
-        <span>
-          <i class="icon-comment"></i>
-          <a href="http://luwenjie.me/2017/06/28/AndroidArtChapter2/#disqus_thread"></a>
-        </span>
-      
-
-      
-      <i class="fa fa-eye"></i> 
-        <span id="busuanzi_container_page_pv">
-           &nbsp热度 <span id="busuanzi_value_page_pv">
-           <i class="fa fa-spinner fa-spin"></i></span>℃
-        </span>
-      
-
-      
-      
-    </div>
-  </header>
-
-  <div class="article-content">
+  <div id="posts" class="posts-expand">
     
-      <blockquote>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/06/28/AndroidArtChapter2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luwenjie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luwenjie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第2章 Android的IPC机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-28T16:37:00+08:00">
+                2017-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
 <p>本章主要讲解Android中的IPC机制。首先介绍Android中的多进程概念以及多进程开发模式中常见的注意事项，接着介绍Android中的序列化机制和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程间通信的方式。为了更好地使用AIDL来进行进程间通信，本章还引入了Binder连接池的概念。最后，本章讲解各种进程间通信方式的优缺点和适用场景。通过本章，可以让读者对Android中的IPC机制和多进程开发模式有深入的理解。</p>
 </blockquote>
 <a id="more"></a>
@@ -362,136 +542,383 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BindPool</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BINDER_SECURITY_CENTER = <span class="number">1</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BINDER_COMPUTE = <span class="number">2</span>;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"BindPool"</span>;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> BindPool sInstance;</div><div class="line">  <span class="keyword">private</span> IBindPool mIBinderPool;</div><div class="line">  <span class="keyword">private</span> CountDownLatch mCountDownLatch;</div><div class="line">  <span class="keyword">private</span> Context mContext;</div><div class="line">  <span class="keyword">private</span> IBinder.DeathRecipient mDeathRecipient = <span class="keyword">new</span> IBinder.DeathRecipient() &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">binderDied</span><span class="params">()</span> </span>&#123;</div><div class="line">      Log.d(TAG, <span class="string">"binder died"</span>);</div><div class="line">      mIBinderPool.asBinder().unlinkToDeath(mDeathRecipient, <span class="number">0</span>);</div><div class="line">      mIBinderPool = <span class="keyword">null</span>;</div><div class="line">      connectBinderPoolService();</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">  <span class="keyword">private</span> ServiceConnection mBinderPoolConnection = <span class="keyword">new</span> ServiceConnection() &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</div><div class="line">      mIBinderPool = IBindPool.Stub.asInterface(service);</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        mIBinderPool.asBinder().linkToDeath(mDeathRecipient, <span class="number">0</span>);</div><div class="line">      &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">      &#125;</div><div class="line">      mCountDownLatch.countDown();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">BindPool</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">    mContext = context.getApplicationContext();</div><div class="line">    connectBinderPoolService();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BindPool <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="keyword">synchronized</span> (BindPool.class) &#123;</div><div class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</div><div class="line">          sInstance = <span class="keyword">new</span> BindPool(context);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sInstance;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">connectBinderPoolService</span><span class="params">()</span> </span>&#123;</div><div class="line">    mCountDownLatch = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</div><div class="line">    Intent service = <span class="keyword">new</span> Intent(mContext, BinderPoolService.class);</div><div class="line">    mContext.bindService(service, mBinderPoolConnection, Context.BIND_AUTO_CREATE);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      mCountDownLatch.await();</div><div class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">      e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> IBinder <span class="title">queryBinder</span><span class="params">(<span class="keyword">int</span> bindCode)</span> </span>&#123;</div><div class="line">    IBinder binder = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">if</span> (mIBinderPool != <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        binder = mIBinderPool.queryBinder(bindCode);</div><div class="line">      &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> binder;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BinderPoolImpl</span> <span class="keyword">extends</span> <span class="title">IBindPool</span>.<span class="title">Stub</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"BinderPoolImpl"</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> IBinder <span class="title">queryBinder</span><span class="params">(<span class="keyword">int</span> binderCode)</span> </span>&#123;</div><div class="line">      IBinder iBinder = <span class="keyword">null</span>;</div><div class="line">      <span class="keyword">switch</span> (binderCode) &#123;</div><div class="line">        <span class="keyword">case</span> BINDER_SECURITY_CENTER:</div><div class="line">          iBinder = <span class="keyword">new</span> SecurityCenterImpl();</div><div class="line">          <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> BINDER_COMPUTE:</div><div class="line">          iBinder = <span class="keyword">new</span> ComputeImpl();</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> iBinder;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="选用合适的-IPC"><a href="#选用合适的-IPC" class="headerlink" title="选用合适的 IPC"></a>选用合适的 IPC</h2><p><img src="https://cdn.cnbj1.fds.api.mi-img.com/book/images/fa1eb34bd7621f9d36bc75e5a2386970" alt=""></p>
 
-    
-  </div>
-</article>
-
-
-   
-
-   
-  <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2017/06/19/Android开发艺术探索笔记第6章/">
-        <i class="icon icon-angle-left"></i>
-    </a>
-    <a class="show pull-right" href="/2017/07/20/androidArt5/">
-        <i class="icon icon-angle-right"></i>
-    </a>
-  </div>
-
-
-
-
-</div>
-
-
-  <a id="backTop" class="back-top">
-    <i class="icon-angle-up"></i>
-  </a>
-
-
-
-
-  <div class="modal" id="modal">
-  <span id="cover" class="cover hide"></span>
-  <div id="modal-dialog" class="modal-dialog hide-dialog">
-    <div class="modal-header">
-      <span id="close" class="btn-close">关闭</span>
+      
     </div>
-    <hr>
-    <div class="modal-body">
-      <ul class="list-toolbox">
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/19/Android开发艺术探索笔记第6章/" rel="next" title="Android开发艺术探索笔记-第6章 Android的Drawable">
+                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第6章 Android的Drawable
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/20/androidArt5/" rel="prev" title="Android开发艺术探索笔记-第5章 RemoteViews">
+                Android开发艺术探索笔记-第5章 RemoteViews <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
         
-          <li class="item-toolbox">
-            <a
-              class="CIRCLE"
-              href="/archives/"
-              rel="noopener noreferrer"
-              target="_self"
-              >
-              博客
-            </a>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
           </li>
-        
-      </ul>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">luwenjie</p>
+              <p class="site-description motion-element" itemprop="description">逃避可耻但很有用</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">Artikel</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">Kategorien</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">Tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程"><span class="nav-number">1.1.</span> <span class="nav-text">多进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-中的多进程模式"><span class="nav-number">2.</span> <span class="nav-text">Android 中的多进程模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开启多进程"><span class="nav-number">2.1.</span> <span class="nav-text">开启多进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行机制"><span class="nav-number">2.2.</span> <span class="nav-text">运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">2.2.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原因"><span class="nav-number">2.2.2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用多进程造成的问题"><span class="nav-number">2.2.3.</span> <span class="nav-text">使用多进程造成的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统提供跨进程方式解决"><span class="nav-number">2.2.4.</span> <span class="nav-text">系统提供跨进程方式解决</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IPC-基础概念"><span class="nav-number">3.</span> <span class="nav-text">IPC 基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Serializable-接口"><span class="nav-number">3.1.</span> <span class="nav-text">Serializable 接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#serialVersionUID-的工作机制"><span class="nav-number">3.1.2.</span> <span class="nav-text">serialVersionUID 的工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">3.1.3.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parcelable-接口"><span class="nav-number">3.2.</span> <span class="nav-text">Parcelable 接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parcel"><span class="nav-number">3.3.</span> <span class="nav-text">Parcel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">3.4.</span> <span class="nav-text">区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Binder"><span class="nav-number">4.</span> <span class="nav-text">Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AIDL-的例子"><span class="nav-number">4.1.</span> <span class="nav-text">AIDL 的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-的工作机制"><span class="nav-number">4.2.</span> <span class="nav-text">Binder 的工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动实现-Binder"><span class="nav-number">4.3.</span> <span class="nav-text">手动实现 Binder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linkToDeath-和-unlinkToDeath"><span class="nav-number">4.4.</span> <span class="nav-text">linkToDeath 和 unlinkToDeath</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-中的-IPC-方式"><span class="nav-number">4.5.</span> <span class="nav-text">Android 中的 IPC 方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bundle"><span class="nav-number">4.5.1.</span> <span class="nav-text">Bundle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用文件共享"><span class="nav-number">4.5.2.</span> <span class="nav-text">使用文件共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Messenger"><span class="nav-number">4.5.3.</span> <span class="nav-text">使用 Messenger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-AIDL"><span class="nav-number">4.5.4.</span> <span class="nav-text">使用 AIDL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RemoteCallbackList"><span class="nav-number">4.5.4.1.</span> <span class="nav-text">RemoteCallbackList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Binder-意外死亡"><span class="nav-number">4.5.4.2.</span> <span class="nav-text">Binder 意外死亡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权限"><span class="nav-number">4.5.4.3.</span> <span class="nav-text">权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。"><span class="nav-number">4.5.4.4.</span> <span class="nav-text">例子：图书管理类，每隔5s后台加一本书并通知前台加了什么书。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-ContentProvider"><span class="nav-number">4.5.5.</span> <span class="nav-text">使用 ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子-2"><span class="nav-number">4.5.5.1.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Socket"><span class="nav-number">4.5.6.</span> <span class="nav-text">使用 Socket</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-连接池"><span class="nav-number">4.6.</span> <span class="nav-text">Binder 连接池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选用合适的-IPC"><span class="nav-number">4.7.</span> <span class="nav-text">选用合适的 IPC</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
 
     </div>
-  </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luwenjie</span>
+
+  
 </div>
 
 
-
-  
-      <div class="fexo-comments comments-post">
-    
-  <section class="disqus-comments">
-    <div id="disqus_thread">
-      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
-  </section>
-
-  <script>
-    var disqus_shortname = 'forsigner';
-    
-    var disqus_url = 'https://luwenjie.me/2017/06/28/AndroidArtChapter2/';
-    
-    (function(){
-      var dsq = document.createElement('script');
-      dsq.type = 'text/javascript';
-      dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-  </script>
-
-  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
 
     
-
-
-
-
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
     
-	
-    
-	
+
   </div>
 
   
 
-  <script type="text/javascript">
-  function loadScript(url, callback) {
-    var script = document.createElement('script')
-    script.type = 'text/javascript';
-
-    if (script.readyState) { //IE
-      script.onreadystatechange = function() {
-        if (script.readyState == 'loaded' ||
-          script.readyState == 'complete') {
-          script.onreadystatechange = null;
-          callback();
-        }
-      };
-    } else { //Others
-      script.onload = function() {
-        callback();
-      };
-    }
-
-    script.src = url;
-    document.getElementsByTagName('head')[0].appendChild(script);
-  }
-
-  window.onload = function() {
-    loadScript('/js/bundle.js?235683', function() {
-      // load success
-    });
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
   }
 </script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
 
 </body>
 </html>
