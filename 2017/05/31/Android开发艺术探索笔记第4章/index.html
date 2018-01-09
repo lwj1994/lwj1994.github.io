@@ -1,85 +1,17 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next gemini use-motion" lang="zh-Hans">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
+  
+  <title>android开发艺术探索笔记-第4章 view的工作原理 | 逃避可耻但很有用</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="Android开发艺术探索" />
   
   
-  <link href="/archives/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/archives/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/archives/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/archives/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/archives/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/archives/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/archives/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Android开发艺术探索," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
+  
+  
+  <meta name="description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
 <meta name="keywords" content="Android开发艺术探索">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android开发艺术探索笔记-第4章 View的工作原理">
@@ -95,246 +27,169 @@
 <meta name="twitter:title" content="Android开发艺术探索笔记-第4章 View的工作原理">
 <meta name="twitter:description" content="在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。">
 <meta name="twitter:image" content="http://image.webreader.duokan.com/mfsv2/download/fdsc3/p01s50KI6XvJ/wPxRNtLOeLwo2E.jpg?thumb=1024x&scale=auto">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/archives/',
-    scheme: 'Gemini',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="https://luwenjie.me/2017/05/31/Android开发艺术探索笔记第4章/"/>
-
-
-
-
-
-  <title>Android开发艺术探索笔记-第4章 View的工作原理 | 逃避可耻但很有用</title>
+  
+    <link rel="alternate" href="/atom.xml" title="逃避可耻但很有用" type="application/atom+xml">
   
 
+  
 
+  <link rel="icon" href="/archives/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/archives/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/archives/css/style.css">
 
+  <script src="/archives/js/jquery-3.1.1.min.js"></script>
+  <script src="/archives/js/bootstrap.js"></script>
 
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/archives/css/bootstrap.css" >
 
+  
+    <link rel="stylesheet" href="/archives/css/dialog.css">
+  
 
+  
+    <link rel="stylesheet" href="/archives/css/header-post.css" >
+  
 
+  
+  
+  
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
 
   
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/archives/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">逃避可耻但很有用</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
+  <div id="container">
+    <div id="wrap">
       
-        <p class="site-subtitle"></p>
-      
-  </div>
+        <header>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/archives/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/archives/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/archives/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/archives/2017/05/31/Android开发艺术探索笔记第4章/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fromzero">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/archives/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逃避可耻但很有用">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">Android开发艺术探索笔记-第4章 View的工作原理</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-31T18:37:00+08:00">
-                2017-05-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/archives/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
 
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/archives/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
                 
+                  <li> <a class="main-nav-link" href="/archives/">Startseite</a> </li>
                 
-              
-            </span>
-          
+                  <li> <a class="main-nav-link" href="/archives/archives">Archive</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives/about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Schreib etwas..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Beiträge',
+            PAGES: 'Seiten',
+            CATEGORIES: 'Kategorien',
+            TAGS: 'Tags',
+            UNTITLED: '(Unbenannt)',
+        },
+        ROOT_URL: '/archives/',
+        CONTENT_URL: '/archives/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/archives/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-Android开发艺术探索笔记第4章" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Android开发艺术探索笔记-第4章 View的工作原理
+    </h1>
+  
+
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+    <div class="article-meta">
+      
+	<a href="/archives/2017/05/31/Android开发艺术探索笔记第4章/" class="article-date">
+	  <time datetime="2017-05-31T10:37:00.000Z" itemprop="datePublished">2017-05-31</time>
+	</a>
 
       
-      
+    <a class="article-category-link" href="/archives/categories/Android/">Android</a>
 
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
 <p>在本章中主要介绍两方面的内容，首先介绍View的工作原理，接着介绍自定义View的实现方式。在Android的知识体系中，View扮演着很重要的角色，简单来理解，View是Android在视觉上的呈现。</p>
@@ -491,252 +346,143 @@
 
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/archives/tags/Android开发艺术探索/" rel="tag"># Android开发艺术探索</a>
-          
-        </div>
-      
-
+    <footer class="article-footer">
       
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/archives/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/archives/2017/05/24/yishuyansuo3/" rel="next" title="Android开发艺术探索笔记-第3章 View的事件体系">
-                <i class="fa fa-chevron-left"></i> Android开发艺术探索笔记-第3章 View的事件体系
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/archives/2017/06/02/Android开发艺术探索笔记第10章/" rel="prev" title="Android开发艺术探索笔记-第10章 Android的消息机制">
-                Android开发艺术探索笔记-第10章 Android的消息机制 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
     </footer>
   </div>
   
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
     
-    <div class="sidebar-inner">
+<nav id="article-nav">
+  
+    <a href="/archives/2017/06/02/Android开发艺术探索笔记第10章/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Android开发艺术探索笔记-第10章 Android的消息机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/archives/2017/05/24/yishuyansuo3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Android开发艺术探索笔记-第3章 View的事件体系</div>
+    </a>
+  
+</nav>
 
-      
+  
+</article>
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
+<!-- Table of Contents -->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">fromzero</p>
-              <p class="site-description motion-element" itemprop="description">fix myself</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/archives">
-              
-                  <span class="site-state-item-count">45</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/archives/categories/index.html">
-                  <span class="site-state-item-count">9</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/archives/tags/index.html">
-                  <span class="site-state-item-count">14</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewRoot-和-DecoreView"><span class="nav-number">1.</span> <span class="nav-text">ViewRoot 和 DecoreView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewRootImpl"><span class="nav-number">1.1.</span> <span class="nav-text">ViewRootImpl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecorView"><span class="nav-number">1.1.1.</span> <span class="nav-text">DecorView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解MeasureSpec"><span class="nav-number">1.2.</span> <span class="nav-text">理解MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec"><span class="nav-number">1.3.</span> <span class="nav-text">MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec和LayoutParams的对应关系"><span class="nav-number">1.4.</span> <span class="nav-text">MeasureSpec和LayoutParams的对应关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecoreView"><span class="nav-number">1.4.1.</span> <span class="nav-text">DecoreView</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的工作流程"><span class="nav-number">2.</span> <span class="nav-text">View的工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#measure的过程"><span class="nav-number">2.1.</span> <span class="nav-text">measure的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#View的measure过程"><span class="nav-number">2.1.1.</span> <span class="nav-text">View的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewGroup的measure过程"><span class="nav-number">2.1.2.</span> <span class="nav-text">ViewGroup的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取View的宽高"><span class="nav-number">2.1.3.</span> <span class="nav-text">获取View的宽高</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在Activity启动的时候获取宽高"><span class="nav-number">2.1.4.</span> <span class="nav-text">在Activity启动的时候获取宽高</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity-View-onWindowFocusChanged"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">Activity/View#onWindowFocusChanged</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-post-runnable"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">view.post(runnable)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewTreeObserver"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">ViewTreeObserver</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-measure-int-widthMeasureSpec-int-heightMeasureSpec-。"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">view.measure(int widthMeasureSpec,int heightMeasureSpec)。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#layout的过程"><span class="nav-number">2.2.</span> <span class="nav-text">layout的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinearLayout-的-onLayout"><span class="nav-number">2.2.1.</span> <span class="nav-text">LinearLayout 的 onLayout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#View的getMeasuredWidth和getWidth这两个方法有什么区别"><span class="nav-number">2.2.2.</span> <span class="nav-text">View的getMeasuredWidth和getWidth这两个方法有什么区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draw的过程"><span class="nav-number">2.3.</span> <span class="nav-text">draw的过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义View"><span class="nav-number">3.</span> <span class="nav-text">自定义View</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">3.1.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#继承View重写onDraw方法"><span class="nav-number">3.3.1.</span> <span class="nav-text">继承View重写onDraw方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义属性"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">自定义属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#完整的规范的CircleView"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">完整的规范的CircleView</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#继承ViewGroup派生特殊的Layout"><span class="nav-number">3.3.2.</span> <span class="nav-text">继承ViewGroup派生特殊的Layout</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思想"><span class="nav-number">3.4.</span> <span class="nav-text">思想</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Inhalt</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewRoot-和-DecoreView"><span class="nav-number">1.</span> <span class="nav-text">ViewRoot 和 DecoreView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewRootImpl"><span class="nav-number">1.1.</span> <span class="nav-text">ViewRootImpl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecorView"><span class="nav-number">1.1.1.</span> <span class="nav-text">DecorView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解MeasureSpec"><span class="nav-number">1.2.</span> <span class="nav-text">理解MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec"><span class="nav-number">1.3.</span> <span class="nav-text">MeasureSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeasureSpec和LayoutParams的对应关系"><span class="nav-number">1.4.</span> <span class="nav-text">MeasureSpec和LayoutParams的对应关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DecoreView"><span class="nav-number">1.4.1.</span> <span class="nav-text">DecoreView</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的工作流程"><span class="nav-number">2.</span> <span class="nav-text">View的工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#measure的过程"><span class="nav-number">2.1.</span> <span class="nav-text">measure的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#View的measure过程"><span class="nav-number">2.1.1.</span> <span class="nav-text">View的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewGroup的measure过程"><span class="nav-number">2.1.2.</span> <span class="nav-text">ViewGroup的measure过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取View的宽高"><span class="nav-number">2.1.3.</span> <span class="nav-text">获取View的宽高</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在Activity启动的时候获取宽高"><span class="nav-number">2.1.4.</span> <span class="nav-text">在Activity启动的时候获取宽高</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity-View-onWindowFocusChanged"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">Activity/View#onWindowFocusChanged</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-post-runnable"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">view.post(runnable)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ViewTreeObserver"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">ViewTreeObserver</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view-measure-int-widthMeasureSpec-int-heightMeasureSpec-。"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">view.measure(int widthMeasureSpec,int heightMeasureSpec)。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#layout的过程"><span class="nav-number">2.2.</span> <span class="nav-text">layout的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinearLayout-的-onLayout"><span class="nav-number">2.2.1.</span> <span class="nav-text">LinearLayout 的 onLayout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#View的getMeasuredWidth和getWidth这两个方法有什么区别"><span class="nav-number">2.2.2.</span> <span class="nav-text">View的getMeasuredWidth和getWidth这两个方法有什么区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draw的过程"><span class="nav-number">2.3.</span> <span class="nav-text">draw的过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义View"><span class="nav-number">3.</span> <span class="nav-text">自定义View</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">3.1.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#继承View重写onDraw方法"><span class="nav-number">3.3.1.</span> <span class="nav-text">继承View重写onDraw方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义属性"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">自定义属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#完整的规范的CircleView"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">完整的规范的CircleView</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#继承ViewGroup派生特殊的Layout"><span class="nav-number">3.3.2.</span> <span class="nav-text">继承ViewGroup派生特殊的Layout</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思想"><span class="nav-number">3.4.</span> <span class="nav-text">思想</span></a></li></ol></li></ol>
+    
     </div>
   </aside>
-
-
+</section>
         
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">fromzero</span>
-
+      
+      <footer id="footer">
   
-</div>
 
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018 逃避可耻但很有用 All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				UV : <span id="busuanzi_value_site_uv"></span> |  
+				PV : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
+		
   </div>
+</footer>
 
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
   
+    <a href="/archives/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/archives/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 
+  <link rel="stylesheet" href="/archives/fancybox/jquery.fancybox.css">
+  <script src="/archives/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/archives/js/scripts.js"></script>
+
+
+  <script src="/archives/js/home.js"></script>
+
+
+
+  <script src="/archives/js/dialog.js"></script>
 
 
 
@@ -744,135 +490,85 @@
 
 
 
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            逃避可耻但很有用
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 fromzero All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
   
-
-
-
-
-
-
-
-
-
-
-
-
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
   
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
   
-    <script type="text/javascript" src="/archives/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/archives/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/archives/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/archives/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/archives/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/archives/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/archives/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/archives/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/archives/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/archives/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/archives/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/archives/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/archives/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
 </body>
 </html>
