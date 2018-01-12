@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Picasso 是一款老牌的图片加载器，特别小巧，功能上虽然比不上 Glide 和 Fresco。但是一般的图片加载需求都能满足。关键是 square 出品，JakeWharton 大神主导的项目，必属精品，和自家的 OkHtttp 无缝衔接。 分析版本： 2.5.2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Picasso 加载图片的流程分析">
+<meta property="og:url" content="https://luwenjie.me/2018/01/10/picasso/index.html">
+<meta property="og:site_name" content="逃避可耻但很有用">
+<meta property="og:description" content="Picasso 是一款老牌的图片加载器，特别小巧，功能上虽然比不上 Glide 和 Fresco。但是一般的图片加载需求都能满足。关键是 square 出品，JakeWharton 大神主导的项目，必属精品，和自家的 OkHtttp 无缝衔接。 分析版本： 2.5.2">
+<meta property="og:image" content="http://square.github.io/picasso/static/sample.png">
+<meta property="og:image" content="http://blog.happyhls.me/wp-content/uploads/2014/11/Picasso-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.png">
+<meta property="og:updated_time" content="2018-01-10T08:44:54.583Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Picasso 加载图片的流程分析">
+<meta name="twitter:description" content="Picasso 是一款老牌的图片加载器，特别小巧，功能上虽然比不上 Glide 和 Fresco。但是一般的图片加载需求都能满足。关键是 square 出品，JakeWharton 大神主导的项目，必属精品，和自家的 OkHtttp 无缝衔接。 分析版本： 2.5.2">
+<meta name="twitter:image" content="http://square.github.io/picasso/static/sample.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2018/01/10/picasso/"/>
+
+
+
+
+
+  <title>Picasso 加载图片的流程分析 | 逃避可耻但很有用</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">逃避可耻但很有用</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/01/10/picasso/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fromzero">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逃避可耻但很有用">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Picasso 加载图片的流程分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T16:18:00+08:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://square.github.io/picasso/static/sample.png" alt=""></p>
+<p>Picasso 是一款老牌的图片加载器，特别小巧，功能上虽然比不上 Glide 和 Fresco。但是一般的图片加载需求都能满足。关键是 square 出品，JakeWharton 大神主导的项目，必属精品，和自家的 OkHtttp 无缝衔接。</p>
+<p>分析版本： 2.5.2<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Picasso.with(this)</div><div class="line">      .load(&quot;https://www.kaochong.com/static/imgs/ic_course_logo_92e76ec.png&quot;)</div><div class="line">      .into(imageView);</div></pre></td></tr></table></figure></p>
+<h2 id="with"><a href="#with" class="headerlink" title="with()"></a>with()</h2><p>看了几个开源库，都是一个套路，先用门面模式提供一个单例给外部访问，这里是 Picasso，其他开源框架如 EventBus，Retrofit 都是一样的。因为开源需要满足很多 feature 避免不了使用一堆参数，建造者模式也是很常见的，几乎每个开源库必备。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Picasso <span class="title">with</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="keyword">synchronized</span> (Picasso.class) &#123;</div><div class="line">      <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</div><div class="line">        singleton = <span class="keyword">new</span> Builder(context).build();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> singleton;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="load"><a href="#load" class="headerlink" title="load()"></a>load()</h2><p>接着看 load 方法:</p>
+<p>load 有 4 个重载方法：</p>
+<ol>
+<li><code>load(Uri)</code></li>
+<li><code>load(String)</code></li>
+<li><code>load(File)</code></li>
+<li><code>load(int)</code></li>
+</ol>
+<p>分别对应加载不同的来源。 这个方法会构造一个 <code>RequestCreator</code> 对象并返回。这个 <code>RequestCreator</code> 看名字就知道，是负责创建图片请求的。<code>RequestCreator</code> 和 <code>Request</code> 的区别在于，<code>Request</code> 是最终创建完成的请求，所有关于图片的信息都在这个请求里，包括图片大小，图片怎么转换，图片是否有渐变动画等等。而 <code>RequestCreator</code> 是一个 <code>Request</code> 的生产者，负责把请求参数组合然后创建成一个 <code>Request</code>。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Picasso.with(<span class="keyword">this</span>).load(<span class="string">"url"</span>).placeholder()</div><div class="line">    .resize()</div><div class="line">    .transform()</div><div class="line">    .error()</div><div class="line">    .noFade()</div><div class="line">    .networkPolicy()</div><div class="line">    .centerCrop()</div><div class="line">    .into(imageview);</div></pre></td></tr></table></figure>
+<p>上面这段代码中，<code>load()</code> 返回的是 <code>RequestCreator</code> 对象，后面从 <code>placeholder()</code> 到 <code>into()</code> 都是 <code>RequestCreator</code> 的中的方法。直到在 <code>into()</code> 中才会把最终图片请求 <code>Request</code> 对象构造出来处理。所以之前都是一堆参数的设置。</p>
+<p>以 <code>load(String)</code> 为例看看内部的操作：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> RequestCreator <span class="title">load</span><span class="params">(String path)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (path == <span class="keyword">null</span>) &#123;</div><div class="line">     <span class="keyword">return</span> <span class="keyword">new</span> RequestCreator(<span class="keyword">this</span>, <span class="keyword">null</span>, <span class="number">0</span>);</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">if</span> (path.trim().length() == <span class="number">0</span>) &#123;</div><div class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Path must not be empty."</span>);</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">return</span> load(Uri.parse(path));</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p><code>load(String)</code> 其实调用的是 <code>load(Uri)</code>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> RequestCreator <span class="title">load</span><span class="params">(Uri uri)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RequestCreator(<span class="keyword">this</span>, uri, <span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RequestCreator 的构造中，传入了 picasso 实例，用传入的 Uri、resourceId、默认 Bitmap 参数在内部构造一个 Request.Builder 实例，用于拼接后续参数最终 build 出一个 Request 实例。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">RequestCreator(Picasso picasso, Uri uri, <span class="keyword">int</span> resourceId) &#123;</div><div class="line">    <span class="keyword">if</span> (picasso.shutdown) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</div><div class="line">          <span class="string">"Picasso instance already shut down. Cannot submit new requests."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">this</span>.picasso = picasso;</div><div class="line">    <span class="keyword">this</span>.data = <span class="keyword">new</span> Request.Builder(uri, resourceId, picasso.defaultBitmapConfig);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>后面的 <code>error()</code>、<code>placeholder()</code> 等等就很简单了，就是把参数进行赋值修改。</p>
+<h2 id="into"><a href="#into" class="headerlink" title="into()"></a>into()</h2><p>关键的地方来了。<br>into 有 4 个重载方法：</p>
+<ol>
+<li><code>into(Target)</code></li>
+<li><code>into(RemoteViews,int,int,Notification)</code></li>
+<li><code>into(RemoteViews,int,int[])</code></li>
+<li><code>into(ImageView)</code></li>
+<li><code>into(ImageView,Callback)</code></li>
+</ol>
+<p>第 1 个用于实现了 Target 接口的对象，第 2、3 用于 RemoteView 的加载，分别用于通知和桌面小部件。4 和 5 就是我们常用的方法，把图片加载到 ImageView, 区别是 5 有回调。这 5 个流程基本是一样，我们就看 5 来看看加载的具体过程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">into</span><span class="params">(ImageView target, Callback callback)</span> </span>&#123;</div><div class="line">  <span class="comment">// 获取加载的开始时间，纳秒级别的，因为加载很快的</span></div><div class="line">  <span class="keyword">long</span> started = System.nanoTime();</div><div class="line">  <span class="comment">// 检查是否在主线程</span></div><div class="line">  checkMain();</div><div class="line"></div><div class="line">  <span class="comment">// target 不能为空，不然没法加载</span></div><div class="line">  <span class="keyword">if</span> (target == <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Target must not be null."</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 没图片就设置占位图</span></div><div class="line">  <span class="keyword">if</span> (!data.hasImage()) &#123;</div><div class="line">    picasso.cancelRequest(target);</div><div class="line">    <span class="keyword">if</span> (setPlaceholder) &#123;</div><div class="line">      setPlaceholder(target, getPlaceholderDrawable());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 如果是 fit 模式，图片自适应控件的大小，需要等 View layout 完确定宽和高再加载。这里采用的是监听 OnPreDraw 接口的方法。</span></div><div class="line">  <span class="keyword">if</span> (deferred) &#123;</div><div class="line">  <span class="comment">// fit 模式不能指定图片大小，和 resize 冲突</span></div><div class="line">    <span class="keyword">if</span> (data.hasSize()) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Fit cannot be used with resize."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> width = target.getWidth();</div><div class="line">    <span class="keyword">int</span> height = target.getHeight();</div><div class="line">    <span class="keyword">if</span> (width == <span class="number">0</span> || height == <span class="number">0</span>) &#123;</div><div class="line">      <span class="keyword">if</span> (setPlaceholder) &#123;</div><div class="line">        setPlaceholder(target, getPlaceholderDrawable());</div><div class="line">      &#125;</div><div class="line">      picasso.defer(target, <span class="keyword">new</span> DeferredRequestCreator(<span class="keyword">this</span>, target, callback));</div><div class="line">      <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    data.resize(width, height);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 创建出最终的 Request </span></div><div class="line">  Request request = createRequest(started);</div><div class="line">  <span class="comment">// 创建 Request key 用于缓存 Request</span></div><div class="line">  String requestKey = createKey(request);</div><div class="line"></div><div class="line">  <span class="comment">// 首先从内存中查找，内存中有就把这个请求取消，直接从内存加载</span></div><div class="line">  <span class="keyword">if</span> (shouldReadFromMemoryCache(memoryPolicy)) &#123;</div><div class="line">    Bitmap bitmap = picasso.quickMemoryCacheCheck(requestKey);</div><div class="line">    <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</div><div class="line">      picasso.cancelRequest(target);</div><div class="line">      setBitmap(target, picasso.context, bitmap, MEMORY, noFade, picasso.indicatorsEnabled);</div><div class="line">      <span class="keyword">if</span> (picasso.loggingEnabled) &#123;</div><div class="line">        log(OWNER_MAIN, VERB_COMPLETED, request.plainId(), <span class="string">"from "</span> + MEMORY);</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (callback != <span class="keyword">null</span>) &#123;</div><div class="line">        callback.onSuccess();</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 设置占位图</span></div><div class="line">  <span class="keyword">if</span> (setPlaceholder) &#123;</div><div class="line">    setPlaceholder(target, getPlaceholderDrawable());</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">// 构造出 Action </span></div><div class="line">  Action action =</div><div class="line">      <span class="keyword">new</span> ImageViewAction(picasso, target, request, memoryPolicy, networkPolicy, errorResId,</div><div class="line">          errorDrawable, requestKey, tag, callback, noFade);</div><div class="line">  <span class="comment">// 将 Action 入队执行</span></div><div class="line">  picasso.enqueueAndSubmit(action);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>into 中会检查调用代码是否在主线程，因为要更新 View，还有回调，肯定要在主线程。然后判断是否有图片的源地址，如果给的是个 null，那么直接就终止请求了。如果设置了 fit 模式(自适应 ImageView 的宽和高)，fit 模式和 resize 冲突，既然自适应宽高了，肯定就不能指定宽高。自适应 ImageView 的宽和高需要等待测量完成后得到宽高再继续请求，否则得到的宽高是 0，Picasso 使用 ViewTreeObserver 监听 ImageView 的 OnPreDrawListener 接口来获取宽和高，详细的代码可以看 <code>DeferredRequestCreator</code> 这个类。  </p>
+<p>然后创建出最终的 Request，此时的 Request 就代表了最终的图片请求信息。然后没有直接去请求，而是去缓存中查找，有的话就直接取消请求从内存中加载。没有的话就创建一个 <code>ImageViewAction</code> , 它是 <code>Action</code> 的子类。加载到不同的 Target 会使用不同的 Action。加载到 <code>Target</code> 使用 <code>TargetAction</code>。加载到通知就使用 <code>NotificationAction</code>。可以去其他的 <code>into</code> 方法中查看源码。</p>
+<p><code>Action</code>是一个抽象类， 内部封装了图片的请求信息，以及当前图片请求的其他参数（缓存策略，网络策略，是否取消了请求，Tag, 是否有动画等等）。需要子类实现 2 个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 解析图片完成后拿到 Bitmap，子类定义如何显示</span></div><div class="line"> <span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">complete</span><span class="params">(Bitmap result, VanGogh.LoadedFrom from)</span></span>;</div><div class="line"><span class="comment">// 解析发送错误</span></div><div class="line"> <span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">error</span><span class="params">(Exception e)</span></span>;</div></pre></td></tr></table></figure>
+<p>这下可以理解它为啥叫 <code>Action</code> 了，它需要子类自己处理 Bitmap。定义自己的 Action (行为), 成功拿到 Bitmap 怎么办，发生错误了怎么办？</p>
+<p>ImageViewAction 的实现很简单，内部通过自定义 BitmapDrawable 来绘制自己的图像，实现渐变。加载错误的时候就放置占位图。 </p>
+<p>接着看这最后一行<br><code>picasso.enqueueAndSubmit(action);</code> 看看把 <code>action</code> 扔到哪去处理了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">enqueueAndSubmit</span><span class="params">(Action action)</span> </span>&#123;</div><div class="line">   Object target = action.getTarget();</div><div class="line">   <span class="keyword">if</span> (target != <span class="keyword">null</span> &amp;&amp; targetToAction.get(target) != action) &#123;</div><div class="line">   <span class="comment">// 取消原来 target 的 action，将新的 action 存入    </span></div><div class="line">     cancelExistingRequest(target);</div><div class="line">     targetToAction.put(target, action);</div><div class="line">   &#125;</div><div class="line">   submit(action);</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> <span class="function"><span class="keyword">void</span> <span class="title">submit</span><span class="params">(Action action)</span> </span>&#123;</div><div class="line">   dispatcher.dispatchSubmit(action);</div><div class="line"> &#125;</div><div class="line"> </div><div class="line"> <span class="function"><span class="keyword">void</span> <span class="title">dispatchSubmit</span><span class="params">(Action action)</span> </span>&#123;</div><div class="line">   handler.sendMessage(handler.obtainMessage(REQUEST_SUBMIT, action));</div><div class="line"> &#125;</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">performSubmit</span><span class="params">(Action action, <span class="keyword">boolean</span> dismissFailed)</span> </span>&#123;</div><div class="line">   <span class="comment">// 处理暂停的请求</span></div><div class="line">   <span class="keyword">if</span> (pausedTags.contains(action.getTag())) &#123;</div><div class="line">     pausedActions.put(action.getTarget(), action);</div><div class="line">     <span class="keyword">if</span> (action.getPicasso().loggingEnabled) &#123;</div><div class="line">       log(OWNER_DISPATCHER, VERB_PAUSED, action.request.logId(),</div><div class="line">           <span class="string">"because tag '"</span> + action.getTag() + <span class="string">"' is paused"</span>);</div><div class="line">     &#125;</div><div class="line">     <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   <span class="comment">// 将 action 合并，action 的 key 是根据 Request 中图片参数生成的，</span></div><div class="line">   <span class="comment">// 这里的意思就是如果图片请求完全一样，只是 Action 不一样，只需要请求一次拿到 Bitmap 就行，</span></div><div class="line">   <span class="comment">// 因为图片信息完全相同，一个 Request 对应了对个 Action</span></div><div class="line">   BitmapHunter hunter = hunterMap.get(action.getKey());</div><div class="line">   <span class="keyword">if</span> (hunter != <span class="keyword">null</span>) &#123;</div><div class="line">     hunter.attach(action);</div><div class="line">     <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">if</span> (service.isShutdown()) &#123;</div><div class="line">     <span class="keyword">if</span> (action.getPicasso().loggingEnabled) &#123;</div><div class="line">       log(OWNER_DISPATCHER, VERB_IGNORED, action.request.logId(), <span class="string">"because shut down"</span>);</div><div class="line">     &#125;</div><div class="line">     <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// 构造出 hunter</span></div><div class="line">   hunter = forRequest(action.getPicasso(), <span class="keyword">this</span>, cache, stats, action);</div><div class="line">   <span class="comment">// 扔给线程池执行并获得结果</span></div><div class="line">   hunter.future = service.submit(hunter);</div><div class="line">   <span class="comment">// 缓存 hunter</span></div><div class="line">   hunterMap.put(action.getKey(), hunter);</div><div class="line">   <span class="comment">// 是否移除请求失败的 Action</span></div><div class="line">   <span class="keyword">if</span> (dismissFailed) &#123;</div><div class="line">     failedActions.remove(action.getTarget());</div><div class="line">   &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>跟踪可以发现交给 Dispatcher 中的 handler 处理了。</p>
+<p>在 <code>performSubmit()</code> 中重点看 <code>forRequest()</code> 方法构造出 BitmapHunter 实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> BitmapHunter <span class="title">forRequest</span><span class="params">(Picasso picasso, Dispatcher dispatcher, Cache cache, Stats stats,</span></span></div><div class="line">      Action action) &#123;</div><div class="line">    Request request = action.getRequest();</div><div class="line">    List&lt;RequestHandler&gt; requestHandlers = picasso.getRequestHandlers();</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, count = requestHandlers.size(); i &lt; count; i++) &#123;</div><div class="line">      RequestHandler requestHandler = requestHandlers.get(i);</div><div class="line">      <span class="keyword">if</span> (requestHandler.canHandleRequest(request)) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BitmapHunter(picasso, dispatcher, cache, stats, action, requestHandler);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> BitmapHunter(picasso, dispatcher, cache, stats, action, ERRORING_HANDLER);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>forRequest()</code> 中遍历所有的 RequestHandler。谁能处理 Action 就处理这个 Action。这是典型的责任链模式-<br><a href="http://www.cnblogs.com/java-my-life/archive/2012/05/28/2516865.html" target="_blank" rel="external">《JAVA与模式》之责任链模式</a>。</p>
+<p>在 Picasso 实例初始化的时候就把这些 RequestHandler 都加入了列表中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">Picasso(Context context, Dispatcher dispatcher, Cache cache, Listener listener,</div><div class="line">      RequestTransformer requestTransformer, List&lt;RequestHandler&gt; extraRequestHandlers...) &#123;</div><div class="line">  </div><div class="line">    List&lt;RequestHandler&gt; allRequestHandlers =</div><div class="line">        <span class="keyword">new</span> ArrayList&lt;RequestHandler&gt;(builtInHandlers + extraCount);</div><div class="line"></div><div class="line">    <span class="comment">// ResourceRequestHandler needs to be the first in the list to avoid</span></div><div class="line">    <span class="comment">// forcing other RequestHandlers to perform null checks on request.uri</span></div><div class="line">    <span class="comment">// to cover the (request.resourceId != 0) case.</span></div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> ResourceRequestHandler(context));</div><div class="line">    <span class="keyword">if</span> (extraRequestHandlers != <span class="keyword">null</span>) &#123;</div><div class="line">      allRequestHandlers.addAll(extraRequestHandlers);</div><div class="line">    &#125;</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> ContactsPhotoRequestHandler(context));</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> MediaStoreRequestHandler(context));</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> ContentStreamRequestHandler(context));</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> AssetRequestHandler(context));</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> FileRequestHandler(context));</div><div class="line">    allRequestHandlers.add(<span class="keyword">new</span> NetworkRequestHandler(dispatcher.downloader, stats));</div><div class="line">    requestHandlers = Collections.unmodifiableList(allRequestHandlers);</div><div class="line"></div><div class="line">    </div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>每个 RequestHandler 重写 <code>canHandleRequest</code> 来表明自己能处理哪种请求。  </p>
+<p>BitmapHunter 是一个 <code>Runnable</code>, 构造之后交给线程池处理。来看看 BitmapHunter 的 <code>run()</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    updateThreadName(data);</div><div class="line">    <span class="comment">// 解析图片得到 Bitmap</span></div><div class="line">    result = hunt();</div><div class="line">  </div><div class="line">      <span class="comment">// 由 dispatcher 分发解析图片的结果。</span></div><div class="line">    <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123;</div><div class="line">      dispatcher.dispatchFailed(<span class="keyword">this</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      dispatcher.dispatchComplete(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">  &#125; <span class="keyword">catch</span> (Downloader.ResponseException e) &#123;</div><div class="line">    <span class="keyword">if</span> (!e.localCacheOnly || e.responseCode != <span class="number">504</span>) &#123;</div><div class="line">      exception = e;</div><div class="line">    &#125;</div><div class="line">    dispatcher.dispatchFailed(<span class="keyword">this</span>);</div><div class="line">  &#125; <span class="keyword">catch</span> (NetworkRequestHandler.ContentLengthException e) &#123;</div><div class="line">    exception = e;</div><div class="line">    dispatcher.dispatchRetry(<span class="keyword">this</span>);</div><div class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    exception = e;</div><div class="line">    dispatcher.dispatchRetry(<span class="keyword">this</span>);</div><div class="line">  &#125; <span class="keyword">catch</span> (OutOfMemoryError e) &#123;</div><div class="line">    StringWriter writer = <span class="keyword">new</span> StringWriter();</div><div class="line">    stats.createSnapshot().dump(<span class="keyword">new</span> PrintWriter(writer));</div><div class="line">    exception = <span class="keyword">new</span> RuntimeException(writer.toString(), e);</div><div class="line">    dispatcher.dispatchFailed(<span class="keyword">this</span>);</div><div class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">    exception = e;</div><div class="line">    dispatcher.dispatchFailed(<span class="keyword">this</span>);</div><div class="line">  &#125; <span class="keyword">finally</span> &#123;</div><div class="line">    Thread.currentThread().setName(Utils.THREAD_IDLE_NAME);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先由 <code>hunt()</code> 方法解析出 Bitmap，再把解析后的结果交给 Dispatcher 来分发，成功了咋样，失败了咋样，失败了是否重试。Dispatcher 在 Picasso 中扮演了重要的角色，负责整个流程的调度。</p>
+<p>看看 hunt() 是怎么解析出 Bitmap 的。首先还是从内存中取，每个 RequestHandler 对象都持有了下载器，用于下载网络图片。网络图片下载完是一个流需要解析成 Bitmap，非网络的就直接得到一个 Bitmap。最后在处理变换操作得到最终的 bitmap。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="function">Bitmap <span class="title">hunt</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  Bitmap bitmap = <span class="keyword">null</span>;</div><div class="line">  </div><div class="line">  <span class="comment">// 从内存缓存中取</span></div><div class="line">  <span class="keyword">if</span> (shouldReadFromMemoryCache(memoryPolicy)) &#123;</div><div class="line">    bitmap = cache.get(key);</div><div class="line">    <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="comment">// 统计 缓存命中</span></div><div class="line">      stats.dispatchCacheHit();</div><div class="line">      loadedFrom = MEMORY;</div><div class="line">      <span class="keyword">return</span> bitmap;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  data.networkPolicy = retryCount == <span class="number">0</span> ? NetworkPolicy.OFFLINE.index : networkPolicy;</div><div class="line">  <span class="comment">// 用下载器请求url得到结果</span></div><div class="line">  RequestHandler.Result result = requestHandler.load(data, networkPolicy);</div><div class="line">  <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</div><div class="line">    loadedFrom = result.getLoadedFrom();</div><div class="line">    exifRotation = result.getExifOrientation();</div><div class="line"></div><div class="line">    bitmap = result.getBitmap();</div><div class="line"></div><div class="line">      <span class="comment">// 从流中解析出 Bitmap</span></div><div class="line">    <span class="keyword">if</span> (bitmap == <span class="keyword">null</span>) &#123;</div><div class="line">      InputStream is = result.getStream();</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        bitmap = decodeStream(is, data);</div><div class="line">      &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        Utils.closeQuietly(is);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="comment">// 解码</span></div><div class="line">    stats.dispatchBitmapDecoded(bitmap);</div><div class="line">    <span class="keyword">if</span> (data.needsTransformation() || exifRotation != <span class="number">0</span>) &#123;</div><div class="line">      <span class="comment">// 同一时间只处理一个 bitmap</span></div><div class="line">      <span class="keyword">synchronized</span> (DECODE_LOCK) &#123;</div><div class="line">        <span class="keyword">if</span> (data.needsMatrixTransform() || exifRotation != <span class="number">0</span>) &#123;</div><div class="line">          bitmap = transformResult(data, bitmap, exifRotation);</div><div class="line">         </div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (data.hasCustomTransformations()) &#123;</div><div class="line">          bitmap = applyCustomTransformations(data.transformations, bitmap);</div><div class="line">          </div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">  </div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> bitmap;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Dispatcher 内部实例化了一个 HandlerThread，所有的调度都是通过这个子线程上执行，通过这个子线程的 Handler 和 主线程的 Handler 以及线程池互相通信。</p>
+<p>解析图片的得到 Bitmap 后，Dispatcher 会调度到 <code>dispatchComplete</code>，跟踪代码走到 <code>performComplete</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">performComplete</span><span class="params">(BitmapHunter hunter)</span> </span>&#123;</div><div class="line">    <span class="comment">// 是否写入内存缓存</span></div><div class="line">    <span class="keyword">if</span> (shouldWriteToMemoryCache(hunter.getMemoryPolicy())) &#123;</div><div class="line">      cache.set(hunter.getKey(), hunter.getResult());</div><div class="line">    &#125;</div><div class="line">    hunterMap.remove(hunter.getKey());</div><div class="line">    <span class="comment">// 批处理 hunter</span></div><div class="line">    batch(hunter);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 执行批处理  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">performBatchComplete</span><span class="params">()</span> </span>&#123;</div><div class="line">    List&lt;BitmapHunter&gt; copy = <span class="keyword">new</span> ArrayList&lt;BitmapHunter&gt;(batch);</div><div class="line">    batch.clear();</div><div class="line">    mainThreadHandler.sendMessage(mainThreadHandler.obtainMessage(HUNTER_BATCH_COMPLETE, copy));</div><div class="line">    logBatch(copy);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最终将一批 BitmapHunter 打包一起扔给主线程处理。跟踪代码到 <code>Picasso</code> 类中的主线程的 Handler, 遍历执行 <code>complete(hunter)</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>) List&lt;BitmapHunter&gt; batch = (List&lt;BitmapHunter&gt;) msg.obj;</div><div class="line">          <span class="comment">//noinspection ForLoopReplaceableByForEach</span></div><div class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, n = batch.size(); i &lt; n; i++) &#123;</div><div class="line">            BitmapHunter hunter = batch.get(i);</div><div class="line">            hunter.picasso.complete(hunter);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>complete(hunter)</code> 中将调用 <code>Action</code> 的 <code>complete</code>/<code>error</code> 方法进行最后一步把 Bitmap 显示到 target 上，并进行相应的成功或者失败回调。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>引用一下<a href="https://blog.happyhls.me" target="_blank" rel="external">blog.happyhls.me</a>的图（自己懒得画了%&gt;_&lt;%），上面的流程可以总结成：<br><img src="http://blog.happyhls.me/wp-content/uploads/2014/11/Picasso-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.png" alt=""></p>
+<p>看源码的过程中发现 Dispatcher 里面一堆 handler send message，和 ActivityThread 中 H 和 AMS 通信很像，都用 Handler 来进行通信。Handler 真是 Android 的精髓。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/01/My 2018/" rel="next" title="My 2018">
+                <i class="fa fa-chevron-left"></i> My 2018
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/12/undstandOkhttpInterceptor/" rel="prev" title="理解 OkHttp 的拦截器">
+                理解 OkHttp 的拦截器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">fromzero</p>
+              <p class="site-description motion-element" itemprop="description">fix myself</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#with"><span class="nav-number">1.</span> <span class="nav-text">with()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load"><span class="nav-number">2.</span> <span class="nav-text">load()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#into"><span class="nav-number">3.</span> <span class="nav-text">into()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fromzero</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
