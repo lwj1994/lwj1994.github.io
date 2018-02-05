@@ -85,7 +85,7 @@
 <meta property="og:url" content="https://luwenjie.me/2018/02/05/Kotlin-Learning 基础类型/index.html">
 <meta property="og:site_name" content="逃避可耻但很有用">
 <meta property="og:description" content="数值在 Kotlin 一切都是对象。包括基础类型。  Double: 64位 Float:  32位 Long： 64位 Int:  32位 Short：16位 Byte: 8位  在 kotlin 中 字符不是一个数值。">
-<meta property="og:updated_time" content="2018-02-05T08:09:38.217Z">
+<meta property="og:updated_time" content="2018-02-05T08:16:50.623Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin-Learning 基础类型">
 <meta name="twitter:description" content="数值在 Kotlin 一切都是对象。包括基础类型。  Double: 64位 Float:  32位 Long： 64位 Int:  32位 Short：16位 Byte: 8位  在 kotlin 中 字符不是一个数值。">
@@ -383,12 +383,13 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 表示创建一个数量为 3，下标是偶数就填充 i*，奇数就填充 i。</span></div><div class="line"><span class="keyword">val</span> array = Array(<span class="number">3</span>, &#123; i -&gt;</div><div class="line">    <span class="keyword">if</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</div><div class="line">        (i * i).toString()</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        i.toString()</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
 <p>如果初始化的闭包里面什么都不写，默认就是创建了 3 个 Unit 类型的对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val a = Array(3, &#123;&#125;)</div></pre></td></tr></table></figure></p>
 <p><code>[]</code> 可以代替 <code>get</code> <code>set</code> 方法。</p>
-<p>Array 的类型不可变的，Array<string> 不可以被强转为 Array<any>。但是可以强转为 Array<out any="">。</out></any></string></p>
+<p>Array 的类型不可变的，<code>Array&lt;String&gt;</code> 不可以被强转。</p>
 <p>ByteArray,ShortArray,IntArray。这几个类表示原始类型的数组，不需要装箱操作。这些类和 Array 没有继承关系，但是方法都一样。</p>
 <h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p>String 和 Java 一样不可变的。可以赢下标访问字符串的元素字符。可以用 for 循环遍历</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> s)&#123;</div><div class="line">    println(i)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>带转义符的字符串：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val s = &quot;hello world!\n&quot;</div></pre></td></tr></table></figure></p>
-<p>整行字符串：使用 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">```kotlin</div><div class="line">val text = &quot;&quot;&quot; for (c in &quot;foo&quot;)  print(c) &quot;&quot;&quot;</div></pre></td></tr></table></figure></p>
+<p>整行字符串：使用 <code>&quot;&quot;&quot;</code> 包裹，不能有转义符，可以换行</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> text = <span class="string">"""for (c in "foo")  print(c)"""</span></div></pre></td></tr></table></figure>
 <p>移除空格<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> text = <span class="string">"""</span></div><div class="line">    |for (c in "foo")</div><div class="line">    |  print(c)</div><div class="line">    |  """.trimMargin()</div><div class="line">    println(text)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>默认用<code>|</code> 作为每一行的起始前缀。也可以自定义 <code>trimMargin(&quot;d&quot;)</code> 只能传一个字符。</p>
 <h3 id="字符串模板"><a href="#字符串模板" class="headerlink" title="字符串模板"></a>字符串模板</h3><p>使用 <code>${}</code> 表示代码片段。<br>只有一个变量时 <code>{}</code> 可以省略，<code>$a</code></p>
