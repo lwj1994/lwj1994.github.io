@@ -251,6 +251,501 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/02/07/Kotlin-Learning 类和继承/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fromzero">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逃避可耻但很有用">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/07/Kotlin-Learning 类和继承/" itemprop="url">Kotlin-Learning 类和继承</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T11:45:00+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 类由 class 关键字定义，只有 header 没有 body 时，大括号可以省</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Invoice</span></span></div><div class="line">&lt;!--more--&gt;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 一个类可以有一个主构造，和很多个次要构造。</div><div class="line"> * 主要构造是 header 的一部分。在类名后面 + constructor 关键字</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>(firstName: String)</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 主构造没有注解和可见性修饰符。constructor 可以省略</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person2</span></span>(firstName: String)</div></pre></td></tr></table></figure>
+<p>构造函数不能包含任何代码。初始化的代码可以放在初始化代码块里，用 init 表示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 构造中可以声明变量，但是不能写表达式代码。只能写在 init</div><div class="line"> * 代码块中，代码按声明顺序执行</div><div class="line"> */</div><div class="line">class InitOrderDemo(name:String)&#123;</div><div class="line">    val firstProperty = &quot;First property: $name&quot;.also(::println)</div><div class="line"></div><div class="line">    init &#123;</div><div class="line">        println(&quot;first initializer block that prints $name&quot;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    val secondProperty = &quot;second property: $&#123;name.length&#125;&quot;.also(::println)</div><div class="line">    init &#123;</div><div class="line">        println(&quot;second initializer block that prints $&#123;name.length&#125;&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>初始化变量，kotlin 有更简洁的语法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 简洁的声明属性的语法。设置默认值</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">InitConciseSyntax</span></span>(<span class="keyword">val</span> firstName: String = <span class="string">"adsa"</span>, <span class="keyword">val</span> lastName: String = <span class="string">"jjkj"</span>, <span class="keyword">var</span> age: <span class="built_in">Int</span> = <span class="number">1</span>) &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    init &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="副构造"><a href="#副构造" class="headerlink" title="副构造"></a>副构造</h2><p>一个类也可以声明副构造，以 <code>constructor</code> 为前缀。</p>
+<p>可以不声明主构造，只声明副构造，但不推荐，不如直接主构造。</p>
+<p>有主构造的情况下，副构造必须调用主构造，使用 this()。主构造是必须被调用的。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecondaryClass</span></span>(<span class="keyword">val</span> name: String) &#123;</div><div class="line">    <span class="keyword">constructor</span>(s: String = <span class="string">"asdasd"</span>, s2: String = <span class="string">"weq"</span>) : <span class="keyword">this</span>(s) &#123;</div><div class="line">        println(s)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码执行顺序也是先调用主构造，再走副构造。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecondaryClass</span></span>(name: String) &#123;</div><div class="line">    <span class="keyword">var</span> a = name</div><div class="line"></div><div class="line">    init &#123;</div><div class="line">        println(<span class="string">"-----主构造------<span class="variable">$a</span>"</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">constructor</span>(s: String = <span class="string">"asdasd"</span>, s2: String = <span class="string">"weq"</span>) : <span class="keyword">this</span>(s) &#123;</div><div class="line">        println(<span class="string">"------副构造------<span class="variable">$s</span>,<span class="variable">$s2</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>打印：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-----主构造------aaaaaaaa</div><div class="line">------副构造------aaaaaaaa,bbbbbbbbbb</div></pre></td></tr></table></figure></p>
+<p>没有主构造的时候，执行副构造也会执行 init 代码块。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecondaryClass2</span> </span>&#123;</div><div class="line"></div><div class="line">    init &#123;</div><div class="line">        println(<span class="string">"-----主构造------"</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">constructor</span>(s: String, s2: String) &#123;</div><div class="line">        println(<span class="string">"------副构造------<span class="variable">$s</span>,<span class="variable">$s2</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果不声明主构造，默认会创建一个默认的 public 无参构造。</p>
+<p>如果不想暴露这个无参构造。可以这么写：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DontCreateMe</span> <span class="keyword">private</span> <span class="title">construct</span> </span>()&#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>等价于 java 的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">DontCreateMe</span> <span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果构造中所有的参数都有默认值，编译器会生成额外的一个无参构造。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IHaveDefaultValue</span> <span class="title">construct</span></span>(s:String = <span class="string">"default"</span>)&#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="创建类的实例"><a href="#创建类的实例" class="headerlink" title="创建类的实例"></a>创建类的实例</h3><p>不需要关键字 new，直接 <code>类名()</code></p>
+<p>内部类创建：<code>OuterClass.InnerClass()</code></p>
+<h3 id="类的成员"><a href="#类的成员" class="headerlink" title="类的成员"></a>类的成员</h3><p>一个类包括：</p>
+<ol>
+<li>构造器和初始化代码块</li>
+<li>方法</li>
+<li>属性</li>
+<li>内部类</li>
+<li>对象</li>
+</ol>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>所有类都继承于 <code>Any</code>。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Any</span></span></div></pre></td></tr></table></figure>
+<p>通过形如<code>class A : B()</code> 来声明继承关系。<br>B 带() 表示调用 B 的无参主构造。</p>
+<p>Kotlin 中默认所有的类，属性，接口都是 final 的。open 关键字就是使其变成非 final。java 中默认都是非 final。 </p>
+<p>符合 effective java 的第 17 条：</p>
+<blockquote>
+<p>Design and document for inheritance or else prohibit it.</p>
+</blockquote>
+<p>需要设计继承关系的类，我们就使用 open 打开权限。否则默认都是禁止的。</p>
+<p>如果子类没有主构造，那么所有的副构造必须通过 <code>super()</code> 调用父类构造。</p>
+<p>如果子类有主构造，主构造中需要调用父类的构造，子类的副构造和一般的类一样使用 <code>this()</code> 调用自己的主构造。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span></span>(s: String = <span class="string">"sa"</span>) &#123;</div><div class="line">    <span class="keyword">constructor</span>(s: String, s2: String) : <span class="keyword">this</span>(s)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 一个类没有主构造，所有副构造需要调用super() 初始化父类构造</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> : <span class="type">Base &#123;</span></span></div><div class="line">    <span class="keyword">constructor</span>() : <span class="keyword">super</span>()</div><div class="line">    <span class="keyword">constructor</span>(s: String) : <span class="keyword">super</span>(s)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 一个类有主构造，需要调用父类的构造(主构造和副构造都可以)</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived2</span></span>(i: <span class="built_in">Int</span>) : Base(i.toString(),<span class="string">"wew"</span>) &#123;</div><div class="line">    <span class="keyword">constructor</span>() : <span class="keyword">this</span>(<span class="number">2</span>)</div><div class="line">    <span class="keyword">constructor</span>(s: String) : <span class="keyword">this</span>(<span class="number">3</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="覆写方法"><a href="#覆写方法" class="headerlink" title="覆写方法"></a>覆写方法</h3><p>由于默认的方法是 final 的，所以只能复写 open 修饰的方法。复写的方法需要用 override 修饰表示该方法是复写的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">open class Base &#123;</div><div class="line">	open fun v() &#123;&#125;</div><div class="line">	fun nv() &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Derived() : Base() &#123;</div><div class="line">	override fun v() &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="覆写属性"><a href="#覆写属性" class="headerlink" title="覆写属性"></a>覆写属性</h3><p>和方法类似，val 属性不可以复写 var。var 可以复写 val。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Foo</span> </span>&#123;</div><div class="line">    <span class="keyword">val</span> count: <span class="built_in">Int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar1</span></span>(<span class="keyword">override</span> <span class="keyword">val</span> count: <span class="built_in">Int</span>) : Foo</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar2</span> : <span class="type">Foo &#123;</span></span></div><div class="line">    <span class="keyword">override</span> <span class="keyword">var</span> count: <span class="built_in">Int</span> = <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="覆写规则"><a href="#覆写规则" class="headerlink" title="覆写规则"></a>覆写规则</h3><p>如果一个类有多个实现关系，比如实现了多个接口，接口里面有重复的方法实现。子类需要重写这个方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">interface Foo&#123;</div><div class="line">    fun a()&#123;</div><div class="line">        println(&quot;--------Foo a-----&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">interface Goo&#123;</div><div class="line">    fun a()&#123;</div><div class="line">        println(&quot;--------Goo a-----&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Hoo:Foo,Goo&#123;</div><div class="line">    override fun a() &#123;</div><div class="line">        super&lt;Foo&gt;.a()</div><div class="line">        super&lt;Goo&gt;.a()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接口和抽象类的方法和属性默认都是 open 的。<br>因为它们作为抽象层必须对外开放让子类访问实现。</p>
+<h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><p>和 java 一样用 abstract 修饰类和方法。</p>
+<p>可以用 abstract 重写父类的方法，不会再调用父类方法的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">open class BaseAbstract &#123;</div><div class="line">    open fun f() &#123;</div><div class="line">        println(&quot;BaseAbstract.f()&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">abstract class ChildAbstract : BaseAbstract() &#123;</div><div class="line">    // 重写父类方法，使其变为抽象</div><div class="line">    abstract override fun f()</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">class ChildAbstractImpl : ChildAbstract() &#123;</div><div class="line">    override fun f() &#123;</div><div class="line">        println(&quot;ChildAbstractImpl.f()&quot;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/02/07/Kotlin-Learning 可见性修饰符/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fromzero">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逃避可耻但很有用">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/07/Kotlin-Learning 可见性修饰符/" itemprop="url">Kotlin-Learning 可见性修饰符</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T11:44:00+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Kotlin 中有 4 种修饰符</p>
+<ol>
+<li><code>private</code> </li>
+<li><code>protect</code> </li>
+<li><code>internal</code></li>
+<li><code>public</code></li>
+</ol>
+<p>默认不写是 public。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/07/Kotlin-Learning 可见性修饰符/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/02/07/Kotlin-Learning 返回和跳转/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fromzero">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逃避可耻但很有用">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/07/Kotlin-Learning 返回和跳转/" itemprop="url">Kotlin-Learning 类和继承</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T11:41:00+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>和 java 一样有 3 个跳转。</p>
+<ol>
+<li>retun </li>
+<li>break 跳出当前循环</li>
+<li>continue 结束此次执行继续进入下一个循环</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/07/Kotlin-Learning 返回和跳转/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/02/05/Kotlin-Learning 基础类型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1278,453 +1773,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/12/05/View 点击事件的来源/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fromzero">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逃避可耻但很有用">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/05/View 点击事件的来源/" itemprop="url">View 点击事件的来源</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T10:27:00+08:00">
-                2017-12-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>我们在屏幕上点击产生触摸事件，源头肯定是来自屏幕上点击硬件，然后硬件将点击事件传递给 Android 系统。在 Android 系统中又由底层 Linux 处理返回给上层 Framework。这里只讨论 Framework 的来源。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/12/05/View 点击事件的来源/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/10/01/fragmentSouceCodeAna/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fromzero">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逃避可耻但很有用">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/01/fragmentSouceCodeAna/" itemprop="url">Fragment 源码解析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-01T18:15:00+08:00">
-                2017-10-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1506859062344&amp;di=eba9fb41f4c66003df4851aaed28fb5e&amp;imgtype=0&amp;src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F86%2F76%2F06J58PICsYh_1024.jpg" alt=""><br>分析源码前我自己想了几个问题，带着目的去看。  </p>
-<ol>
-<li>Activity 是如何与 Fragment 关联，如何操作 fragment 的？</li>
-<li>Fragment 的本质是一个 View 吗？
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/01/fragmentSouceCodeAna/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2017/09/15/imoocAlgorithmsTwo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fromzero">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逃避可耻但很有用">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/15/imoocAlgorithmsTwo/" itemprop="url">慕课算法学习 2-排序基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-15T17:19:00+08:00">
-                2017-09-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构和算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="http://szimg.mukewang.com/5949d44f00016fac20000520.jpg" alt=""></p>
-<h1 id="为什么要学习-O-n-2-的排序算法？"><a href="#为什么要学习-O-n-2-的排序算法？" class="headerlink" title="为什么要学习 O(n^2) 的排序算法？"></a>为什么要学习 O(n^2) 的排序算法？</h1><p>编码简单，是一些简单情形的首选。学习其思想，衍生出复杂算法。作为子过程，改进更为复杂的算法。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/15/imoocAlgorithmsTwo/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1770,7 +1823,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
