@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kotlin," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用高阶函数会引起性能的开销。 方法本身是一个对象，方法又会传入一个闭包对象。 inline 会优化 lambda 表达式。">
+<meta name="keywords" content="Kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin-Learning 内联函数">
+<meta property="og:url" content="https://luwenjie.me/2018/03/12/Kotlin-Learning 内联函数/index.html">
+<meta property="og:site_name" content="逃避可耻但很有用">
+<meta property="og:description" content="使用高阶函数会引起性能的开销。 方法本身是一个对象，方法又会传入一个闭包对象。 inline 会优化 lambda 表达式。">
+<meta property="og:updated_time" content="2018-03-12T14:54:39.318Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin-Learning 内联函数">
+<meta name="twitter:description" content="使用高阶函数会引起性能的开销。 方法本身是一个对象，方法又会传入一个闭包对象。 inline 会优化 lambda 表达式。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://luwenjie.me/2018/03/12/Kotlin-Learning 内联函数/"/>
+
+
+
+
+
+  <title>Kotlin-Learning 内联函数 | 逃避可耻但很有用</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">逃避可耻但很有用</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-resume">
+          <a href="/resume" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            resume
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://luwenjie.me/2018/03/12/Kotlin-Learning 内联函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fromzero">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逃避可耻但很有用">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin-Learning 内联函数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T22:57:00+08:00">
+                2018-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用高阶函数会引起性能的开销。</p>
+<p>方法本身是一个对象，方法又会传入一个闭包对象。</p>
+<p>inline 会优化 lambda 表达式。</p>
+<a id="more"></a>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">lock</span><span class="params">(lock: <span class="type">Lock</span>, body: ()</span></span> -&gt; T): T &#123;</div><div class="line">        lock.lock()</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">return</span> body()</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">finally</span> &#123;</div><div class="line">            lock.unlock()</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用上述 <code>lock</code> 方法</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lock(l) &#123; foo() &#125;</div></pre></td></tr></table></figure>
+<p>使用 inline 优化后，编译器会直接把 <code>lock(l) { foo() }</code> 转化成如下代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">l.lock()</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    foo()</div><div class="line">&#125;</div><div class="line"><span class="keyword">finally</span> &#123;</div><div class="line">    l.unlock()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不需要去创建一个函数对象，也不要引用闭包对象。因此性能就提高了。</p>
+<h2 id="noinline"><a href="#noinline" class="headerlink" title="noinline"></a>noinline</h2><p>如果只是想标记部分 lambda 为 inline。可以使用 <code>noinline</code> 标记不想被 inline 的参数。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(inlineed: ()</span></span> -&gt; <span class="built_in">Unit</span>, <span class="keyword">noinline</span> noInlined: () -&gt; <span class="built_in">Unit</span>)&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>内联的 lambda 只能在内联函数中调用，或者做为内联参数被传入。但是非内联的 lambda 可以通过任何我们喜欢的方式操作，比如存储在字段中。</p>
+<p>如果一个使用 <code>inline</code> 修饰的函数，没有一个参数是 <code>inline</code> 的，编译器会发出警告，此时没有任何需要优化的地方，inline 没有任何意义。如果你确定是有意义的，可以加上注解：<code>@Suppress(&quot;NOTHING_TO_INLINE&quot;)</code></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Suppress(<span class="meta-string">"NOTHING_TO_INLINE"</span>)</span></div><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">lock</span><span class="params">(lock: <span class="type">Lock</span>, <span class="keyword">noinline</span> body: ()</span></span> -&gt; T): T &#123;&#125;</div></pre></td></tr></table></figure>
+<h2 id="非本地返回（non-local-returns）"><a href="#非本地返回（non-local-returns）" class="headerlink" title="非本地返回（non-local returns）"></a>非本地返回（non-local returns）</h2><p>什么叫 non-local returns？</p>
+<blockquote>
+<p>当我们想在一个 lambda 中返回整个外围函数时，就叫 non-local returns。顾名思义，就是不是在本地的返回。</p>
+</blockquote>
+<p>lambda 表达式中禁止直接使用 <code>return</code> 返回，必须使用 <code>return@lable</code> 带上标签返回。 lambda 无法直接返回到函数对象中。但是 inline 函数中可以直接使用 return。因为编译已经将他们优化在函数内部。</p>
+<p>示例代码:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(lambda: (<span class="type">Int</span>)</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">    lambda(<span class="number">2</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">(lambda: (<span class="type">Int</span>)</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">    lambda(<span class="number">3</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 调用普通方法需要在 lambda 中指定标签返回</span></div><div class="line">foo &#123;</div><div class="line">    <span class="keyword">if</span> (it == <span class="number">3</span>) &#123;</div><div class="line">        println(<span class="string">"3"</span>)</div><div class="line">            <span class="keyword">return</span><span class="symbol">@foo</span></div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"not 3"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 调用内联方法可以直接返回</span></div><div class="line">bar &#123;</div><div class="line">    <span class="keyword">if</span> (it == <span class="number">3</span>) &#123;</div><div class="line">        println(<span class="string">"3"</span>)</div><div class="line">            <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"not 3"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种形式经常在循环中碰到，很多集合的方法都是 inline。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasZeros</span><span class="params">(ints: <span class="type">List</span>&lt;<span class="type">Int</span>&gt;)</span></span>: <span class="built_in">Boolean</span>&#123;</div><div class="line">    ints.forEach&#123;</div><div class="line">        <span class="keyword">if</span> (it == <span class="number">0</span>)&#123;</div><div class="line">            <span class="comment">// 直接返回到 hasZeros 方法。</span></div><div class="line">            <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="crossinline-关键字"><a href="#crossinline-关键字" class="headerlink" title="crossinline 关键字"></a>crossinline 关键字</h3><p>当我们在一个 inline 函数中，没有直接去调用传入的 lambda。而是间接被其他对象调用。这时禁止在 lamda 中直接使用 <code>non-local return</code>。使用 <code>crossinline</code> 来标记 lambda 是被其他对象间接使用的，不允许直接 return 到最外围的方法。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 内联函数中的 lambda 被一个匿名对象调用</span></div><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">(<span class="keyword">crossinline</span> body: ()</span></span> -&gt; <span class="built_in">Unit</span>)&#123;</div><div class="line">    <span class="keyword">val</span> f = <span class="keyword">object</span>: Runnable &#123;</div><div class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span></span> =  body()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 因为我们加了 crossinline 标记，此时直接 return 会报错。而 return@f 在自己内部返回，不会报错。</span></div><div class="line">f&#123;</div><div class="line">    <span class="comment">// return</span></div><div class="line">    <span class="keyword">return</span><span class="symbol">@f</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="具体化的类型参数-Reified-type-parameters"><a href="#具体化的类型参数-Reified-type-parameters" class="headerlink" title="具体化的类型参数 (Reified type parameters)"></a>具体化的类型参数 (Reified type parameters)</h2><p>现在有一个函数，传入一个 class 类型作为参数。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 判断一个 class 是否是 TreeNode 的父类型</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">(clazz: <span class="type">Class</span>&lt;<span class="type">T</span>&gt;)</span></span>: T? &#123;</div><div class="line">    <span class="keyword">var</span> p = parent</div><div class="line">    <span class="comment">// p 不是 clazz 类型的实例。使用反射检查</span></div><div class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; !clazz.isInstance(p)) &#123;</div><div class="line">        p = p.parent</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Suppress(<span class="meta-string">"UNCHECKED_CAST"</span>)</span></div><div class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用的时候这样调用：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// A::class.java 表示引用 A 类的 java 属性</span></div><div class="line">treeNode.findParentOfType(A::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></div></pre></td></tr></table></figure></p>
+<p>这种调用看起来十分繁琐，我们只是想传入一个类的类型。</p>
+<p>如果可以这样调用会很简洁：用泛型指定类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">treeNode.findParentOfType&lt;MyTreeNode&gt;()</div></pre></td></tr></table></figure>
+<p>内联函数中支持指定具体的类型。上述代码可以改成这样：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// reified 只能用于 inline 函数中</span></div><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">()</span></span>: T? &#123;</div><div class="line">    <span class="keyword">var</span> p = parent</div><div class="line">    <span class="comment">// 不需要反射，直接使用关键字 is</span></div><div class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; p !<span class="keyword">is</span> T) &#123;</div><div class="line">        p = p.parent</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Suppress(<span class="meta-string">"UNCHECKED_CAST"</span>)</span></div><div class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在一个 inline 函数中使用 <code>reified</code> 修饰一个泛型，表示这个泛型会在方法调用的时候被外部指定。可以这样调用这个方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">treeNode.findParentOfType&lt;MyTreeNode&gt;()</div></pre></td></tr></table></figure>
+<p>可以使用反射：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> <span class="title">membersOf</span><span class="params">()</span></span> = T::<span class="class"><span class="keyword">class</span>.<span class="title">members</span></span></div></pre></td></tr></table></figure>
+<p>没有被 inline 标记的普通函数不可以使用 <code>reified</code> 参数。<br>非具体类型的参数或者像 <code>Nothing</code> 这样的虚构类型不能作为<code>reified</code> 参数。</p>
+<h2 id="内联属性-since-1-1"><a href="#内联属性-since-1-1" class="headerlink" title="内联属性 (since 1.1)"></a>内联属性 (since 1.1)</h2><p><code>inline</code> 可以被用于没有 <code>backing field</code> 的属性的访问器中。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 内联属性</span></div><div class="line"><span class="keyword">val</span> a1: A</div><div class="line">    <span class="keyword">inline</span> <span class="keyword">get</span>() = A()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">var</span> a2: A</div><div class="line">    <span class="keyword">get</span>() = A()</div><div class="line">    <span class="keyword">inline</span> <span class="keyword">set</span>(value) &#123;</div><div class="line">        println(value)</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment">// 直接修饰属性。 get() set() 都是内联</span></div><div class="line"><span class="keyword">inline</span> <span class="keyword">var</span> a3: A</div><div class="line">    <span class="keyword">get</span>() &#123;</div><div class="line">        <span class="keyword">return</span> A()</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">set</span>(value) &#123;</div><div class="line">        println(value)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="内联函数作为公共-API-的限制"><a href="#内联函数作为公共-API-的限制" class="headerlink" title="内联函数作为公共 API 的限制"></a>内联函数作为公共 API 的限制</h2><p>当内联函数是 <code>public</code> 或者 <code>protect</code> 时，此时它可以作为一个模块的公共 API，可以被其他模块调用并内联到相关方法。</p>
+<p>公共内联函数不允许在其主体中使用非公共 API 声明。</p>
+<p><code>internal</code> 声明可以使用 <code>@PublishedApi</code>, 允许在公共API内联函数中使用它。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/27/Kotlin-Learning 泛型/" rel="next" title="Kotlin-Learning 泛型">
+                <i class="fa fa-chevron-left"></i> Kotlin-Learning 泛型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">fromzero</p>
+              <p class="site-description motion-element" itemprop="description">fix myself</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#noinline"><span class="nav-number">1.</span> <span class="nav-text">noinline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非本地返回（non-local-returns）"><span class="nav-number">2.</span> <span class="nav-text">非本地返回（non-local returns）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crossinline-关键字"><span class="nav-number">2.1.</span> <span class="nav-text">crossinline 关键字</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体化的类型参数-Reified-type-parameters"><span class="nav-number">3.</span> <span class="nav-text">具体化的类型参数 (Reified type parameters)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内联属性-since-1-1"><span class="nav-number">4.</span> <span class="nav-text">内联属性 (since 1.1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内联函数作为公共-API-的限制"><span class="nav-number">5.</span> <span class="nav-text">内联函数作为公共 API 的限制</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fromzero</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
